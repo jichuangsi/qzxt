@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>签证后台</title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="./css/font.css">
+		<link rel="stylesheet" href="./css/xadmin.css">
+		<link rel="stylesheet" href="lib/layui/css/layui.css" media="all" />
+		<script src="./lib/js/jquery.min.js"></script>
+		<script src="./lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./js/xadmin.js"></script>
+
+	</head>
+	<style>
+		.widths {
+			width: 300px;
+		}
+		
+		#upPwd {
+			display: none;
+			margin-top: 10px;
+		}
+		
+		.site {
+			display: none;
+		}
+		#addm{
+			display: none;
+			margin-top: 10px;
+		}
+	</style>
+
+	<body>
+		<!-- 顶部开始 -->
+		<div class="container">
+			<div class="logo">
+				<a href="./index.html" id="school">签证管理系统</a>
+			</div>
+			<div class="left_open">
+				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
+			</div>
+			<ul class="layui-nav right" lay-filter="">
+				<li class="layui-nav-item">
+					<a href="javascript:;">admin</a>
+					<dl class="layui-nav-child">
+						<!-- 二级菜单 -->
+						<dd>
+							<a href="javascript:;" onclick="updatePwd()">修改密码</a>
+						</dd>
+						<dd>
+							<a href="javascript:;" onclick="add()">添加菜单</a>
+						</dd>
+						<dd>
+							<a href="./login.html">退出</a>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+		<!-- 顶部结束 -->
+		<!-- 中部开始 -->
+		<!-- 左侧菜单开始 -->
+		<div class="left-nav">
+			<div id="side-nav">
+				<ul id="nav">
+					<!--客户管理-->
+					<li>
+						<a href="javascript:;">
+							<i class="iconfont">&#xe6b8;</i>
+							<cite>收件</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a _href="pages/ReceiptManagement.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>收件管理</cite>
+								</a>
+							</li>
+							<li>
+								<a _href="pages/AbnormalExpress.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>异常快件</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="iconfont">&#xe6b8;</i>
+							<cite id="setName">签证处理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a _href="pages/PassportInformationEntry.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>签证信息录入</cite>
+								</a>
+							</li>
+							<li>
+								<!--user/userManagement.html-->
+								<a _href="pages/VisaInformationCheck.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>签证信息审核</cite>
+								</a>
+							</li>
+							<li>
+								<a _href="pages/VisaToBeSupplemented.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>待补充签证</cite>
+								</a>
+							</li>
+							<li>
+								<a _href="pages/VisapProcessing.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>签证处理</cite>
+								</a>
+							</li>
+							<li>
+								<a _href="pages/VisaProcessingRecord.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>签证处理记录</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="iconfont">&#xe6b8;</i>
+							<cite>电商订单</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a _href="pages/ElectricitySupplierOrder.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>电商订单查询</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- <div class="x-slide_left"></div> -->
+		<!-- 左侧菜单结束 -->
+		<!-- 右侧主体开始 -->
+		<div class="page-content">
+			<div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+				<ul class="layui-tab-title">
+					<li>我的桌面</li>
+				</ul>
+
+				<div class="layui-tab-content">
+
+					<div class="layui-tab-item layui-show">
+						<div class="x-nav">
+							<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+							 title="刷新">
+								<i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
+						</div>
+						<iframe src='./welcome.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page-content-bg"></div>
+
+		<!-- 右侧主体结束 -->
+		<!-- 中部结束 -->
+		<!-- 底部开始 -->
+		<div class="footer">
+			<div class="copyright">Copyright ©2020 All Rights Reserved</div>
+		</div>
+		<!-- 底部结束 -->
+	</body>
+	<script>
+		function updatePwd() {
+			index = layer.open({
+				type: 1,
+				area: ['500px', '350px'],
+				anim: 2,
+				title: '修改密码',
+				maxmin: true,
+				shadeClose: true, //点击遮罩关闭
+				content: $('#upPwd')
+			});
+		}
+		function add() {
+			index = layer.open({
+				type: 1,
+				area: ['500px', '250px'],
+				anim: 2,
+				title: '添加菜单',
+				maxmin: true,
+				shadeClose: true, //点击遮罩关闭
+				content: $('#addm')
+			});
+		}
+	</script>
+	<div id="upPwd" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="test">
+			<div class="layui-form-item">
+				<label class="layui-form-label">新密码：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="userId" />
+					<input type="password" name="newPwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码：</label>
+				<div class="layui-input-block widths">
+					<input type="password" name="yesPwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="update_Pwd">确认修改</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="addm" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="test">
+			<div class="layui-form-item">
+				<label class="layui-form-label">菜单名称：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="userId" />
+					<input type="text" name="newPwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="addMenu">确认修改</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+</html>

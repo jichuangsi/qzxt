@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>收件管理</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
+		<script src="../lib/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/pageJs/ReceiptManagement.js"></script>
+
+	</head>
+	<style>
+		.widths {
+				width: 300px;
+			}
+			
+			#addOrder {
+				display: none;
+				margin-top: 10px;
+			}
+		</style>
+	<body>
+		<div class="x-nav">
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right;" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
+		</div>
+		<div class="x-body">
+			<div class="layui-row">
+				<form class="layui-form layui-col-md12">
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="快递单号" autocomplete="off" class="layui-input" style="width: 200px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="签收人" autocomplete="off" class="layui-input" style="width: 100px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="username" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
+					</div>
+					<div class="layui-input-inline">
+						<select name="city" lay-verify="required">
+							<option value=""></option>
+							<option value="0">待处理</option>
+							<option value="1">已处理</option>
+							<option value="2">异常</option>
+						</select>
+					</div>
+					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
+				</form>
+			</div>
+			<table id="express" lay-filter="express"></table>
+		</div>
+		<script type="text/html" id="operation">
+			<div class="layui-btn layui-btn-sm">已处理</div>
+			<div class="layui-btn layui-btn-sm">异常</div>
+		</script>
+		<script type="text/html" id="add">
+			<div class="layui-btn layui-btn-normal" onclick="list()">新增</div>
+		</script>
+	</body>
+	<script>
+		function list() {
+				index = layer.open({
+					type: 1,
+					area: ['500px', '400px'],
+					anim: 2,
+					title: '新增订单',
+					maxmin: true,
+					shadeClose: true,
+					content: $('#addOrder')
+				});
+			}
+	</script>
+	<div id="addOrder" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
+			<div class="layui-form-item">
+				<label class="layui-form-label">快递公司：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="请输入快递公司" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">快递单号：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">联系电话：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="yesPwd" placeholder="请输入联系方式" class="layui-input " lay-verify="required|phone">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">签收人：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="yesPwd" placeholder="请输入联系人" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">订单号：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="yesPwd" placeholder="请输入订单号" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="update_Pwd">添加</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+</html>
