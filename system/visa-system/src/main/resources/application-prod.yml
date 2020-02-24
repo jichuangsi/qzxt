@@ -1,0 +1,21 @@
+custom:
+  swagger:
+    enable: true #是否启用swagger文档
+  log:
+    path: E:/logback/${spring.application.name}/${spring.profiles.active}
+    
+spring:
+  application:
+    name: czpt
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/czpt?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    
+server:
+  port: 8080
