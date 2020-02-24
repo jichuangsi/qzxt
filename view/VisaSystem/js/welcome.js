@@ -313,7 +313,7 @@ layui.config({
 			"top": "1074px",
 			"url": "pages/VisapProcessing.html",
 			"indexno": "",
-			"text": "点击“完成”按钮，</br>系统签证信息状态改为“完成”，</br>反馈电商平台；可对对应的信息设置快递状态“已寄出”（",
+			"text": "点击“完成”按钮，</br>系统签证信息状态改为“完成”，</br>反馈电商平台；可对对应的信息设置快递状态“已寄出”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
