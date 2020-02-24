@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 	<head>
@@ -11,6 +11,8 @@
 		<link rel="stylesheet" href="./css/font.css">
 		<link rel="stylesheet" href="./css/xadmin.css">
 		<script src="./lib/js/jquery.min.js"></script>
+		<script src="lib/layui/layui.js"></script>
+		<script src="js/welcome.js"></script>
 	</head>
 
 	<body>
@@ -23,6 +25,7 @@
 				</blockquote>
 			</fieldset>
 		</div>
+		<div id="box"></div>
 		<script>
 			var _hmt = _hmt || [];
 			(function() {
@@ -34,17 +37,18 @@
 		</script>
 		<script>
 			$(function() {
-				$('#rq').text("系统时间:"+getNowFormatDate());
+				$('#rq').text("系统时间:" + getNowFormatDate());
+
 				function getNowFormatDate() {
 					var date = new Date();
 					var seperator1 = "-";
 					var year = date.getFullYear();
 					var month = date.getMonth() + 1;
 					var strDate = date.getDate();
-					if(month >= 1 && month <= 9) {
+					if (month >= 1 && month <= 9) {
 						month = "0" + month;
 					}
-					if(strDate >= 0 && strDate <= 9) {
+					if (strDate >= 0 && strDate <= 9) {
 						strDate = "0" + strDate;
 					}
 					var currentdate = year + seperator1 + month + seperator1 + strDate;
