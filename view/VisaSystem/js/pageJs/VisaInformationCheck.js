@@ -45,7 +45,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				{
 					field: 'urgent',
 					align: 'center',
-					title: '是否加急'
+					title: '工期'
 				},
 				{
 					field: 'pName',
@@ -66,9 +66,14 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					title: '最近操作时间'
 				},
 				{
+					field: 'Ostatus',
+					align: 'center',
+					title: '订单状态'
+				},
+				{
 					field: 'account',
 					align: 'center',
-					width: 250,
+					width: 300,
 					title: '操作',
 					toolbar: '#operation'
 				}

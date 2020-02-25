@@ -3,20 +3,14 @@ layui.use(['form', 'table', 'laydate'], function() {
 		laydate = layui.laydate,
 		table = layui.table;
 
-	$('.time').each(function() {
-		laydate.render({
-			elem: this,
-			type: 'date'
-		});
-	})
 
 	table.render({
-		elem: '#supplement',
+		elem: '#demo',
 		method: "get",
 		async: false,
 		id: 'idTest',
-		url: '../json/data.json',
-		// contentType: 'application/json',
+		url: '../json/p.json',
+		contentType: 'application/json',
 		// headers: {
 		// 	'accessToken': getToken()
 		// },
@@ -27,51 +21,48 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'number',
+					field: 'name',
 					align: 'center',
-					title: '订单号'
+					title: '姓名'
 				},
 				{
-					field: 'TradeName',
+					field: 'encod',
 					align: 'center',
-					title: '商品名称	'
+					title: '护照编码	'
 				},
 				{
-					field: 'OrderType',
-					align: 'center',
-					title: '订单类型'
-				},
-				{
-					field: 'urgent',
-					align: 'center',
-					title: '工期'
-				},
-				{
-					field: 'pName',
-					align: 'center',
-					title: '申请人姓名'
-				},
-				{
-					field: 'phone2',
+					field: 'phone',
 					align: 'center',
 					title: '联系电话'
-				},	{
-					field: 'Operator',
-					align: 'center',
-					title: '最近操作人'
-				},	{
-					field: 'optionTime',
-					align: 'center',
-					title: '最近操作时间'
 				},
 				{
+					field: 'ReturnAddress',
+					align: 'center',
+					title: '寄回地址'
+				},
+				{
+					field: 'birth',
+					align: 'center',
+					title: '出生日期'
+				}, {
+					field: 'residence',
+					align: 'center',
+					title: '居住地'
+				},
+				{
+					field: 'EffectiveDate',
+					align: 'center',
+					title: '有效日期'
+				} ,{
 					field: 'account',
 					align: 'center',
+					width: 300,
 					title: '操作',
 					toolbar: '#operation'
 				}
 			]
 		],
+		// toolbar: '#importImg',
 		page: true,
 		limit: 10,
 		// loading: true,
@@ -96,15 +87,6 @@ layui.use(['form', 'table', 'laydate'], function() {
 				"data": arr
 			};
 		}
-	});
 
-
-	//根据条件查询訂單
-	form.on('submit(search)', function(data) {
-		var param = data.field;
-		table.reload('idTest', {
-			where: {}
-		})
 	})
-
 })

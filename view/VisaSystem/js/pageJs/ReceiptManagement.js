@@ -69,7 +69,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 				}
 			]
 		],
-		toolbar: '#add',
+		// toolbar: '#add',
 		page: true,
 		limit: 10,
 		// loading: true,

@@ -45,7 +45,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					// 同一列两行
 					field: 'urgent',
 					align: 'center',
-					title: '是否加急/订单状态'
+					title: '工期/订单状态'
 				},
 				{
 					field: 'pName',
@@ -56,15 +56,21 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'phone2',
 					align: 'center',
 					title: '联系电话'
-				}, {
-					field: 'result',
-					align: 'center',
-					title: '出签结果'
-				}, {
-					field: 'LogisticsStatus',
-					align: 'center',
-					title: '物流状态'
 				},
+				{
+					field: 'vStatus',
+					align: 'center',
+					title: '签证状态'
+				},
+				// {
+				// 	field: 'result',
+				// 	align: 'center',
+				// 	title: '出签结果'
+				// }, {
+				// 	field: 'LogisticsStatus',
+				// 	align: 'center',
+				// 	title: '物流状态'
+				// },
 				{
 					field: 'account',
 					align: 'center',

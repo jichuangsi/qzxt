@@ -30,7 +30,10 @@
 				display: none;
 				margin-top: 10px;
 			}
-			
+			#addInfo{
+				display: none;
+				margin-top: 10px;
+			}
 			element.style {
 			}
 			.layui-field-title {
@@ -78,6 +81,8 @@
 			<table id="Visa" lay-filter="Visa"></table>
 		</div>
 		<script type="text/html" id="operation">
+			<div class="layui-btn layui-btn-sm" onclick="addInfo()">信息录入</div>
+			<div class="layui-btn layui-btn-sm" onclick="look()">查看信息</div>
 			<div class="layui-btn layui-btn-sm" onclick="list()">资料审核</div>
 			<!-- <div class="layui-btn layui-btn-sm" onclick="supplement()">待补充</div> -->
 			<!-- <div class="layui-btn layui-btn-sm">已检查</div> -->
@@ -90,7 +95,7 @@
 		function list() {
 				index = layer.open({
 					type: 1,
-					area: ['55%', '100%'],
+					area: ['70%', '100%'],
 					anim: 2,
 					title: '修改',
 					maxmin: true,
@@ -98,6 +103,17 @@
 					content: $('#modifyOrder')
 				});
 			}
+			function addInfo() {
+					index = layer.open({
+						type: 1,
+						area: ['80%', '100%'],
+						anim: 2,
+						title: '信息录入',
+						maxmin: true,
+						shadeClose: true,
+						content: $('#addInfo')
+					});
+				}
 			function supplement() {
 					index = layer.open({
 						type: 1,
@@ -109,6 +125,17 @@
 						content: $('#supplement')
 					});
 				}
+				function look() {
+						index = layer.open({
+							type: 2,
+							area: ['80%', '100%'],
+							anim: 2,
+							title: '查看护照',
+							maxmin: true,
+							shadeClose: true,
+							content: "PassportList.html"
+						});
+					}
 	</script>
 	<!--允许修基本信息和备注，订单号和状态不允许修改  -->
 	<div id="modifyOrder" class="layui-fluid">
@@ -303,11 +330,132 @@
 	<!-- 补充信息 -->
 	<div id="supplement" class="layui-fluid">
 		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
-
-
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn" lay-submit lay-filter="update_Pwd">确认补充</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="layui-fluid" id="addInfo">
+		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
+			<fieldset class="layui-elem-field layui-field-title">
+				<legend>基础信息：</legend>
+				<div class="layui-field-box">
+					<div class="layui-row">
+						<div class="layui-col-md6">
+							<div class="layui-form-item">
+								<label class="layui-form-label">订单号：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="newPwd" placeholder="订单号" readonly="true" value="2020Y2M12D-001" class="layui-input "
+									 lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">快递单号：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">姓名：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="yesPwd" placeholder="请输入姓名" class="layui-input " lay-verify="required|phone">
+								</div>
+							</div>
+						</div>
+						<div class="layui-col-md6">
+							<div class="layui-form-item">
+								<label class="layui-form-label">备注：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="yesPwd" placeholder="请输入备注" class="layui-input " lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">状态：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="yesPwd" placeholder="状态" readonly="true" value="已签收" class="layui-input " lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">快件地址：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="yesPwd" placeholder="快件地址" readonly="true" value="广东省广州市" class="layui-input "
+									 lay-verify="required">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset class="layui-elem-field layui-field-title">
+				<legend>护照信息：</legend>
+				<div class="layui-field-box">
+					<div class="layui-form-item">
+						<label class="layui-form-label">性别：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入性别" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">出生日期：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入出生日期" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">出生地：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入出生地" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">居住地：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入居住地" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">护照编码：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入护照编码" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">有效日期：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入有效日期" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">联系电话：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="请输入联系电话" class="layui-input " lay-verify="required|phone">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">寄回地址：</label>
+						<div class="layui-input-block widths">
+							<input type="text" name="yesPwd" placeholder="寄回地址" value="广东省广州市" class="layui-input " lay-verify="required">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">运费已付：</label>
+						<div class="layui-input-block widths">
+							<input type="radio" name="sex" value="是" title="是">
+							<input type="radio" name="sex" value="否" title="否" checked>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
+					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
+					<div class=" layui-btn" lay-submit>确认提交</div>
+					<div class=" layui-btn" lay-submit>导入护照回执</div>
+					<div class=" layui-btn" lay-submit>图像识别</div>
+					<div class=" layui-btn" lay-submit>信息检验</div>
 				</div>
 			</div>
 		</form>

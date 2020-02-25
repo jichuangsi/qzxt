@@ -44,7 +44,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 				{
 					field: 'urgent',
 					align: 'center',
-					title: '是否加急'
+					title: '工期'
 				},
 				{
 					field: 'pName',

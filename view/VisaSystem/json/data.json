@@ -14,7 +14,7 @@
 		"SerialNumber": "36243011101",
 		"TradeName": "护照文件",
 		"OrderType": "菲律宾签证",
-		"urgent": "不加急",
+		"urgent": "5工",
 		"pName": "林明",
 		"phone2": "1875724124", 
 		"status": "订单完成",
@@ -22,6 +22,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "出签",
 		"Operator": "管理员",
+		"Ostatus":"已匹配",
+		"vStatus":"已出签",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "2",
@@ -34,7 +36,7 @@
 		"SerialNumber": "36243011102", 
 		"TradeName": "护照文件",
 		"OrderType": "马来西亚签证",
-		"urgent": "加急",
+		"urgent": "7工",
 		"pName": "林明",
 		"phone2": "1875724124", 
 		"status": "订单完成",
@@ -42,6 +44,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "检查",
 		"Operator": "管理员",
+		"Ostatus":"已匹配",
+		"vStatus":"已送签",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "3",
@@ -54,7 +58,7 @@
 		"SerialNumber": "36243011103", 
 		"TradeName": "护照文件",
 		"OrderType": "菲律宾签证",
-		"urgent": "不加急",
+		"urgent": "3工",
 		"pName": "林明",
 		"phone2": "1875724124",
 		"status": "订单完成",
@@ -62,6 +66,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "寄出",
 		"Operator": "管理员",
+		"Ostatus":"未匹配",
+		"vStatus":"已出签",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "4",
@@ -74,7 +80,7 @@
 		"SerialNumber": "36243011104",
 		"TradeName": "护照文件",
 		"OrderType": "菲律宾签证",
-		"urgent": "加急",
+		"urgent": "2工",
 		"pName": "林明",
 		"phone2": "1875724124",
 		"status": "订单完成",
@@ -82,6 +88,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "寄出",
 		"Operator": "管理员",
+		"Ostatus":"未匹配",
+		"vStatus":"已送签",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "5",
@@ -94,7 +102,7 @@
 		"SerialNumber": "36243011105",
 		"TradeName": "护照文件",
 		"OrderType": "菲律宾签证",
-		"urgent": "不加急",
+		"urgent": "3工",
 		"pName": "林明",
 		"phone2": "1875724124", 
 		"status": "订单完成",
@@ -102,6 +110,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "拒绝",
 		"Operator": "管理员",
+		"Ostatus":"已匹配",
+		"vStatus":"已寄出",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "6",
@@ -114,7 +124,7 @@
 		"SerialNumber": "36243011106",
 		"TradeName": "护照文件",
 		"OrderType": "马来西亚签证",
-		"urgent": "不加急",
+		"urgent": "3工",
 		"pName": "林明",
 		"phone2": "1875724124", 
 		"status": "订单完成",
@@ -122,6 +132,8 @@
 		"LogisticsStatus": "已签收",
 		"option": "检查",
 		"Operator": "管理员",
+		"Ostatus":"未匹配",
+		"vStatus":"被拒签",
 		"optionTime": "2012-02-12-12:30"
 	}]
 }

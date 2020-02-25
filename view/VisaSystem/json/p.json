@@ -1,0 +1,35 @@
+{
+	"status": 200,
+	"code": "0010",
+	"total": 3,
+	"msg": "0010",
+	"list": [{
+		"id":"1",
+		"name":"小胖",
+		"encod":"524624256",
+		"phone":"178757467",
+		"ReturnAddress":"广州荔湾区华灵路",
+		"birth":"1998-05-01",
+		"residence":"广州市白云区",
+		"EffectiveDate":"2020-12-21"
+	},{
+		"id":"2",
+		"name":"蔓儿",
+		"encod":"452426+",
+		"phone":"178757467",
+		"ReturnAddress":"广州天河区",
+		"birth":"1998-05-01",
+		"residence":"广州市白云区",
+		"EffectiveDate":"2020-12-21"
+	},{
+		"id":"3",
+		"name":"林明",
+		"encod":"524624256",
+		"phone":"178757467",
+		"ReturnAddress":"广州海淀区",
+		"birth":"1988-02-21",
+		"residence":"广州市白云区",
+		"EffectiveDate":"2022-12-21"
+	}
+	]
+}
