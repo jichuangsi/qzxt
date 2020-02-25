@@ -99,7 +99,7 @@ layui.config({
 			"top": "685px",
 			"url": "pages/ElectricitySupplierOrder.html",
 			"indexno": "",
-			"text": "点击“导入订单”按钮，</br>系统订单数据导入</br>，并打印标签；</br>人工将标签贴上快件的护照上",
+			"text": "系统订单数据导入</br>，并打印标签；",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -151,7 +151,7 @@ layui.config({
 			"top": "640px",
 			"url": "pages/AbnormalExpress.html",
 			"indexno": "",
-			"text": "查看异常快件信息，联系客户更正订单信息",
+			"text": "查看异常快件信息，更正订单信息",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -205,7 +205,7 @@ layui.config({
 			"top": "865px",
 			"url": "pages/VisaToBeSupplemented.html",
 			"indexno": "",
-			"text": "查看待补充签证信息，并联系客户",
+			"text": "查看待补充签证信息，并联系客户更正",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -286,7 +286,7 @@ layui.config({
 			"top": "1057px",
 			"url": "pages/VisaToBeSupplemented.html",
 			"indexno": "",
-			"text": "扫描护照，并将护照图片导入对应签证资料</br>将信息设置为“已检查”",
+			"text": "将护照图片导入对应签证资料</br>将信息设置为“已检查”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -313,7 +313,7 @@ layui.config({
 			"top": "1074px",
 			"url": "pages/VisapProcessing.html",
 			"indexno": "",
-			"text": "点击“完成”按钮，</br>系统签证信息状态改为“完成”，</br>反馈电商平台；可对对应的信息设置快递状态“已寄出”",
+			"text": "系统签证信息状态改为“完成”，</br>电商平台对应的信息设置快递状态“已寄出”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
