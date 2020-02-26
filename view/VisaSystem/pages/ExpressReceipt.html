@@ -70,10 +70,24 @@
 					<div class="layui-input-block">
 						<button class="layui-btn" lay-submit lay-filter="update_Pwd">添加</button>
 						<button class="layui-btn" lay-submit lay-filter="update_Pwd" title="输入手机号自动匹配订单">自动匹配订单</button>
+						<div class=" layui-btn" onclick="reamark()">备注</div>
 					</div>
 				</div>
 			</form>
 		</div>
+		<script>
+			function reamark() {
+				index = layer.open({
+					type: 2,
+					area: ['70%', '70%'],
+					anim: 2,
+					title: '备注信息',
+					maxmin: true,
+					shadeClose: true,
+					content: "Remarks.html"
+				});
+			}
+		</script>
 	</body>
 
 </html>

@@ -3,13 +3,19 @@ layui.use(['form', 'table', 'laydate'], function() {
 		laydate = layui.laydate,
 		table = layui.table;
 
+	$('.time').each(function() {
+		laydate.render({
+			elem: this,
+			type: 'date'
+		});
+	})
 
 	table.render({
-		elem: '#express',
+		elem: '#demo',
 		method: "get",
 		async: false,
 		id: 'idTest',
-		url: '../json/data.json',
+		url: '../json/r.json',
 		// contentType: 'application/json',
 		// headers: {
 		// 	'accessToken': getToken()
@@ -21,45 +27,25 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'SerialNumber',
+					field: 'rearmark',
 					align: 'center',
-					title: '流水号'
+					width: 400,
+					title: '备注信息'
 				},
 				{
-					field: 'number',
+					field: 'date',
 					align: 'center',
-					title: '订单号'
+					title: '备注时间'
 				},
 				{
-					field: 'Company',
+					field: 'name',
 					align: 'center',
-					title: '快递公司'
+					title: '操作员工'
 				},
 				{
-					field: 'CourierNumber',
+					field: 'opt',
 					align: 'center',
-					title: '快递单号'
-				},
-				{
-					field: 'Signatory',
-					align: 'center',
-					title: '签收人'
-				},
-				{
-					field: 'phone',
-					align: 'center',
-					title: '联系电话'
-				},
-				{
-					field: 'SigningTime',
-					align: 'center',
-					title: '签收时间'
-				},
-				{
-					field: 'account',
-					align: 'center',
-					title: '操作',
-					toolbar: '#operation'
+					title: '操作'
 				}
 			]
 		],
@@ -89,4 +75,14 @@ layui.use(['form', 'table', 'laydate'], function() {
 			};
 		}
 	});
+
+
+	//根据条件查询訂單
+	form.on('submit(search)', function(data) {
+		var param = data.field;
+		table.reload('idTest', {
+			where: {}
+		})
+	})
+
 })

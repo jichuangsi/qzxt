@@ -73,8 +73,8 @@ layui.use(['form', 'table', 'laydate'], function() {
 				// },
 				{
 					field: 'account',
-					align: 'center',
-					width: 300,
+					// align: 'center',
+					width: 250,
 					title: '操作',
 					toolbar: '#operation'
 				}

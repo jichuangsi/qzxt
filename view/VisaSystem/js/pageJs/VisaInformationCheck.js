@@ -115,7 +115,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 		})
 	})
 	
-	var demo = xmSelect.render({
+	/* var demo = xmSelect.render({
 		el: '#demo', 
 		on: function(data){
 				//arr:  当前多选已选中的数据
@@ -147,5 +147,5 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			{name: '缺少机票', value: 12},
 			{name: '其他', value: -1},
 		]
-	})
+	}) */
 })

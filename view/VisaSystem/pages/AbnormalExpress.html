@@ -54,6 +54,20 @@
 		</div>
 		<script type="text/html" id="operation">
 			<div class="layui-btn layui-btn-sm">更正</div>
+			<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
+		</script>
+		<script>
+			function reamark() {
+				index = layer.open({
+					type: 2,
+					area: ['70%', '70%'],
+					anim: 2,
+					title: '备注信息',
+					maxmin: true,
+					shadeClose: true,
+					content: "Remarks.html"
+				});
+			}
 		</script>
 	</body>
 

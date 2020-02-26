@@ -60,29 +60,42 @@
 			<table id="Visa" lay-filter="Visa"></table>
 		</div>
 		<script type="text/html" id="operation">
+			<div class=" layui-btn layui-btn-sm" onclick="reamark()">备注</div>
 			{{# if(d.vStatus=="已出签"){ }}
 				<div class="layui-btn layui-btn-sm">寄出</div>
 			{{# }else if(d.vStatus=="已送签"){ }}
 				<div class="layui-btn layui-btn-sm" onclick="supplement()">拒签</div>
+				<div class="layui-btn layui-btn-sm" onclick="()">送签</div>
 			{{# }else if(d.vStatus=="被拒签"){ }}
 				<div class="layui-btn layui-btn-sm">寄出</div>
 			{{# }else if(d.vStatus=="已寄出"){ }}
 				<div class="">暂无操作</div>
 			{{# } }}
 		</script>
-<!-- 		<script>
-			function supplement() {
-					index = layer.open({
-						type: 1,
-						area: ['500px', '400px'],
-						anim: 2,
-						title: '确认信息',
-						maxmin: true,
-						shadeClose: true,
-						content: $('#info')
-					});
-				}
-		</script> -->
+		<script>
+			// function supplement() {
+			// 		index = layer.open({
+			// 			type: 1,
+			// 			area: ['500px', '400px'],
+			// 			anim: 2,
+			// 			title: '确认信息',
+			// 			maxmin: true,
+			// 			shadeClose: true,
+			// 			content: $('#info')
+			// 		});
+			// 	}
+			function reamark() {
+				index = layer.open({
+					type: 2,
+					area: ['70%', '70%'],
+					anim: 2,
+					title: '备注信息',
+					maxmin: true,
+					shadeClose: true,
+					content: "Remarks.html"
+				});
+			}
+		</script>
 	</body>
 	<div id="info" class="layui-fluid">
 		<form class="layui-form" autocomplete="off">

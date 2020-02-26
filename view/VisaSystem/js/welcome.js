@@ -336,6 +336,179 @@ layui.config({
 			"sta": "new"
 		},
 	];
+	var data=[
+		{
+			"left": "30px",
+			"top": "200px",
+			"url": "pages/ExpressReceipt.html",
+			"indexno": "",
+			"text": "签收快件",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "140px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "230px",
+			"top": "200px",
+			"url": "pages/PassportInformationEntry.html",
+			"indexno": "",
+			"text": "录入护照信息",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "329px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "973px",
+			"top": "200px",
+			"url": "pages/VisapProcessing.html",
+			"indexno": "",
+			"text": "寄回",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "689px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "771px",
+			"top": "200px",
+			"url": "pages/VisapProcessing.html",
+			"indexno": "",
+			"text": "出签/拒签",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "892px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "595px",
+			"top": "200px",
+			"url": "pages/VisapProcessing.html",
+			"indexno": "",
+			"text": "送签",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "516px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "407px",
+			"top": "200px",
+			"url": "pages/VisaInformationCheck.html",
+			"indexno": "",
+			"text": " 审核护照信息",
+			"img": "./js/modules/FlowChart/image/nav_icon_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "140px",
+			"top": "230px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "407px",
+			"top": "20px",
+			"url": "pages/VisaInformationCheck.html",
+			"indexno": "",
+			"text": " 重新审核护照信息",
+			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
+			"sta": "new"
+		},
+		{
+			"left": "435px",
+			"top": "135px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_8.png",
+			"sta": "new"
+		},
+		{
+			"left": "435px",
+			"top": "315px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_7.png",
+			"sta": "new"
+		},
+		{
+			"left": "516px",
+			"top": "375px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "899px",
+			"top": "375px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_9.png",
+			"sta": "new"
+		},
+		{
+			"left": "693px",
+			"top": "375px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_1.png",
+			"sta": "new"
+		},
+		{
+			"left": "1004px",
+			"top": "325px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_8.png",
+			"sta": "new"
+		},
+	]
 	var urlstr = "./js/modules/FlowChart/image/";
 	FlowChart.render({
 		elem: '#box'
@@ -358,7 +531,7 @@ layui.config({
 			]
 			// 赋值渲染
 			,
-		data: arr
+		data: data
 			// 保存到缓存测试
 			,
 		chartTest: false

@@ -65,6 +65,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'account',
 					align: 'center',
 					title: '操作',
+					width:300,
 					toolbar: '#operation'
 				}
 			]

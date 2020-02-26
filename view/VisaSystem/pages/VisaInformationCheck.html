@@ -81,7 +81,7 @@
 			<table id="Visa" lay-filter="Visa"></table>
 		</div>
 		<script type="text/html" id="operation">
-			<div class="layui-btn layui-btn-sm" onclick="addInfo()">信息录入</div>
+			<!-- <div class="layui-btn layui-btn-sm" onclick="addInfo()">信息录入</div> -->
 			<div class="layui-btn layui-btn-sm" onclick="look()">查看信息</div>
 			<div class="layui-btn layui-btn-sm" onclick="list()">资料审核</div>
 			<!-- <div class="layui-btn layui-btn-sm" onclick="supplement()">待补充</div> -->
@@ -136,6 +136,7 @@
 							content: "PassportList.html"
 						});
 					}
+			
 	</script>
 	<!--允许修基本信息和备注，订单号和状态不允许修改  -->
 	<div id="modifyOrder" class="layui-fluid">
@@ -299,14 +300,31 @@
 						</div>
 					</div>
 
-					<div class="layui-form-item">
+					<!-- 	<div class="layui-form-item">
 						<label class="layui-form-label">补充：</label>
 						<div class="layui-input-block widths">
 							<div name="bc" class="ClassOption xm-select-demo" id="demo" lay-search="">
 							</div>
 						</div>
+					</div> -->
+					<div class="layui-form-item" id="bc">
+						<label class="layui-form-label">补充：</label>
+						<div class="layui-input-block widths">
+							<input type="checkbox" name="" title="照片尺寸不合格" lay-skin="primary">
+							<input type="checkbox" name="" title="照片超过半年" lay-skin="primary">
+							<input type="checkbox" name="" title="护照有效期不够" lay-skin="primary">
+							<input type="checkbox" name="" title="离上次回国时间太短" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少上一次的签证纸" lay-skin="primary">
+							<input type="checkbox" name="" title="逾期逗留" lay-skin="primary">
+							<input type="checkbox" name="" title="曾经逾期" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少身份证" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少户口本" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少公证文件" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少出生证" lay-skin="primary">
+							<input type="checkbox" name="" title="缺少机票" lay-skin="primary">
+						</div>
 					</div>
-					<div class="layui-form-item" id="bc" style="display: none;">
+					<div class="layui-form-item" id="bc">
 						<label class="layui-form-label">补充说明：</label>
 						<div class="layui-input-block widths">
 							<input type="text" name="newPwd" placeholder="补充说明" class="layui-input " lay-verify="required">
