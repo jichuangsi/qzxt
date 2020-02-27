@@ -37,11 +37,6 @@ layui.use(['form', 'table', 'laydate'], function() {
 					title: '商品名称	'
 				},
 				{
-					field: 'OrderType',
-					align: 'center',
-					title: '订单类型'
-				},
-				{
 					field: 'urgent',
 					align: 'center',
 					title: '工期'

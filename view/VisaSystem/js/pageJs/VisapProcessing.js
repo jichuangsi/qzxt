@@ -24,7 +24,9 @@ layui.use(['form', 'table', 'laydate'], function() {
 			[{
 					field: 'id',
 					title: '序号',
-					type: 'numbers'
+					align: 'center',
+					width:50
+					// type: 'numbers'
 				},
 				{
 					field: 'number',
@@ -45,12 +47,18 @@ layui.use(['form', 'table', 'laydate'], function() {
 					// 同一列两行
 					field: 'urgent',
 					align: 'center',
-					title: '工期/订单状态'
+					title: '工期/状态'
 				},
 				{
 					field: 'pName',
 					align: 'center',
 					title: '申请人姓名'
+				},
+				{
+					// 同一列两行
+					field: 'over',
+					align: 'center',
+					title: '工期(天)'
 				},
 				{
 					field: 'phone2',
@@ -88,6 +96,19 @@ layui.use(['form', 'table', 'laydate'], function() {
 			limitName: "pageSize"
 		},
 		where: {},
+		done:function(res,curr,count){
+			var that=this.elem.next();
+			res.data.forEach(function(item,index){
+				if(item.over<3){
+					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","red");
+					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				}
+				if(item.ben=="3"){
+					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","rgba(60, 187, 255, 0.5)");
+					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				}
+			})
+		},
 		parseData: function(res) {
 			var arr;
 			var code;
@@ -115,7 +136,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		})
 	})
 
-	function info() {
+	window.info= function() {
 		index = layer.open({
 			type: 1,
 			area: ['500px', '500px'],
@@ -128,6 +149,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 	}
 	//
 	table.on('row(Visa)', function(data) {
-		info()
+		// info()
 	});
+	window.toinfo= function() {
+		index = layer.open({
+			type: 1,
+			area: ['30%', '70%'],
+			anim: 2,
+			title: '寄回',
+			maxmin: true,
+			shadeClose: true,
+			content:$('#toinfo')
+		});
+	}
 })

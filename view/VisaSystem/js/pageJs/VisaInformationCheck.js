@@ -25,7 +25,9 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			[{
 					field: 'id',
 					title: '序号',
-					type: 'numbers'
+					align: 'center',
+					width:50
+					// type: 'numbers'
 				},
 				{
 					field: 'number',
@@ -73,7 +75,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				{
 					field: 'account',
 					align: 'center',
-					width: 300,
+					width: 250,
 					title: '操作',
 					toolbar: '#operation'
 				}
@@ -88,6 +90,15 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			limitName: "pageSize"
 		},
 		where: {},
+		done:function(res,curr,count){
+			var that=this.elem.next();
+			res.data.forEach(function(item,index){
+				if(item.ben=="3"){
+					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","rgba(60, 187, 255, 0.5)");
+					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				}
+			})
+		},
 		parseData: function(res) {
 			var arr;
 			var code;

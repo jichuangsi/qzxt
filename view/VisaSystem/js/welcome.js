@@ -342,7 +342,7 @@ layui.config({
 			"top": "200px",
 			"url": "pages/ExpressReceipt.html",
 			"indexno": "",
-			"text": "签收快件",
+			"text": "收件",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -360,7 +360,7 @@ layui.config({
 			"top": "200px",
 			"url": "pages/PassportInformationEntry.html",
 			"indexno": "",
-			"text": "录入护照信息",
+			"text": "拆件",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
@@ -432,7 +432,7 @@ layui.config({
 			"top": "200px",
 			"url": "pages/VisaInformationCheck.html",
 			"indexno": "",
-			"text": " 审核护照信息",
+			"text": " 审件",
 			"img": "./js/modules/FlowChart/image/nav_icon_9.png",
 			"sta": "new"
 		},
@@ -450,12 +450,12 @@ layui.config({
 			"top": "20px",
 			"url": "pages/VisaInformationCheck.html",
 			"indexno": "",
-			"text": " 重新审核护照信息",
+			"text": " 重审",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
 			"sta": "new"
 		},
 		{
-			"left": "435px",
+			"left": "425px",
 			"top": "135px",
 			"url": "OD",
 			"indexno": "no",
@@ -464,48 +464,30 @@ layui.config({
 			"sta": "new"
 		},
 		{
+			"left": "445px",
+			"top": "135px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_6.png",
+			"sta": "new"
+		},
+		{
+			"left": "493px",
+			"top": "31px",
+			"url": "OD",
+			"indexno": "no",
+			"text": "",
+			"img": "./js/modules/FlowChart/image/line_15.png",
+			"sta": "new"
+		},
+		{
 			"left": "435px",
-			"top": "315px",
-			"url": "OD",
-			"indexno": "no",
-			"text": "",
-			"img": "./js/modules/FlowChart/image/line_7.png",
-			"sta": "new"
-		},
-		{
-			"left": "516px",
-			"top": "375px",
-			"url": "OD",
-			"indexno": "no",
-			"text": "",
-			"img": "./js/modules/FlowChart/image/line_9.png",
-			"sta": "new"
-		},
-		{
-			"left": "899px",
-			"top": "375px",
-			"url": "OD",
-			"indexno": "no",
-			"text": "",
-			"img": "./js/modules/FlowChart/image/line_9.png",
-			"sta": "new"
-		},
-		{
-			"left": "693px",
-			"top": "375px",
-			"url": "OD",
-			"indexno": "no",
-			"text": "",
-			"img": "./js/modules/FlowChart/image/line_1.png",
-			"sta": "new"
-		},
-		{
-			"left": "1004px",
 			"top": "325px",
 			"url": "OD",
 			"indexno": "no",
 			"text": "",
-			"img": "./js/modules/FlowChart/image/line_8.png",
+			"img": "./js/modules/FlowChart/image/line_14.png",
 			"sta": "new"
 		},
 	]

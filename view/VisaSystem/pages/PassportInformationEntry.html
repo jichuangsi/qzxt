@@ -68,6 +68,7 @@
 		</div>
 	</body>
 	<script type="text/html" id="operation">
+		<div class="layui-btn layui-btn-sm" onclick="look()">查看护照</div>
 		<div class="layui-btn layui-btn-sm" onclick="list()">护照录入</div>
 		<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
 	</script>
@@ -83,22 +84,36 @@
 					content: $('#addInfo')
 				});
 			}
-			function reamark() {
-					index = layer.open({
-						type: 2,
-						area: ['70%', '70%'],
-						anim: 2,
-						title: '备注信息',
-						maxmin: true,
-						shadeClose: true,
-						content:"Remarks.html"
-					});
-				}
+		function reamark() {
+				index = layer.open({
+					type: 2,
+					area: ['70%', '70%'],
+					anim: 2,
+					title: '备注信息',
+					maxmin: true,
+					shadeClose: true,
+					content:"Remarks.html"
+				});
+			}
+		function look() {
+				index = layer.open({
+					type: 2,
+					area: ['80%', '100%'],
+					anim: 2,
+					title: '查看护照',
+					maxmin: true,
+					shadeClose: true,
+					content: "PassportList.html"
+				});
+			}
 	</script>
 	<div class="" id="addInfo">
 		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
 			<fieldset class="layui-elem-field layui-field-title">
-				<legend>基础信息：</legend>
+				<legend>基础信息：
+					<div class=" layui-btn">图像识别</div>
+					<div class=" layui-btn">信息检验</div>
+				</legend>
 				<div class="layui-field-box">
 					<div class="layui-row">
 						<div class="layui-col-md6">
@@ -212,8 +227,6 @@
 					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
 					<div class=" layui-btn" lay-submit>提交</div>
 					<div class=" layui-btn" lay-submit>导入护照回执</div>
-					<div class=" layui-btn" lay-submit>图像识别</div>
-					<div class=" layui-btn" lay-submit>信息检验</div>
 				</div>
 			</div>
 		</form>

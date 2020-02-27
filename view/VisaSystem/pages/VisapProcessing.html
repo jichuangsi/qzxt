@@ -25,6 +25,10 @@
 				display: none;
 				margin-top: 10px;
 			}
+			#toinfo {
+				display: none;
+				margin-top: 10px;
+			}
 		</style>
 	<body>
 		<div class="x-nav">
@@ -62,28 +66,28 @@
 		<script type="text/html" id="operation">
 			<div class=" layui-btn layui-btn-sm" onclick="reamark()">备注</div>
 			{{# if(d.vStatus=="已出签"){ }}
-				<div class="layui-btn layui-btn-sm">寄出</div>
+				<div class="layui-btn layui-btn-sm" onclick="toinfo()">寄出</div>
 			{{# }else if(d.vStatus=="已送签"){ }}
-				<div class="layui-btn layui-btn-sm" onclick="supplement()">拒签</div>
-				<div class="layui-btn layui-btn-sm" onclick="()">送签</div>
+				<div class="layui-btn layui-btn-sm" onclick="info()">拒签</div>
+				<div class="layui-btn layui-btn-sm" onclick="info()">送签</div>
 			{{# }else if(d.vStatus=="被拒签"){ }}
-				<div class="layui-btn layui-btn-sm">寄出</div>
+				<div class="layui-btn layui-btn-sm" onclick="toinfo()">寄出</div>
 			{{# }else if(d.vStatus=="已寄出"){ }}
 				<div class="">暂无操作</div>
 			{{# } }}
 		</script>
 		<script>
-			// function supplement() {
-			// 		index = layer.open({
-			// 			type: 1,
-			// 			area: ['500px', '400px'],
-			// 			anim: 2,
-			// 			title: '确认信息',
-			// 			maxmin: true,
-			// 			shadeClose: true,
-			// 			content: $('#info')
-			// 		});
-			// 	}
+			function supplement() {
+					index = layer.open({
+						type: 1,
+						area: ['500px', '400px'],
+						anim: 2,
+						title: '确认信息',
+						maxmin: true,
+						shadeClose: true,
+						content: $('#info')
+					});
+				}
 			function reamark() {
 				index = layer.open({
 					type: 2,
@@ -141,6 +145,76 @@
 				<label class="layui-form-label">有效日期：</label>
 				<div class="layui-input-block widths">
 					<input type="text" name="newPwd" placeholder="有效日期" readonly="true" value="2022-12-12" class="layui-input "
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
+					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
+					<div class=" layui-btn" lay-submit>确认提交</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="toinfo" class="layui-fluid">
+		<form class="layui-form" autocomplete="off">
+			<div class="layui-form-item">
+				<label class="layui-form-label">姓名：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="姓名" readonly="true" value="王小二" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">性别：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="性别" readonly="true" value="男" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">出生日期：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="出生日期" readonly="true" value="1998-12-11" class="layui-input "
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">出生地：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="出生地" readonly="true" value="广州海珠区" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">居住地：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="居住地" readonly="true" value="广州白云区" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">护照编码：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="护照编码" readonly="true" value="2020Y2M12D-001" class="layui-input "
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">有效日期：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="有效日期" readonly="true" value="2022-12-12" class="layui-input "
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄回地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="寄回地址" readonly="true" value="广州市荔湾区" class="layui-input "
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">快递单号：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="newPwd" placeholder="快递单号" readonly="true" value="57845487856" class="layui-input "
 					 lay-verify="required">
 				</div>
 			</div>

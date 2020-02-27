@@ -37,6 +37,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 					title: '订单号'
 				},
 				{
+					field: 'is',
+					align: 'center',
+					title: '问题件'
+				},
+				{
 					field: 'Company',
 					align: 'center',
 					title: '快递公司'
@@ -62,10 +67,15 @@ layui.use(['form', 'table', 'laydate'], function() {
 					title: '签收时间'
 				},
 				{
+					field: 'Ostatus',
+					align: 'center',
+					title: '订单状态'
+				},
+				{
 					field: 'account',
 					align: 'center',
 					title: '操作',
-					width:300,
+					width:150,
 					toolbar: '#operation'
 				}
 			]
@@ -79,6 +89,19 @@ layui.use(['form', 'table', 'laydate'], function() {
 			limitName: "pageSize"
 		},
 		where: {},
+		done:function(res,curr,count){
+			var that=this.elem.next();
+			res.data.forEach(function(item,index){
+				if(item.Ostatus=="未匹配"){
+					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","#3C94FF");
+					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				}
+				if(item.is=="是"){
+					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","red");
+					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				}
+			})
+		},
 		parseData: function(res) {
 			var arr;
 			var code;

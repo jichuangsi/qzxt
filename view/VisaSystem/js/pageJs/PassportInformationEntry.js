@@ -30,25 +30,38 @@ layui.use(['form', 'table', 'laydate'], function() {
 					align: 'center',
 					title: '订单号'
 				},
+				
+				{
+					field: 'TradeName',
+					align: 'center',
+					title: '商品名称'
+				}
+				,
 				{
 					field: 'Company',
 					align: 'center',
 					title: '快递公司'
-				},
+				}
+				,
 				{
 					field: 'CourierNumber',
 					align: 'center',
 					title: '快递单号'
 				},
 				{
-					field: 'Signatory',
+					field: 'book',
 					align: 'center',
-					title: '签收人'
+					title: '护照本数'
 				},
 				{
 					field: 'phone',
 					align: 'center',
 					title: '联系电话'
+				},
+				{
+					field: 'urgent',
+					align: 'center',
+					title: '工期'
 				},
 				{
 					field: 'SigningTime',
@@ -59,6 +72,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'account',
 					align: 'center',
 					title: '操作',
+					width:300,
 					toolbar: '#operation'
 				}
 			]

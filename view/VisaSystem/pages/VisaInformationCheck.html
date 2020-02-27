@@ -82,8 +82,9 @@
 		</div>
 		<script type="text/html" id="operation">
 			<!-- <div class="layui-btn layui-btn-sm" onclick="addInfo()">信息录入</div> -->
-			<div class="layui-btn layui-btn-sm" onclick="look()">查看信息</div>
+			<!-- <div class="layui-btn layui-btn-sm" onclick="look()">查看信息</div> -->
 			<div class="layui-btn layui-btn-sm" onclick="list()">资料审核</div>
+			<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
 			<!-- <div class="layui-btn layui-btn-sm" onclick="supplement()">待补充</div> -->
 			<!-- <div class="layui-btn layui-btn-sm">已检查</div> -->
 		</script>
@@ -114,6 +115,17 @@
 						content: $('#addInfo')
 					});
 				}
+		function reamark() {
+				index = layer.open({
+					type: 2,
+					area: ['70%', '70%'],
+					anim: 2,
+					title: '备注信息',
+					maxmin: true,
+					shadeClose: true,
+					content:"Remarks.html"
+				});
+			}
 			function supplement() {
 					index = layer.open({
 						type: 1,
