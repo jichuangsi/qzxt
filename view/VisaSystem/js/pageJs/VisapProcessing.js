@@ -29,7 +29,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					// type: 'numbers'
 				},
 				{
-					field: 'number',
+					field: 'number2',
 					align: 'center',
 					title: '订单号'
 				},

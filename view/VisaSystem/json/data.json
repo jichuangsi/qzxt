@@ -6,6 +6,7 @@
 	"list": [{
 		"id": "1",
 		"number": "2020Y2M12D-001",
+		"number2": "2020Y2M12D-001",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021201",
 		"Signatory": "小李",
@@ -28,10 +29,15 @@
 		"is":"是",
 		"book":"2",
 		"ben":"2",
+		"wt":"没有机票",
+		"time":"2020-05-02",
+		"addres":"广州荔湾区",
+		"bDate":"1965-10-12",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "2",
 		"number": "2020Y2M12D-002",
+		"number2": "2020Y2M12D-001",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021202",
 		"Signatory": "小王",
@@ -54,12 +60,17 @@
 		"is":"否",
 		"book":"3",
 		"ben":"2",
+		"wt":"没有机票",
+		"time":"2020-05-02",
+		"addres":"广州荔湾区",
+		"bDate":"1991-10-12",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "1",
 		"number": "2020Y2M12D-003",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021203",
+		"number2": "2020Y2M12D-002",
 		"Signatory": "小李",
 		"phone": "17875576362",
 		"SigningTime": "2012-02-13 12:30",
@@ -80,10 +91,15 @@
 		"is":"是",
 		"book":"2",
 		"ben":"3",
+		"wt":"其他原因",
+		"time":"2020-06-02",
+		"addres":"广州白云区",
+		"bDate":"1974-10-12",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "2",
 		"number": "2020Y2M12D-004",
+		"number2": "2020Y2M12D-002",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021204",
 		"Signatory": "小李",
@@ -106,10 +122,15 @@
 		"is":"否",
 		"book":"1",
 		"ben":"3",
+		"wt":"有逾期历史",
+		"time":"2020-06-03",
+		"addres":"广州白云区",
+		"bDate":"1975-11-12",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "3",
 		"number": "2020Y2M12D-005",
+		"number2": "2020Y2M12D-002",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021205",
 		"Signatory": "小李",
@@ -132,10 +153,15 @@
 		"is":"否",
 		"book":"2",
 		"ben":"3",
+		"wt":"没有机票",
+		"time":"2020-06-01",
+		"addres":"广州白云区",
+		"bDate":"1985-10-12",
 		"optionTime": "2012-02-12-12:30"
 	}, {
 		"id": "1",
 		"number": "2020Y2M12D-006",
+		"number2": "2020Y2M12D-003",
 		"Company": "顺丰快递",
 		"CourierNumber": "Sf2020021206",
 		"Signatory": "小李",
@@ -158,6 +184,10 @@
 		"is":"否",
 		"book":"3",
 		"ben":"1",
+		"wt":"护照时间不够",
+		"time":"2020-07-02",
+		"addres":"广州天河区",
+		"bDate":"1995-10-12",
 		"optionTime": "2012-02-12-12:30"
 	}]
 }

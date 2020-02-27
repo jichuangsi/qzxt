@@ -30,9 +30,19 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					// type: 'numbers'
 				},
 				{
-					field: 'number',
+					field: 'pName',
+					align: 'center',
+					title: '姓名'
+				},
+				{
+					field: 'number2',
 					align: 'center',
 					title: '订单号'
+				},
+				{
+					field: 'SerialNumber',
+					align: 'center',
+					title: '护照编码	'
 				},
 				{
 					field: 'TradeName',
@@ -40,9 +50,25 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					title: '商品名称	'
 				},
 				{
-					field: 'OrderType',
+					field: 'bDate',
 					align: 'center',
-					title: '订单类型'
+					title: '出生日期'
+				},
+				{
+					field: 'phone2',
+					align: 'center',
+					title: '联系电话'
+				},
+				
+				// {
+				// 	field: 'OrderType',
+				// 	align: 'center',
+				// 	title: '订单类型'
+				// },
+				{
+					field: 'addres',
+					align: 'center',
+					title: '护照签发地'
 				},
 				{
 					field: 'urgent',
@@ -50,28 +76,25 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					title: '工期'
 				},
 				{
-					field: 'pName',
+					field: 'time',
 					align: 'center',
-					title: '申请人姓名'
+					title: '有效日期'
 				},
-				{
-					field: 'phone2',
-					align: 'center',
-					title: '联系电话'
-				}, {
-					field: 'Operator',
-					align: 'center',
-					title: '最近操作人'
-				}, {
-					field: 'optionTime',
-					align: 'center',
-					title: '最近操作时间'
-				},
-				{
-					field: 'Ostatus',
-					align: 'center',
-					title: '订单状态'
-				},
+				// {
+				// 	field: 'Operator',
+				// 	align: 'center',
+				// 	title: '最近操作人'
+				// }, {
+				// 	field: 'optionTime',
+				// 	align: 'center',
+				// 	title: '最近操作时间'
+				// },
+				
+				// {
+				// 	field: 'Ostatus',
+				// 	align: 'center',
+				// 	title: '订单状态'
+				// },
 				{
 					field: 'account',
 					align: 'center',
