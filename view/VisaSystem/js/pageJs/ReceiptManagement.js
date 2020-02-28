@@ -75,7 +75,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'account',
 					align: 'center',
 					title: '操作',
-					width:150,
+					width: 150,
 					toolbar: '#operation'
 				}
 			]
@@ -89,17 +89,22 @@ layui.use(['form', 'table', 'laydate'], function() {
 			limitName: "pageSize"
 		},
 		where: {},
-		done:function(res,curr,count){
-			var that=this.elem.next();
-			res.data.forEach(function(item,index){
-				if(item.Ostatus=="未匹配"){
-					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","#3C94FF");
-					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+		done: function(res, curr, count) {
+			var that = this.elem.next();
+			res.data.forEach(function(item, index) {
+				if (item.is == "是") {
+					var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "red");
+					tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
 				}
-				if(item.is=="是"){
-					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","red");
-					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+				if (item.Ostatus == "未匹配") {
+					var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
+						"#3C94FF");
+					tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
 				}
+					if (item.is == "是" && item.Ostatus == "未匹配") {
+						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color", "red");
+						tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
+					}
 			})
 		},
 		parseData: function(res) {

@@ -50,9 +50,9 @@
 					<div class="layui-input-inline">
 						<input type="text" name="username" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
-					<div class="layui-input-inline">
+				<!-- 	<div class="layui-input-inline">
 						<input type="text" name="username" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
-					</div>
+					</div> -->
 					<div class="layui-input-inline">
 						<select name="city" lay-verify="required">
 							<option value=""></option>
@@ -65,9 +65,13 @@
 				</form>
 			</div>
 			<table id="express" lay-filter="express"></table>
+			<blockquote class="layui-elem-quote layui-quote-nm">
+				<span class="layui-badge" style="background-color: red;">问题快件</span>
+				<span class="layui-badge" style="background-color: #3C94FF;" >未匹配订单</span>
+			</blockquote>
 		</div>
 		<script type="text/html" id="operation">
-			<div class="layui-btn layui-btn-sm">更正</div>
+			<div class="layui-btn layui-btn-sm" onclick="list()">更正</div>
 			<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
 		</script>
 		<script type="text/html" id="add">
@@ -78,9 +82,9 @@
 		function list() {
 				index = layer.open({
 					type: 1,
-					area: ['500px', '400px'],
+					area: ['60%', '70%'],
 					anim: 2,
-					title: '新增订单',
+					title: '更正',
 					maxmin: true,
 					shadeClose: true,
 					content: $('#addOrder')
@@ -103,14 +107,24 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">快递公司：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="请输入快递公司" class="layui-input " lay-verify="required">
+					<!-- <input type="text" name="newPwd" placeholder="请输入快递公司" class="layui-input " lay-verify="required"> -->
+					<select name="city" lay-verify="required">
+						<option value="">顺丰快递</option>
+						<option value="0">韵达快递</option>
+						<option value="1">申通快递</option>
+						<option value="3">圆通快递</option>
+						<option value="4">EMS</option>
+						<option value="5">天天快递</option>
+						<option value="6">京东快递</option>
+						<option value="7">其他</option>
+					</select>
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">快递单号：</label>
 				<div class="layui-input-block widths">
 					<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
-				</div>	
+				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">联系电话：</label>
@@ -126,13 +140,48 @@
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">订单号：</label>
-				<div class="layui-input-block widths">
+				<div class="layui-inline widths">
 					<input type="text" name="yesPwd" placeholder="请输入订单号" class="layui-input " lay-verify="required">
+				</div>
+				<div class="layui-inline">
+					<button class="layui-btn" lay-submit lay-filter="update_Pwd" title="输入手机号自动匹配订单">自动匹配订单</button>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">订单来源：</label>
+				<div class="layui-input-block widths">
+					<input type="radio" name="sex" value="nan" title="飞猪" checked>
+					<input type="radio" name="sex" value="nan" title="公众号">
+					<input type="radio" name="sex" value="nan" title="其他">
+					<input type="text" name="yesPwd" placeholder="请输入订单来源" class="layui-input " lay-verify="required">
+					<!-- 	
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">飞猪</option>
+						<option value="1">公众号</option>
+						<option value="3">其他</option>
+					</select> -->
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">护照本数：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="yesPwd" placeholder="请输入护照数量" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">是否存在问题：</label>
+				<div class="layui-input-block widths">
+					<input type="radio" name="sex1" value="nan" title="是">
+					<input type="radio" name="sex1" value="nan" title="否" checked>
+					<input type="text" name="yesPwd" placeholder="其他问题" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn" lay-submit lay-filter="update_Pwd">添加</button>
+		
+					<div class=" layui-btn" onclick="reamark()">备注</div>
 				</div>
 			</div>
 		</form>

@@ -25,8 +25,8 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'id',
 					title: '序号',
 					align: 'center',
-					width:50
-					// type: 'numbers'
+					// width:50
+					type: 'numbers'
 				},
 				{
 					field: 'number2',
@@ -38,11 +38,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 					align: 'center',
 					title: '商品名称	'
 				},
-				{
-					field: 'OrderType',
-					align: 'center',
-					title: '订单类型'
-				},
+				// {
+				// 	field: 'OrderType',
+				// 	align: 'center',
+				// 	title: '订单类型'
+				// },
 				{
 					// 同一列两行
 					field: 'urgent',
@@ -79,6 +79,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 				// 	align: 'center',
 				// 	title: '物流状态'
 				// },
+				{
+					field: 'txm',
+					align: 'center',
+					title: '条形码号'
+				},
 				{
 					field: 'account',
 					// align: 'center',

@@ -21,6 +21,12 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
+					field: 'txm',
+					align: 'center',
+					width:200,
+					title: '条形码号'
+				},
+				{
 					field: 'name',
 					align: 'center',
 					title: '姓名'
@@ -35,11 +41,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 					align: 'center',
 					title: '联系电话'
 				},
-				{
-					field: 'ReturnAddress',
-					align: 'center',
-					title: '寄回地址'
-				},
+				// {
+				// 	field: 'ReturnAddress',
+				// 	align: 'center',
+				// 	title: '寄回地址'
+				// },
 				{
 					field: 'birth',
 					align: 'center',
@@ -88,5 +94,9 @@ layui.use(['form', 'table', 'laydate'], function() {
 			};
 		}
 
+	})
+	$(document).on('click', '.to', function() {
+		layer.confirm('是否要打印条形码？', function(index) {
+		})
 	})
 })

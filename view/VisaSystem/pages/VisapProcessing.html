@@ -54,14 +54,15 @@
 					<div class="layui-input-inline">
 						<input type="text" name="username" placeholder="出签结果" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="物流状态" autocomplete="off" class="layui-input" style="width: 150px;">
-					</div>
 					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
 				</form>
 			</div>
 			<!-- 签证处理列表 -->
 			<table id="Visa" lay-filter="Visa"></table>
+			<blockquote class="layui-elem-quote layui-quote-nm">
+				 <!-- <li>用户管理<span class="layui-badge-dot"></span></li> -->
+				<span class="layui-badge" style="background-color: red;">少于3个工作日订单</span>
+			</blockquote>
 		</div>
 		<script type="text/html" id="operation">
 			<div class=" layui-btn layui-btn-sm" onclick="reamark()">备注</div>

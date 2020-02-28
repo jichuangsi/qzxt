@@ -21,11 +21,6 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'SerialNumber',
-					align: 'center',
-					title: '流水号'
-				},
-				{
 					field: 'number',
 					align: 'center',
 					title: '订单号'

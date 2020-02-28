@@ -26,8 +26,8 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					field: 'id',
 					title: '序号',
 					align: 'center',
-					width:50
-					// type: 'numbers'
+					// width:50
+					type: 'numbers'
 				},
 				{
 					field: 'pName',
@@ -49,11 +49,11 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					align: 'center',
 					title: '商品名称	'
 				},
-				{
-					field: 'bDate',
-					align: 'center',
-					title: '出生日期'
-				},
+				// {
+				// 	field: 'bDate',
+				// 	align: 'center',
+				// 	title: '出生日期'
+				// },
 				{
 					field: 'phone2',
 					align: 'center',
@@ -79,6 +79,11 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					field: 'time',
 					align: 'center',
 					title: '有效日期'
+				},
+				{
+					field: 'txm',
+					align: 'center',
+					title: '条形码号'
 				},
 				// {
 				// 	field: 'Operator',

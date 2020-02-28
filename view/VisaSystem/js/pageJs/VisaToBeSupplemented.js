@@ -52,11 +52,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 					title: '联系电话'
 				},
 				
-				{
-					field: 'bDate',
-					align: 'center',
-					title: '出生日期'
-				},
+				// {
+				// 	field: 'bDate',
+				// 	align: 'center',
+				// 	title: '出生日期'
+				// },
 				// 	{
 				// 	field: 'Operator',
 				// 	align: 'center',
@@ -66,11 +66,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 				// 	align: 'center',
 				// 	title: '最近操作时间'
 				// },
-				{
-					field: 'addres',
-					align: 'center',
-					title: '护照签发地'
-				},
+				// {
+				// 	field: 'addres',
+				// 	align: 'center',
+				// 	title: '护照签发地'
+				// },
 				{
 					field: 'time',
 					align: 'center',
@@ -80,6 +80,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'urgent',
 					align: 'center',
 					title: '工期'
+				},
+				{
+					field: 'txm',
+					align: 'center',
+					title: '条形码号'
 				},
 				{
 					field: 'wt',
