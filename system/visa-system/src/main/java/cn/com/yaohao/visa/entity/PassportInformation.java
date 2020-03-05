@@ -16,16 +16,17 @@ public class PassportInformation {
     private String id;//护照信息
     private String name;//姓名
     private String sex;//性别
-    private String birthDay;//出生日期
+    private long birthDay;//出生日期
     private String birthPlace;//出生地
     private String habitation;//居住地
     private String passportEncoding;//护照编码
-    private String expiryDate;//有效期
+    private long expiryDate;//有效期
     private String telephoneNumber;//联系电话
     private String returnAddress;//寄回地址
     private String luggage;//运费
     private byte[] passprot;//护照图片
     private String status;//状态=》A通过。P=》没通过
+    private String orderId;
     private long createTime=System.currentTimeMillis();//创建时间
 
 
@@ -53,12 +54,16 @@ public class PassportInformation {
         this.sex = sex;
     }
 
-    public String getBirthDay() {
+    public long getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(String birthDay) {
+    public void setBirthDay(long birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public void setExpiryDate(long expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public String getBirthPlace() {
@@ -83,14 +88,6 @@ public class PassportInformation {
 
     public void setPassportEncoding(String passportEncoding) {
         this.passportEncoding = passportEncoding;
-    }
-
-    public String getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(String expiryDate) {
-        this.expiryDate = expiryDate;
     }
 
     public String getTelephoneNumber() {
@@ -131,6 +128,18 @@ public class PassportInformation {
 
     public void setPassprot(byte[] passprot) {
         this.passprot = passprot;
+    }
+
+    public long getExpiryDate() {
+        return expiryDate;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getStatus() {

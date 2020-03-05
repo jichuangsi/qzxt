@@ -1,8 +1,10 @@
 package cn.com.yaohao.visa.service;
 
 import cn.com.yaohao.visa.constant.ResultCode;
+import cn.com.yaohao.visa.dao.mapper.IVisaMapper;
 import cn.com.yaohao.visa.entity.ExpressReceipt;
 import cn.com.yaohao.visa.entity.IntermediateTable.PassportRelation;
+import cn.com.yaohao.visa.entity.IntermediateTable.PassportSupplementRelation;
 import cn.com.yaohao.visa.entity.IntermediateTable.VisaPassportRelation;
 import cn.com.yaohao.visa.entity.IntermediateTable.VisaRemarkRelation;
 import cn.com.yaohao.visa.entity.PassportEssential;
@@ -12,13 +14,16 @@ import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.PassportModel;
 import cn.com.yaohao.visa.model.RequireVisaModel;
 import cn.com.yaohao.visa.model.UserInfoForToken;
+import cn.com.yaohao.visa.model.ValidationModel;
 import cn.com.yaohao.visa.repository.*;
+import cn.com.yaohao.visa.repository.IntermediateRepasitory.IPassPortSupplementRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaPassportRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaRemarkRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.PassportInformationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,6 +52,10 @@ public class VisaHandleService {
     private VisaRemarkRelationRepository visaRemarkRelationRepository;
     @Resource
     private ExpressReceiptRepository expressReceiptRepository;
+    @Resource
+    private IPassPortSupplementRelationRepository passPortSupplementRelationRepository;
+    @Resource
+    private IVisaMapper visaMapper;
         //查询全部
    /* public PageInfo<TestExpress> getAllVisa(UserInfoForToken userInfo, int pageNum, int pageSize){
          *//*Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "createTime"));
@@ -92,7 +101,7 @@ public class VisaHandleService {
                 predicateList.add(criteriaBuilder.equal(root.get("signatory").as(String.class),model.getSignatory()));
             }else if (!StringUtils.isEmpty(model.getTelephoneNumber())){
                 predicateList.add(criteriaBuilder.equal(root.get("telephoneNumber").as(String.class),model.getTelephoneNumber()));
-            }else if (!StringUtils.isEmpty(model.getSigningTime())&& model.getSigningTime()!=0){
+            }else if (!StringUtils.isEmpty(model.getSigningTime())){//&& model.getSigningTime()!=0
                 predicateList.add(criteriaBuilder.equal(root.get("createTime").as(long.class),model.getSigningTime()));
             }else if (!StringUtils.isEmpty(model.getStatus())||model.getStatus()!=0){
                 predicateList.add(criteriaBuilder.equal(root.get("status").as(Integer.class),model.getStatus()));
@@ -103,6 +112,7 @@ public class VisaHandleService {
         return expresses;
     }
     //录入护照
+    @Transactional(rollbackFor = Exception.class)
     public boolean passportEntry( UserInfoForToken userInfo,PassportModel model)throws PassportException {
        /* if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(model)
                 ||StringUtils.isEmpty(model.getInformation())||StringUtils.isEmpty(model.getEssential())){
@@ -110,23 +120,26 @@ public class VisaHandleService {
         }*/
         //基本信息
        model.getEssential().setId(UUID.randomUUID().toString().replaceAll("-",""));
+       ExpressReceipt expressReceipt=expressReceiptRepository.findByid(model.getVisaId());
        PassportEssential essential= passportEssentialRepository.save(model.getEssential());
        //护照信息
-        PassportInformation information=passportInformationRepository.findByIdIs(model.getPassportId());
+       /* PassportInformation information=passportInformationRepository.findByIdIs(model.getPassportId());
        model.getInformation().setId(information.getId());
        model.getInformation().setPassprot(information.getPassprot());
-       model.getInformation().setCreateTime(System.currentTimeMillis());
-       passportInformationRepository.save(model.getInformation());
+       model.getInformation().setCreateTime(System.currentTimeMillis());*/
+       model.getInformation().setOrderId(expressReceipt.getOrderNumber());//订单号
+        model.getInformation().setStatus("P");
+       PassportInformation passportInformation=passportInformationRepository.save(model.getInformation());
        //护照信息和基本信息
         PassportRelation passportRelation=new PassportRelation();
         passportRelation.setId(UUID.randomUUID().toString().replaceAll("-",""));
         passportRelation.setEssentialId(essential.getId());
         passportRelation.setPassportId(model.getPassportId());
         passportRelationRepository.save(passportRelation);
-        //护照和签证
+        //护照和快件
         VisaPassportRelation visaPassportRelation=new VisaPassportRelation();
         visaPassportRelation.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        visaPassportRelation.setPassId(model.getPassportId());
+        visaPassportRelation.setPassId(passportInformation.getId());
         visaPassportRelation.setVid(model.getVisaId());
         visaPassportRelationRepository.save(visaPassportRelation);
         return true;
@@ -233,6 +246,55 @@ public class VisaHandleService {
         model.setInformation(passportInformation);
         model.setPassportId(passportRelation.getPassportId());
         model.setVisaId(passprtId);
+        return model;
+    }
+
+    /**
+     * 待补充签证
+     * @param userInfo
+     * @param model
+     * @return
+     */
+   public List<ValidationModel> getProblemPassPort(UserInfoForToken userInfo,ValidationModel model){
+        //有问题护照
+       /* List<PassportSupplementRelation> psr=passPortSupplementRelationRepository.findAll();
+        List<String> ppIds=new ArrayList<>();
+        psr.forEach(passportSupplementRelation -> {
+            ppIds.add(passportSupplementRelation.getPassId());
+        });*/
+       List<ValidationModel> models=visaMapper.findProblePassWord(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
+       return models;
+    }
+
+    /**
+     * 获得护照信息（重审）
+     * @param userInfo
+     * @param id
+     * @return
+     */
+    public PassportModel getPassportById2(UserInfoForToken userInfo,String id)throws PassportException{
+        VisaPassportRelation visaPassportRelation=visaPassportRelationRepository.findByPassId(id);//关系
+        if (visaPassportRelation==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
+        ExpressReceipt expressReceipt=expressReceiptRepository.findByid(visaPassportRelation.getVid());//快递
+        if (expressReceipt==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
+        PassportInformation passportInformation=passportInformationRepository.findByIdIs(id);//护照
+        if (passportInformation==null){
+            throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+        }
+        PassportModel model=new PassportModel();
+        model.setVisaId(expressReceipt.getId());
+        model.setPassportId(id);
+        PassportEssential pe=new PassportEssential();
+        pe.setCourierNumber(expressReceipt.getCourierNumber());
+        pe.setExpressAddress(expressReceipt.getAddress());
+        pe.setOrderNumber(expressReceipt.getOrderNumber());
+        pe.setName(passportInformation.getName());
+        model.setEssential(pe);
+        model.setInformation(passportInformation);
         return model;
     }
 }

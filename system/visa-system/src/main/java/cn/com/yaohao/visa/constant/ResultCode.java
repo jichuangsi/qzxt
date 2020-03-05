@@ -17,4 +17,10 @@ public class ResultCode {
 	public static final String SYS_ERROR_MSG = "系统繁忙";
 	public static final String SYS_BUSY_MSG = "系统繁忙";
 
+	public final static String ACCOUNT_ISEXIST_MSG = "账号已存在";
+	public final static String ACCOUNT_NOTEXIST_MSG = "账号不存在，或者账户密码错误";
+	public final static String PWD_NOT_MSG = "两次密码不一致";
+	public final static String USER_NOROLE_MSG = "该账户没有分配角色，请先让管理员分配角色";
+	public final static String EXPREES_NOEXIST_MSG="该快件不存在";
+	public final static String PASSPORT_NOEXIST_MSG="该护照不存在";
 }

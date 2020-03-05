@@ -7,7 +7,7 @@ public class RequireVisaModel {
     private String expressCompany;//快递公司
     private String signatory;//签收人
     private String telephoneNumber;//联系电话
-    private long SigningTime;//签收时间
+    private String SigningTime;//签收时间
     private  int status;//状态 待处理，已处理，异常
     private int pageNum;
     private int pageSize;
@@ -54,11 +54,11 @@ public class RequireVisaModel {
         this.telephoneNumber = telephoneNumber;
     }
 
-    public long getSigningTime() {
+    public String getSigningTime() {
         return SigningTime;
     }
 
-    public void setSigningTime(long signingTime) {
+    public void setSigningTime(String signingTime) {
         SigningTime = signingTime;
     }
 

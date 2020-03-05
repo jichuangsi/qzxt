@@ -9,5 +9,5 @@ import java.util.List;
 public interface VisaPassportRelationRepository extends JpaRepository<VisaPassportRelation,String>,JpaSpecificationExecutor<VisaPassportRelation> {
 
     List<VisaPassportRelation> findByVid(String vid);
-
+    VisaPassportRelation findByPassId(String passId);
 }

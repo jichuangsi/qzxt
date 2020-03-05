@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "express_receipt")
@@ -24,7 +25,10 @@ public class ExpressReceipt {
     private int count;//护照数
     private String problem;//问题
     private String status;//1 待处理，2已处理，3异常
-    private long createTime;
+    private String isError;//是否有异常
+    private String returnAddress;//寄回地址
+    private String address;//快件地址
+    private long createTime =new Date().getTime();
 
     public String getId() {
         return id;
@@ -112,5 +116,29 @@ public class ExpressReceipt {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIsError() {
+        return isError;
+    }
+
+    public void setIsError(String isError) {
+        this.isError = isError;
+    }
+
+    public String getReturnAddress() {
+        return returnAddress;
+    }
+
+    public void setReturnAddress(String returnAddress) {
+        this.returnAddress = returnAddress;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

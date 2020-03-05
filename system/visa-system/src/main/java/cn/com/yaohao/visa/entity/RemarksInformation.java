@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "remarks_information")
@@ -17,8 +18,9 @@ public class RemarksInformation {
     private String id;//备注信息
     private String remarks;//备注信息
     private String Operator;//操作人员
+    private String operatorId;//操作人员
     private String operation;//操作
-    private long operationTime;//操作时间
+    private long operationTime=new Date().getTime();//操作时间
 
     public String getId() {
         return id;
@@ -42,6 +44,14 @@ public class RemarksInformation {
 
     public void setOperator(String operator) {
         Operator = operator;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
     }
 
     public String getOperation() {

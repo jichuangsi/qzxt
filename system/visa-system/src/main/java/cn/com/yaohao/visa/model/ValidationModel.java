@@ -5,13 +5,15 @@ public class ValidationModel {
     private String id;//护照信息id
     private String name;//姓名
     private String orderNumber;//订单号
+    private String expressReceiptId;//快件id
     private String passportEncoding;//护照编码
     private String tradeName;//商品名称
     private String birthDay;//出生日期
     private String telephoneNumber;//联系电话
     private String returnAddress;//寄回地址
     private String schedule;//工期
-    private String expiryDate;//有效期
+    private long expiryDate;//有效期
+    private String problem;
     private  int status;//状态 待处理，已处理，异常
     private int pageNum;
     private int pageSize;
@@ -89,12 +91,28 @@ public class ValidationModel {
         this.schedule = schedule;
     }
 
-    public String getExpiryDate() {
+    public long getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(String expiryDate) {
+    public void setExpiryDate(long expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
+
+    public String getExpressReceiptId() {
+        return expressReceiptId;
+    }
+
+    public void setExpressReceiptId(String expressReceiptId) {
+        this.expressReceiptId = expressReceiptId;
     }
 
     public int getStatus() {

@@ -13,4 +13,6 @@ public interface ExpressReceiptRepository extends JpaRepository<ExpressReceipt,S
     List<ExpressReceipt> getOrderByCreateTimeASEC(int num, int size);
 
     ExpressReceipt findByIdIs(String id);
+
+    ExpressReceipt findByid(String id);
 }

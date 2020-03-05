@@ -18,7 +18,7 @@ public class PassportEssential {
     private String orderNumber;//订单号
     private String courierNumber;//快递单号
     private String name;//姓名
-    private int status;//状态
+    private String status;//状态
     private String expressAddress;//快件地址
 
     public String getId() {
@@ -53,11 +53,11 @@ public class PassportEssential {
         this.name = name;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

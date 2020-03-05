@@ -15,7 +15,7 @@ public class VisaPassportRelation {
     @GeneratedValue(generator = "jpa-uuid")
     private String id;//
     private String passId;//护照id
-    private String vid;//签证id
+    private String vid;//快件id
 
     public String getId() {
         return id;

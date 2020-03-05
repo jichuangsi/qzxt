@@ -7,6 +7,8 @@ import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.*;
 import cn.com.yaohao.visa.service.VisaHandleService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -126,5 +128,23 @@ public class VisaHandleController {
     public ResponseModel<Boolean> checkPassportById(@ModelAttribute UserInfoForToken userInfo,@RequestBody PassportCheckModel model){
 
         return ResponseModel.sucess("",true);
+    }
+
+    @ApiOperation(value = "待补充签证", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getProblemPassport")
+    public ResponseModel<List<ValidationModel>> getProblemPassport(@ModelAttribute UserInfoForToken userInfo, @RequestBody ValidationModel model)throws PassportException{
+        return ResponseModel.sucess("",visaHandleService.getProblemPassPort(userInfo,model ));
+    }
+
+    @ApiOperation(value = "查看护照信息（重审）", notes = "")
+   @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getPassportByPassId")
+    public ResponseModel<PassportModel> getPassportByPassId(@ModelAttribute UserInfoForToken userInfo, @RequestParam String id)throws PassportException{
+        return ResponseModel.sucess("",visaHandleService.getPassportById2(userInfo,id ));
     }
 }
