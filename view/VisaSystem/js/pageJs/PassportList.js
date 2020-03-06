@@ -3,17 +3,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 		laydate = layui.laydate,
 		table = layui.table;
 
-
+	var id = UrlSearch();
 	table.render({
 		elem: '#demo',
-		method: "get",
+		method: "post",
 		async: false,
 		id: 'idTest',
-		url: '../json/p.json',
+		url: httpUrl() + '/visaHandle/getPassportById?passprtId=' + id,
 		contentType: 'application/json',
-		// headers: {
-		// 	'accessToken': getToken()
-		// },
+		headers: {
+			'accessToken': getToken()
+		},
 		cols: [
 			[{
 					field: 'id',
@@ -23,7 +23,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 				{
 					field: 'txm',
 					align: 'center',
-					width:200,
+					width: 200,
 					title: '条形码号'
 				},
 				{
@@ -32,12 +32,12 @@ layui.use(['form', 'table', 'laydate'], function() {
 					title: '姓名'
 				},
 				{
-					field: 'encod',
+					field: 'passportEncoding',
 					align: 'center',
 					title: '护照编码	'
 				},
 				{
-					field: 'phone',
+					field: 'telephoneNumber',
 					align: 'center',
 					title: '联系电话'
 				},
@@ -47,19 +47,41 @@ layui.use(['form', 'table', 'laydate'], function() {
 				// 	title: '寄回地址'
 				// },
 				{
-					field: 'birth',
+					field: 'birthDay',
 					align: 'center',
-					title: '出生日期'
+					title: '出生日期',
+					templet: function(d) {
+						if (d.birthDay != 0) {
+							var date = new Date(d.birthDay); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+							var Y = date.getFullYear() + '-';
+							var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+							var D = date.getDate() + ' ';
+							return  Y+M+D
+						} else {
+							return "-"
+						}
+					}
 				}, {
-					field: 'residence',
+					field: 'birthPlace',
 					align: 'center',
 					title: '居住地'
 				},
 				{
-					field: 'EffectiveDate',
+					field: 'expiryDate',
 					align: 'center',
-					title: '有效日期'
-				} ,{
+					title: '有效日期',
+					templet: function(d) {
+						if (d.expiryDate != 0) {
+							var date = new Date(d.expiryDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+							var Y = date.getFullYear() + '-';
+							var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+							var D = date.getDate() + ' ';
+							return  Y+M+D
+						} else {
+							return "-"
+						}
+					}
+				}, {
 					field: 'account',
 					align: 'center',
 					width: 300,
@@ -73,7 +95,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		limit: 10,
 		// loading: true,
 		request: {
-			pageName: 'pageIndex',
+			pageName: 'pageNum',
 			limitName: "pageSize"
 		},
 		where: {},
@@ -82,7 +104,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.list;
+				arr = res.data;
 				total = res.total;
 				code = 0;
 			}
@@ -96,7 +118,6 @@ layui.use(['form', 'table', 'laydate'], function() {
 
 	})
 	$(document).on('click', '.to', function() {
-		layer.confirm('是否要打印条形码？', function(index) {
-		})
+		layer.confirm('是否要打印条形码？', function(index) {})
 	})
 })

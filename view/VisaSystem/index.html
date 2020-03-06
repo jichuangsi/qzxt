@@ -13,6 +13,8 @@
 		<script src="./lib/js/jquery.min.js"></script>
 		<script src="./lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="./js/xadmin.js"></script>
+		<script src="js/Configuration.js"></script>
+		<script src="js/index.js"></script>
 
 	</head>
 	<style>
@@ -51,9 +53,9 @@
 						<dd>
 							<a href="javascript:;" onclick="updatePwd()">修改密码</a>
 						</dd>
-						<dd>
+						<!-- <dd>
 							<a href="javascript:;" onclick="add()">添加菜单</a>
-						</dd>
+						</dd> -->
 						<dd>
 							<a href="./login.html">退出</a>
 						</dd>
@@ -87,12 +89,12 @@
 									<cite>收件管理</cite>
 								</a>
 							</li>
-					<!-- 		<li>
+							<li>
 								<a _href="pages/AbnormalExpress.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>异常快件</cite>
 								</a>
-							</li> -->
+							</li>
 						</ul>
 					</li>
 					<!--
@@ -158,6 +160,21 @@
 							</li>
 						</ul>
 					</li>
+					<li>
+						<a href="javascript:;">
+							<i class="iconfont">&#xe6b8;</i>
+							<cite>系统设置</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a _href="pages/user.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>角色分配</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -173,11 +190,11 @@
 				<div class="layui-tab-content">
 
 					<div class="layui-tab-item layui-show">
-						<div class="x-nav">
+					<!-- 	<div class="x-nav">
 							<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 							 title="刷新">
 								<i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
-						</div>
+						</div> -->
 						<iframe src='./welcome.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
 					</div>
 				</div>
@@ -223,13 +240,13 @@
 				<label class="layui-form-label">新密码：</label>
 				<div class="layui-input-block widths">
 					<input type="hidden" name="userId" />
-					<input type="password" name="newPwd" class="layui-input " lay-verify="pwd">
+					<input type="password" name="firstPwd" class="layui-input " lay-verify="pwd">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">确认密码：</label>
 				<div class="layui-input-block widths">
-					<input type="password" name="yesPwd" class="layui-input " lay-verify="pwd">
+					<input type="password" name="secondPwd" class="layui-input " lay-verify="pwd">
 				</div>
 			</div>
 			<div class="layui-form-item">

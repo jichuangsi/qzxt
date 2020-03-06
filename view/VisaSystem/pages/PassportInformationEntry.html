@@ -13,6 +13,8 @@
 		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
 		<script src="../lib/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/util.js"></script>
+		<script src="../js/Configuration.js"></script>
 		<script src="../js/pageJs/PassportInformationEntry.js"></script>
 
 	</head>
@@ -36,41 +38,44 @@
 			<div class="layui-row">
 				<form class="layui-form layui-col-md12">
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="courierNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="courierName" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="快递单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="courierNumber" placeholder="快递单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="签收人" autocomplete="off" class="layui-input" style="width: 100px;">
+						<input type="text" name="signatory" placeholder="签收人" autocomplete="off" class="layui-input" style="width: 100px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="telephoneNumber" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
+						<input type="text" name="signingTime" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="city" lay-verify="required">
 							<option value=""></option>
 							<option value="0">待处理</option>
 							<option value="1">已处理</option>
 							<option value="2">异常</option>
 						</select>
-					</div>
+					</div> -->
 					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
 				</form>
 			</div>
 			<table id="express" lay-filter="express"></table>
 		</div>
 	</body>
+	<script type="text/html" id="addex">
+		<div class="layui-btn layui-btn-sm">批量导入护照信息</div>
+	</script>
 	<script type="text/html" id="operation">
-		<div class="layui-btn layui-btn-sm" onclick="look()">查看护照</div>
+		<div class="layui-btn layui-btn-sm passprtId">查看护照</div>
 		<div class="layui-btn layui-btn-sm" onclick="list()">护照录入</div>
-		<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
+		<div class="layui-btn layui-btn-sm reamark" >备注</div>
 	</script>
 	<script>
 		function list() {
@@ -84,31 +89,21 @@
 					content: $('#addInfo')
 				});
 			}
-		function reamark() {
-				index = layer.open({
-					type: 2,
-					area: ['70%', '70%'],
-					anim: 2,
-					title: '备注信息',
-					maxmin: true,
-					shadeClose: true,
-					content:"Remarks.html"
-				});
-			}
-		function look() {
-				index = layer.open({
-					type: 2,
-					area: ['80%', '100%'],
-					anim: 2,
-					title: '查看护照',
-					maxmin: true,
-					shadeClose: true,
-					content: "PassportList.html"
-				});
-			}
+		// function reamark() {
+		// 		index = layer.open({
+		// 			type: 2,
+		// 			area: ['70%', '70%'],
+		// 			anim: 2,
+		// 			title: '备注信息',
+		// 			maxmin: true,
+		// 			shadeClose: true,
+		// 			content:"Remarks.html"
+		// 		});
+		// 	}
+		
 	</script>
 	<div class="" id="addInfo">
-		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
+		<form class="layui-form" autocomplete="off" lay-filter="passport">
 			<fieldset class="layui-elem-field layui-field-title">
 				<legend>基础信息：
 					<div class=" layui-btn">图像识别</div>
@@ -120,41 +115,41 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">订单号：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="newPwd" placeholder="订单号" readonly="true" value="2020Y2M12D-001" class="layui-input "
-									 lay-verify="required">
+									<input type="text" name="orderNumber" placeholder="订单号" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">快递单号：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
+									<input type="text" name="courierNumber" placeholder="请输入快点单号" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">姓名：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="请输入姓名" class="layui-input " lay-verify="required|phone">
+									<input type="text" name="name" placeholder="请输入姓名" class="layui-input " lay-verify="required">
 								</div>
 							</div>
 						</div>
 						<div class="layui-col-md6">
-							<div class="layui-form-item">
+							<!-- <div class="layui-form-item">
 								<label class="layui-form-label">备注：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="请输入备注" class="layui-input " lay-verify="required">
+									<input type="text" name="remarks" placeholder="请输入备注" class="layui-input " lay-verify="required">
 								</div>
-							</div>
+							</div> -->
 							<div class="layui-form-item">
 								<label class="layui-form-label">状态：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="状态" readonly="true" value="已签收" class="layui-input " lay-verify="required">
+									<input type="text" name="status" placeholder="状态" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
+
 							<div class="layui-form-item">
 								<label class="layui-form-label">快件地址：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="快件地址" readonly="true" value="广东省广州市" class="layui-input "
-									 lay-verify="required">
+									<input type="hidden" name="visaId" />
+									<input type="text" name="address" placeholder="快件地址" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
 						</div>
@@ -167,56 +162,57 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">性别：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入性别" class="layui-input " lay-verify="required|phone">
+							<input type="radio" name="sex" value="男" title="男">
+							<input type="radio" name="sex" value="女" title="女" checked>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">出生日期：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入出生日期" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="birthDay" placeholder="请输入出生日期" class="layui-input time" lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">出生地：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入出生地" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="birthPlace" placeholder="请输入出生地" class="layui-input " lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">居住地：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入居住地" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="habitation" placeholder="请输入居住地" class="layui-input " lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">护照编码：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入护照编码" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="passportEncoding" placeholder="请输入护照编码" class="layui-input " lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">有效日期：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入有效日期" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="expiryDate" placeholder="请输入有效日期" class="layui-input time" lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">联系电话：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="请输入联系电话" class="layui-input " lay-verify="required|phone">
+							<input type="text" name="telephoneNumber" placeholder="请输入联系电话" class="layui-input " lay-verify="required|phone">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">寄回地址：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="yesPwd" placeholder="寄回地址" value="广东省广州市" class="layui-input " lay-verify="required">
+							<input type="text" name="returnAddress" placeholder="寄回地址" value="广东省广州市" class="layui-input " lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">运费已付：</label>
 						<div class="layui-input-block widths">
-							<input type="radio" name="sex" value="是" title="是">
-							<input type="radio" name="sex" value="否" title="否" checked>
+							<input type="radio" name="luggage" value="A" title="是" checked>
+							<input type="radio" name="luggage" value="B" title="否">
 						</div>
 					</div>
 				</div>
@@ -225,8 +221,8 @@
 				<div class="layui-input-block">
 					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
 					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
-					<div class=" layui-btn" lay-submit>提交</div>
-					<div class=" layui-btn" lay-submit>导入护照回执</div>
+					<div class=" layui-btn" lay-submit lay-filter="passport_entry">提交</div>
+					<div class=" layui-btn" id="upload">导入护照回执</div>
 				</div>
 			</div>
 		</form>
