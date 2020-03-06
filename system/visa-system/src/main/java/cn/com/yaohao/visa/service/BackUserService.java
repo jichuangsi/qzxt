@@ -3,28 +3,33 @@ package cn.com.yaohao.visa.service;
 import cn.com.yaohao.visa.config.Md5Util;
 import cn.com.yaohao.visa.constant.ResultCode;
 import cn.com.yaohao.visa.dao.mapper.IVisaMapper;
-import cn.com.yaohao.visa.entity.BackUserInfo;
+import cn.com.yaohao.visa.entity.*;
 import cn.com.yaohao.visa.entity.IntermediateTable.UserRoleRelation;
-import cn.com.yaohao.visa.entity.ParentNode;
-import cn.com.yaohao.visa.entity.Role;
 import cn.com.yaohao.visa.exception.PassportException;
-import cn.com.yaohao.visa.model.backuser.BackUserLoginModel;
+import cn.com.yaohao.visa.model.backuser.*;
 import cn.com.yaohao.visa.model.UserInfoForToken;
-import cn.com.yaohao.visa.model.backuser.BackUserModel;
-import cn.com.yaohao.visa.model.backuser.UpdatePwdModel;
-import cn.com.yaohao.visa.model.backuser.UrlMapping;
 import cn.com.yaohao.visa.repository.IBackUserInfoRepository;
 import cn.com.yaohao.visa.repository.IParentNodeRepository;
 import cn.com.yaohao.visa.repository.IRoleRepository;
+import cn.com.yaohao.visa.repository.IVisaOperationRecordRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.IUserRoleRelationRepository;
 import cn.com.yaohao.visa.util.MappingEntityModelCoverter;
+import cn.com.yaohao.visa.util.TimeUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +50,8 @@ public class BackUserService {
     private IParentNodeRepository parentNodeRepository;
     @Resource
     private IVisaMapper visaMapper;
+    @Resource
+    private IVisaOperationRecordRepository visaOperationRecordRepository;
 
     private Logger logger=LoggerFactory.getLogger(getClass());
 
@@ -281,5 +288,34 @@ public class BackUserService {
             throw new PassportException(ResultCode.USER_NOROLE_MSG);
         }
         return visaMapper.findAllByRoleIn(roleIds);
+    }
+
+    /**
+     * 查看操作记录
+     * @param userInfo
+     * @param model
+     * @return
+     */
+    public Page<VisaOperationRecord> getVisaRecords(UserInfoForToken userInfo, VisaRecordModel model){
+        //Sort sort=new Sort(Sort.Direction.DESC,"createdTime");
+        Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime").nullsLast();
+        Page<VisaOperationRecord> records=visaOperationRecordRepository.findAll((Root<VisaOperationRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder)->{
+            List<Predicate> predicateList = new ArrayList<>();
+            if (!StringUtils.isEmpty(model.getOrderNumber())){
+                predicateList.add(criteriaBuilder.equal(root.get("orderNumber").as(String.class),model.getOrderNumber()));
+            }else if (!StringUtils.isEmpty(model.getApplicantName())){
+                predicateList.add(criteriaBuilder.like(root.get("applicantName").as(String.class),"%"+model.getApplicantName()+"%"));
+            }else if (!StringUtils.isEmpty(model.getOperaterId())){
+                predicateList.add(criteriaBuilder.equal(root.get("operaterId").as(String.class),model.getOperaterId()));
+            }else if (!StringUtils.isEmpty(model.getPhone())){
+                predicateList.add(criteriaBuilder.like(root.get("phone").as(String.class),"%"+model.getPhone()+"%"));
+            }else if (!StringUtils.isEmpty(model.getCreateTime())){//&& model.getSigningTime()!=0
+                long startTime=TimeUtils.startTime(model.getCreateTime());
+                long endTime=TimeUtils.endTime(model.getCreateTime());
+                predicateList.add(criteriaBuilder.between(root.get("createTime"),startTime,endTime));
+            }
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
+        },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize(),Sort.by(order)));
+        return records;
     }
 }

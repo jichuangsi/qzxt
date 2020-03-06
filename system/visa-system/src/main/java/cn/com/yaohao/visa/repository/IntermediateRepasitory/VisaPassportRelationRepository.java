@@ -10,4 +10,6 @@ public interface VisaPassportRelationRepository extends JpaRepository<VisaPasspo
 
     List<VisaPassportRelation> findByVid(String vid);
     VisaPassportRelation findByPassId(String passId);
+    List<VisaPassportRelation> findByPassIdIn(List<String> ids);
+    int countByVid(String vid);
 }

@@ -10,5 +10,6 @@ public interface PassportInformationRepository extends JpaRepository<PassportInf
 
     PassportInformation findByIdIs(String id);
     List<PassportInformation> findByIdIn(List<String> id);
-
+    List<PassportInformation> findByStatus(String status);
+    List<PassportInformation> findByStatusAndAndOrderId(String status,String orderId);
 }

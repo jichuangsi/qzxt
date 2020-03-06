@@ -1,7 +1,6 @@
 package cn.com.yaohao.visa.repository;
 
 import cn.com.yaohao.visa.entity.BackUserInfo;
-import cn.com.yaohao.visa.model.backuser.BackUserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

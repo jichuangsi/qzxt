@@ -20,6 +20,7 @@ import cn.com.yaohao.visa.repository.IntermediateRepasitory.IPassPortSupplementR
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaPassportRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaRemarkRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.PassportInformationRepository;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.persistence.criteria.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class VisaHandleService {
@@ -121,6 +120,9 @@ public class VisaHandleService {
         //基本信息
        model.getEssential().setId(UUID.randomUUID().toString().replaceAll("-",""));
        ExpressReceipt expressReceipt=expressReceiptRepository.findByid(model.getVisaId());
+       if(expressReceipt.getCount()==visaPassportRelationRepository.countByVid(expressReceipt.getId())){
+            throw new PassportException("护照数量已满！");
+       }
        PassportEssential essential= passportEssentialRepository.save(model.getEssential());
        //护照信息
        /* PassportInformation information=passportInformationRepository.findByIdIs(model.getPassportId());
@@ -297,4 +299,28 @@ public class VisaHandleService {
         model.setInformation(passportInformation);
         return model;
     }
+
+    /*public List<PassportModel> getVisaHandleList(UserInfoForToken userInfo){
+        List<PassportInformation> passportInformations=passportInformationRepository.findByStatus("A");//审核通过的
+        List<String> passIds=new ArrayList<>();
+        passportInformations.forEach(passportInformation -> {
+            passIds.add(passportInformation.getId());
+        });
+        List<VisaPassportRelation> visaPassportRelations=visaPassportRelationRepository.findByPassIdIn(passIds);//查询订单信息
+        List<String> visaIds=new ArrayList<>();
+        visaPassportRelations.forEach(vv->{
+            visaIds.add(vv.getVid());
+        });
+        //去重
+        Set set=new HashSet();
+        List newIds=new ArrayList();
+        set.addAll(visaIds);
+        newIds.addAll(set);
+        //订单
+        List<ExpressReceipt> expressReceipts=expressReceiptRepository.findByidIn(newIds);
+        for (ExpressReceipt er:expressReceipts) {
+            
+        }
+
+    }*/
 }

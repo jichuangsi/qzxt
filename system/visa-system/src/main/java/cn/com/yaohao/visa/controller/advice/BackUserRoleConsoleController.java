@@ -3,6 +3,7 @@ package cn.com.yaohao.visa.controller.advice;
 import cn.com.yaohao.visa.entity.BackUserInfo;
 import cn.com.yaohao.visa.entity.ParentNode;
 import cn.com.yaohao.visa.entity.Role;
+import cn.com.yaohao.visa.entity.VisaOperationRecord;
 import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.backuser.*;
 import cn.com.yaohao.visa.model.ResponseModel;
@@ -11,6 +12,7 @@ import cn.com.yaohao.visa.service.BackUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -136,5 +138,12 @@ public class BackUserRoleConsoleController {
         }catch (PassportException e){
             return ResponseModel.fail("",e.getMessage());
         }
+    }
+
+    @ApiOperation("查询操作记录")
+    @ApiImplicitParams({})
+    @PostMapping("/getVisaOperationRecordByCondition")
+    public ResponseModel<Page<VisaOperationRecord>> getVisaOperationRecordByCondition(@ModelAttribute UserInfoForToken userInfo, @RequestBody VisaRecordModel model){
+        return ResponseModel.sucess("",backUserService.getVisaRecords(userInfo,model));
     }
 }
