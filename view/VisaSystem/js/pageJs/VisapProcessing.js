@@ -12,14 +12,14 @@ layui.use(['form', 'table', 'laydate'], function() {
 
 	table.render({
 		elem: '#Visa',
-		method: "get",
+		method: "post",
 		async: false,
 		id: 'idTest',
-		url: '../json/data.json',
+		url: httpUrl()+'/backRoleConsole/getVisaOperationRecordByCondition',
 		contentType: 'application/json',
-		// headers: {
-		// 	'accessToken': getToken()
-		// },
+		headers: {
+			'accessToken': getToken()
+		},
 		cols: [
 			[{
 					field: 'id',
@@ -97,7 +97,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		limit: 10,
 		// loading: true,
 		request: {
-			pageName: 'pageIndex',
+			pageName: 'pageNum',
 			limitName: "pageSize"
 		},
 		where: {},

@@ -13,16 +13,17 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 
 	table.render({
 		elem: '#Visa',
-		method: "get",
+		method: "post",
 		async: false,
 		id: 'idTest',
-		url: '../json/data.json',
+		url: httpUrl()+'/visaHandle/getRequirementsVisa',
 		contentType: 'application/json',
-		// headers: {
-		// 	'accessToken': getToken()
-		// },
+		headers: {
+			'accessToken': getToken()
+		},
 		cols: [
 			[{
+				
 					field: 'id',
 					title: '序号',
 					align: 'center',
@@ -35,7 +36,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					title: '姓名'
 				},
 				{
-					field: 'number2',
+					field: 'orderNumber',
 					align: 'center',
 					title: '订单号'
 				},
@@ -55,7 +56,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				// 	title: '出生日期'
 				// },
 				{
-					field: 'phone2',
+					field: 'telephoneNumber',
 					align: 'center',
 					title: '联系电话'
 				},
@@ -114,7 +115,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 		limit: 10,
 		// loading: true,
 		request: {
-			pageName: 'pageIndex',
+			pageName: 'pageNum',
 			limitName: "pageSize"
 		},
 		where: {},
@@ -132,7 +133,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.list;
+				arr = res.data.content;
 				total = res.total;
 				code = 0;
 			}
@@ -150,10 +151,39 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 	form.on('submit(search)', function(data) {
 		var param = data.field;
 		table.reload('idTest', {
-			where: {}
+			where: {
+				
+			}
 		})
 	})
-	
+	var id;
+	table.on('row(express)', function(obj) {
+		var param = obj.data;
+		id = param.id;
+		form.val('passport', {
+			"orderNumber": param.orderNumber,
+			"courierNumber": param.courierNumber,
+			"name": param.name,
+			"address": param.address,
+			"status": param.status,
+			"visaId": param.id
+		});
+	})
+	$(document).on('click', '.reamark', function() {
+		reamark(id)
+	});
+	//跳转备注页面
+	window.reamark = function(id) {
+		index = layer.open({
+			type: 2,
+			area: ['70%', '70%'],
+			anim: 2,
+			title: '备注信息',
+			maxmin: true,
+			shadeClose: true,
+			content: "Remarks.html?id=" + id
+		});
+	}
 	/* var demo = xmSelect.render({
 		el: '#demo', 
 		on: function(data){

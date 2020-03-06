@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
+		<script src="../lib/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/util.js"></script>
+		<script src="../js/Configuration.js"></script>
+		<script src="../js/user.js"></script>
+	</head>
+	<style>
+		#upPwd {
+			display: none;
+			margin-top: 10px;
+		}
+		#add_User {
+			display: none;
+			margin-top: 10px;
+		}
+		#distribution {
+			display: none;
+			margin-top: 10px;
+		}
+	</style>
+	<body>
+		<div class="x-nav">
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right;" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
+		</div>
+		<div class="x-body">
+			<div class="layui-row">
+				<table id="demo" lay-filter="demo"></table>
+			</div>
+		</div>
+		<script>
+			function resetPwd(){
+				index = layer.open({
+					type: 1,
+					area: ['30%', '45%'],
+					anim: 2,
+					title: '重置密码',
+					maxmin: true,
+					shadeClose: true,
+					content: $('#upPwd')
+				});
+			}
+			function add(){
+				index = layer.open({
+					type: 1,
+					area: ['35%', '45%'],
+					anim: 2,
+					title: '新建账户',
+					maxmin: true,
+					shadeClose: true,
+					content: $('#add_User')
+				});
+			}
+			function role(){
+				index = layer.open({
+					type: 1,
+					area: ['30%', '45%'],
+					anim: 2,
+					title: '分配角色',
+					maxmin: true,
+					shadeClose: true,
+					content: $('#distribution')
+				});
+			}
+		</script>
+		<script type="text/html" id="add_user">
+			<div class="layui-btn " onclick="add()">新建账户</div>
+		</script>
+		<script type="text/html" id="operation">
+			<div class="layui-btn layui-btn-sm" id="modifyPwd">重置密码</div>
+			<div class="layui-btn layui-btn-sm" onclick="role()">分配角色</div>
+		</script>
+	</body>
+	<div id="upPwd" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="mod_pwd">
+			<div class="layui-form-item">
+				<label class="layui-form-label">用户名：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="userName" class="layui-input ">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">新密码：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="id" />
+					<input type="password" name="firstPwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码：</label>
+				<div class="layui-input-block widths">
+					<input type="password" name="secondPwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<div class="layui-btn" lay-submit lay-filter="update_Pwd">确认修改</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div id="add_User" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="test">
+			<div class="layui-form-item">
+				<label class="layui-form-label">账户：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="account" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">用户名：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="userName" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">密码：</label>
+				<div class="layui-input-block widths">
+					<input type="password" name="pwd" class="layui-input " lay-verify="pwd">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<div class="layui-btn" lay-submit lay-filter="add_account">提交</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="distribution" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="roleUser">
+			<div class="layui-form-item">
+				<label class="layui-form-label">账户名：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="userId" />
+					<input type="text" name="account" class="layui-input " readonly="true">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">角色：</label>
+				<div class="layui-input-block widths">
+					<input type="checkbox" name="rolename" value="1" title="收件员" lay-skin="primary">
+					<input type="checkbox" name="rolename" value="2" title="客服" lay-skin="primary">
+					<input type="checkbox" name="rolename" value="3" title="资料检查员" lay-skin="primary">
+					<input type="checkbox" name="rolename" value="4" title="签证处理员" lay-skin="primary">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="subRole">提交</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+</html>

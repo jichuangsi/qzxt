@@ -2,24 +2,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 	var form = layui.form,
 		laydate = layui.laydate,
 		table = layui.table;
-
-	$('.time').each(function() {
-		laydate.render({
-			elem: this,
-			type: 'date'
-		});
-	})
-
+	var id = UrlSearch();
 	table.render({
 		elem: '#demo',
 		method: "get",
 		async: false,
 		id: 'idTest',
-		url: '../json/r.json',
+		url: httpUrl() + '/backExpressReceipt/getExpressReceiptRemark?expressId='+id,
 		// contentType: 'application/json',
-		// headers: {
-		// 	'accessToken': getToken()
-		// },
+		headers: {
+			'accessToken': getToken()
+		},
 		cols: [
 			[{
 					field: 'id',
@@ -27,26 +20,35 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'rearmark',
+					field: 'remarks',
 					align: 'center',
 					width: 400,
 					title: '备注信息'
 				},
 				{
-					field: 'date',
+					field: 'operationTime',
 					align: 'center',
-					title: '备注时间'
+					title: '备注时间',
+					templet: function(d) {
+						if (d.operationTime != 0) {
+							return new Date(+new Date(d.operationTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+								/\.[\d]{3}Z/, '')
+						} else {
+							return "-"
+						}
+					}
 				},
 				{
-					field: 'name',
+					field: 'operator',
 					align: 'center',
 					title: '操作员工'
-				},
-				{
-					field: 'opt',
-					align: 'center',
-					title: '操作'
 				}
+				// ,
+				// {
+				// 	field: 'operation',
+				// 	align: 'center',
+				// 	title: '操作'
+				// }
 			]
 		],
 		// toolbar: '#add',
@@ -54,7 +56,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		limit: 10,
 		// loading: true,
 		request: {
-			pageName: 'pageIndex',
+			pageName: 'pageNum',
 			limitName: "pageSize"
 		},
 		where: {},
@@ -63,7 +65,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.list;
+				arr = res.data;
 				total = res.total;
 				code = 0;
 			}
@@ -75,14 +77,22 @@ layui.use(['form', 'table', 'laydate'], function() {
 			};
 		}
 	});
-
-
-	//根据条件查询訂單
-	form.on('submit(search)', function(data) {
-		var param = data.field;
-		table.reload('idTest', {
-			where: {}
-		})
+	table.on('row(demo)', function(obj) {
+		var param=obj.data;
+		form.val('test', {
+			"id": param.id
+		});
+		
 	})
+	form.val('test',{
+		"id":id
+	});
+	//添加备注
+	form.on('submit(addRemarks)', function(data) {
+		var param = data.field;
+		var url = "/backExpressReceipt/expressReceiptRemark?expressId="+id;
+		ajaxPOST(url, param);
+		table.reload('idTest');
+	});
 
 })

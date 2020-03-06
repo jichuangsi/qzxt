@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
 		<script src="../lib/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/Configuration.js"></script>
 		<script src="../js/pageJs/VisapProcessing.js"></script>
 
 	</head>
@@ -40,16 +41,16 @@
 			<div class="layui-row">
 				<form class="layui-form layui-col-md12">
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="orderNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="申请人姓名" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="name" placeholder="申请人姓名" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="护照号码" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="passportEncoding" placeholder="护照号码" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="telephoneNumber" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="username" placeholder="出签结果" autocomplete="off" class="layui-input" style="width: 150px;">
@@ -107,7 +108,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">姓名：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="姓名" readonly="true" value="王小二" class="layui-input " lay-verify="required">
+					<input type="text" name="name" placeholder="姓名" readonly="true" value="王小二" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -201,21 +202,21 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">有效日期：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="有效日期" readonly="true" value="2022-12-12" class="layui-input "
+					<input type="text" name="expiryDate" placeholder="有效日期" readonly="true" value="2022-12-12" class="layui-input "
 					 lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">寄回地址：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="寄回地址" readonly="true" value="广州市荔湾区" class="layui-input "
+					<input type="text" name="returnAddress" placeholder="寄回地址" readonly="true" value="广州市荔湾区" class="layui-input "
 					 lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">快递单号：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="快递单号" readonly="true" value="57845487856" class="layui-input "
+					<input type="text" name="courierNumber" placeholder="快递单号" readonly="true" value="57845487856" class="layui-input "
 					 lay-verify="required">
 				</div>
 			</div>

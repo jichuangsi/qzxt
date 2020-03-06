@@ -13,6 +13,8 @@
 		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
 		<script src="../lib/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/util.js"></script>
+		<script src="../js/Configuration.js"></script>
 		<script src="../js/pageJs/Remarks.js"></script>
 
 	</head>
@@ -29,16 +31,17 @@
 				<div class=" layui-col-md4">
 					<fieldset class="layui-elem-field">
 						<legend>添加备注信息</legend>
-						<form class="layui-form">
+						<form class="layui-form"  lay-filter="test">
 							<div class="layui-form-item">
 								<label class="layui-form-label">备注信息：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="备注信息" class="layui-input " lay-verify="required|phone">
+									<input type="hidden" name="id" />
+									<input type="text" name="remarks" placeholder="备注信息" class="layui-input " lay-verify="required">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<div class="layui-input-block widths">
-									<div class=" layui-btn" lay-submit>添加备注</div>
+									<div class=" layui-btn" lay-filter="addRemarks"lay-submit>添加备注</div>
 								</div>
 							</div>
 						</form>

@@ -13,10 +13,15 @@
 		<link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
 		<script src="../lib/js/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../js/util.js"></script>
+		<script src="../js/Configuration.js"></script>
 		<script src="../js/pageJs/ReceiptManagement.js"></script>
 
 	</head>
 	<style>
+			.yc{
+				display: none;
+			}
 		.widths {
 				width: 300px;
 			}
@@ -36,29 +41,29 @@
 			<div class="layui-row">
 				<form class="layui-form layui-col-md12">
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="orderNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="courierName" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="快递单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="courierNumber" placeholder="快递单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="签收人" autocomplete="off" class="layui-input" style="width: 100px;">
+						<input type="text" name="signatory" placeholder="签收人" autocomplete="off" class="layui-input" style="width: 100px;">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
+						<input type="text" name="telephoneNumber" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
-				<!-- 	<div class="layui-input-inline">
-						<input type="text" name="username" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
-					</div> -->
 					<div class="layui-input-inline">
-						<select name="city" lay-verify="required">
-							<option value=""></option>
-							<option value="0">待处理</option>
-							<option value="1">已处理</option>
-							<option value="2">异常</option>
+						<input type="text" name="signingTime" placeholder="签收时间" autocomplete="off" class="layui-input time" style="width: 200px;">
+					</div>
+					<div class="layui-input-inline">
+						<select name="status" lay-verify="required">
+							<option value="-1">订单状态</option>
+							<option value="0">已匹配</option>
+							<option value="1">未匹配</option>
+							<!-- <option value="2">异常</option> -->
 						</select>
 					</div>
 					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
@@ -67,12 +72,13 @@
 			<table id="express" lay-filter="express"></table>
 			<blockquote class="layui-elem-quote layui-quote-nm">
 				<span class="layui-badge" style="background-color: red;">问题快件</span>
-				<span class="layui-badge" style="background-color: #3C94FF;" >未匹配订单</span>
+				<span class="layui-badge" style="background-color: #3C94FF;">未匹配订单</span>
 			</blockquote>
 		</div>
 		<script type="text/html" id="operation">
+			<div class="layui-btn layui-btn-sm toAbnormal">添加异常</div>
 			<div class="layui-btn layui-btn-sm" onclick="list()">更正</div>
-			<div class="layui-btn layui-btn-sm" onclick="reamark()">备注</div>
+			<div class="layui-btn layui-btn-sm reamark">备注</div>
 		</script>
 		<script type="text/html" id="add">
 			<div class="layui-btn layui-btn-normal" onclick="list()">新增</div>
@@ -90,70 +96,75 @@
 					content: $('#addOrder')
 				});
 			}
-			function reamark() {
-				index = layer.open({
-					type: 2,
-					area: ['70%', '70%'],
-					anim: 2,
-					title: '备注信息',
-					maxmin: true,
-					shadeClose: true,
-					content: "Remarks.html"
-				});
-			}
 	</script>
 	<div id="addOrder" class="layui-fluid">
-		<form class="layui-form" autocomplete="off" lay-filter="testTeacher">
+		<form class="layui-form" autocomplete="off" lay-filter="express">
 			<div class="layui-form-item">
 				<label class="layui-form-label">快递公司：</label>
 				<div class="layui-input-block widths">
 					<!-- <input type="text" name="newPwd" placeholder="请输入快递公司" class="layui-input " lay-verify="required"> -->
-					<select name="city" lay-verify="required">
-						<option value="">顺丰快递</option>
-						<option value="0">韵达快递</option>
-						<option value="1">申通快递</option>
-						<option value="3">圆通快递</option>
-						<option value="4">EMS</option>
-						<option value="5">天天快递</option>
-						<option value="6">京东快递</option>
-						<option value="7">其他</option>
+					<select name="courierName" lay-verify="required">
+						<option value="-1">请选择</option>
+						<option value="顺丰快递">顺丰快递</option>
+						<option value="韵达快递">韵达快递</option>
+						<option value="申通快递">申通快递</option>
+						<option value="圆通快递">圆通快递</option>
+						<option value="EMS">EMS</option>
+						<option value="天天快递">天天快递</option>
+						<option value="京东快递">京东快递</option>
+						<option value="其他">其他</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">快递单号：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
+					<input type="hidden" name="id" />
+					<input type="text" name="courierNumber" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">联系电话：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="yesPwd" placeholder="请输入联系方式" class="layui-input " lay-verify="required|phone">
+					<input type="text" name="telephoneNumber" placeholder="请输入联系方式" class="layui-input " lay-verify="required|phone">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">签收人：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="yesPwd" placeholder="请输入联系人" class="layui-input " lay-verify="required">
+					<input type="text" name="signatory" placeholder="请输入联系人" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">订单号：</label>
 				<div class="layui-inline widths">
-					<input type="text" name="yesPwd" placeholder="请输入订单号" class="layui-input " lay-verify="required">
+					<input type="text" name="orderNumber" placeholder="请输入订单号" class="layui-input " lay-verify="required">
 				</div>
 				<div class="layui-inline">
 					<button class="layui-btn" lay-submit lay-filter="update_Pwd" title="输入手机号自动匹配订单">自动匹配订单</button>
 				</div>
 			</div>
 			<div class="layui-form-item">
+				<label class="layui-form-label">快件地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="address" placeholder="请输入快件地址" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄回地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="returnAddress" placeholder="请输入寄回地址" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
 				<label class="layui-form-label">订单来源：</label>
 				<div class="layui-input-block widths">
-					<input type="radio" name="sex" value="nan" title="飞猪" checked>
-					<input type="radio" name="sex" value="nan" title="公众号">
-					<input type="radio" name="sex" value="nan" title="其他">
-					<input type="text" name="yesPwd" placeholder="请输入订单来源" class="layui-input " lay-verify="required">
+					<input type="radio" name="orderPath" value="飞猪" title="飞猪" checked  lay-filter="orderPath">
+					<input type="radio" name="orderPath" value="公众号" title="公众号"  lay-filter="orderPath" >
+					<input type="radio" name="orderPath" value="其他" title="其他" lay-filter="orderPath">
+					<div id="ord" class="yc">
+						<input type="text" name="orderPathIn"  placeholder="请输入订单来源" class="layui-input ">
+					</div>
 					<!-- 	
 					<select name="city" lay-verify="required">
 						<option value=""></option>
@@ -166,22 +177,22 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">护照本数：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="yesPwd" placeholder="请输入护照数量" class="layui-input " lay-verify="required">
+					<input type="text" name="count" placeholder="请输入护照数量" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">是否存在问题：</label>
 				<div class="layui-input-block widths">
-					<input type="radio" name="sex1" value="nan" title="是">
-					<input type="radio" name="sex1" value="nan" title="否" checked>
-					<input type="text" name="yesPwd" placeholder="其他问题" class="layui-input " lay-verify="required">
+					<input type="radio" name="problem" value="是" title="是" lay-filter="problem">
+					<input type="radio" name="problem" value="否" title="否" lay-filter="problem" checked>
+					<div id="pro"class="yc">
+						<input type="text" name="problemIn" placeholder="其他问题" class="layui-input ">
+					</div>
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="update_Pwd">添加</button>
-		
-					<div class=" layui-btn" onclick="reamark()">备注</div>
+					<div class="layui-btn" lay-submit lay-filter="modify">提交</div>
 				</div>
 			</div>
 		</form>
