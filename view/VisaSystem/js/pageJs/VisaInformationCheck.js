@@ -16,14 +16,14 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 		method: "post",
 		async: false,
 		id: 'idTest',
-		url: httpUrl()+'/visaHandle/getRequirementsVisa',
+		url: httpUrl() + '/visaHandle/getPassPortByStatus',
 		contentType: 'application/json',
 		headers: {
 			'accessToken': getToken()
 		},
 		cols: [
 			[{
-				
+
 					field: 'id',
 					title: '序号',
 					align: 'center',
@@ -31,22 +31,23 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'pName',
-					align: 'center',
-					title: '姓名'
-				},
-				{
 					field: 'orderNumber',
 					align: 'center',
 					title: '订单号'
 				},
 				{
-					field: 'SerialNumber',
+					field: 'name',
+					align: 'center',
+					title: '姓名'
+				},
+
+				{
+					field: 'passportEncoding',
 					align: 'center',
 					title: '护照编码	'
 				},
 				{
-					field: 'TradeName',
+					field: 'tradeName',
 					align: 'center',
 					title: '商品名称	'
 				},
@@ -60,7 +61,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					align: 'center',
 					title: '联系电话'
 				},
-				
+
 				// {
 				// 	field: 'OrderType',
 				// 	align: 'center',
@@ -72,14 +73,25 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 					title: '护照签发地'
 				},
 				{
-					field: 'urgent',
+					field: 'schedule',
 					align: 'center',
-					title: '工期'
+					title: '工期（天）'
 				},
 				{
-					field: 'time',
+					field: 'expiryDate',
 					align: 'center',
-					title: '有效日期'
+					title: '有效日期',
+					templet: function(d) {
+						if (d.expiryDate != 0) {
+							var date = new Date(d.expiryDate); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+							var Y = date.getFullYear() + '-';
+							var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+							var D = date.getDate() + ' ';
+							return Y + M + D
+						} else {
+							return "-"
+						}
+					}
 				},
 				{
 					field: 'txm',
@@ -95,7 +107,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				// 	align: 'center',
 				// 	title: '最近操作时间'
 				// },
-				
+
 				// {
 				// 	field: 'Ostatus',
 				// 	align: 'center',
@@ -119,12 +131,13 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			limitName: "pageSize"
 		},
 		where: {},
-		done:function(res,curr,count){
-			var that=this.elem.next();
-			res.data.forEach(function(item,index){
-				if(item.ben=="3"){
-					var tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","rgba(60, 187, 255, 0.5)");
-					 tr=that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("color","white");
+		done: function(res, curr, count) {
+			var that = this.elem.next();
+			res.data.forEach(function(item, index) {
+				if (item.ben == "3") {
+					var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
+						"rgba(60, 187, 255, 0.5)");
+					tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
 				}
 			})
 		},
@@ -133,8 +146,8 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.data.content;
-				total = res.total;
+				arr = res.data.list;
+				total = res.data.total;
 				code = 0;
 			}
 			return {
@@ -152,26 +165,75 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 		var param = data.field;
 		table.reload('idTest', {
 			where: {
-				
+				"orderNumber": param.orderNumber,
+				"name": param.name,
+				"passportEncoding": param.passportEncoding,
+				"telephoneNumber": param.telephoneNumber
 			}
 		})
 	})
 	var id;
-	table.on('row(express)', function(obj) {
+	var eid;
+	table.on('row(Visa)', function(obj) {
 		var param = obj.data;
 		id = param.id;
-		form.val('passport', {
-			"orderNumber": param.orderNumber,
-			"courierNumber": param.courierNumber,
-			"name": param.name,
-			"address": param.address,
-			"status": param.status,
-			"visaId": param.id
-		});
+		eid = param.expressReceiptId;
+		// form.val('passport', {
+		// 	"orderNumber": param.orderNumber,
+		// 	"courierNumber": param.courierNumber,
+		// 	"name": param.name,
+		// 	"address": param.address,
+		// 	"status": param.status,
+		// 	"visaId": param.id
+		// });
+
 	})
 	$(document).on('click', '.reamark', function() {
-		reamark(id)
+		reamark(eid)
 	});
+
+	$(document).on('click', '.list', function() {
+		// getVisa(pid)
+		getToExamine(id)
+	});
+
+	function getToExamine(id) {
+		var url = "/visaHandle/getPassportByPassId?id=" + id;
+		var data = getAjaxPostData(url);
+		var essential = data.data.essential;
+		var information = data.data.information;
+		$("input[name='sex']").each(function() {
+			if ($(this).val() == information.sex) {
+				$(this).prop("checked", true);
+			}
+		});
+		form.val('testTeacher', {
+			"orderNumber": essential.orderNumber,
+			"courierNumber": essential.courierNumber,
+			"name": essential.name,
+			"status": essential.status,
+
+			"birthDay": toDate(information.birthDay),
+			"birthPlace": information.birthPlace,
+			"habitation": information.habitation,
+			"expiryDate": toDate(information.expiryDate),
+			"telephoneNumber": information.telephoneNumber,
+			"problem": information.problem,
+			"passportEncoding": information.passportEncoding,
+			"returnAddress":information.returnAddress,
+
+			"id": information.id
+		});
+		form.render();
+	}
+
+	function toDate(data) {
+		var date = new Date(data); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+		var Y = date.getFullYear() + '-';
+		var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+		var D = date.getDate() + ' ';
+		return Y + M + D
+	}
 	//跳转备注页面
 	window.reamark = function(id) {
 		index = layer.open({
@@ -184,6 +246,41 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 			content: "Remarks.html?id=" + id
 		});
 	}
+	//签证审核（同意审核）
+	form.on('submit(adopt)', function(data) {
+		var param=data.field;
+		var url = "/visaHandle/checkPassportById";
+		var list = {
+			"pid": param.id,
+			"status":'P'
+		}
+		ajaxPOST(url,list);
+		table.reload('idTest');
+		layer.close(index);
+	});
+	form.on('submit(noAdopt)', function(data) {
+		var param = data.field;
+		var url = "/visaHandle/checkPassportById";
+		var str = ''
+		$('input[name=question]:checked').each(function() {
+			str += $(this).val() + ','
+		});
+		if (param.problem != "") {
+			str += param.problem;
+		}
+		if(str==''){
+			setMsg("请选择不通过原因或补充说明！",7)
+			return
+		}
+		var list = {
+			"pid": param.id,
+			"problem":str,
+			"status":'F'
+		}
+		ajaxPOST(url,list);
+		table.reload('idTest');
+		layer.close(index);
+	});
 	/* var demo = xmSelect.render({
 		el: '#demo', 
 		on: function(data){

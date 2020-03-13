@@ -27,15 +27,16 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'name',
-					align: 'center',
-					title: '姓名'
-				},
-				{
 					field: 'orderNumber',
 					align: 'center',
 					title: '订单号'
 				},
+				{
+					field: 'name',
+					align: 'center',
+					title: '姓名'
+				},
+
 				// {
 				// 	field: 'TradeName',
 				// 	align: 'center',
@@ -81,16 +82,16 @@ layui.use(['form', 'table', 'laydate'], function() {
 							var Y = date.getFullYear() + '-';
 							var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
 							var D = date.getDate() + ' ';
-							return  Y+M+D
+							return Y + M + D
 						} else {
 							return "-"
 						}
 					}
 				},
 				{
-					field: 'urgent',
+					field: 'schedule',
 					align: 'center',
-					title: '工期'
+					title: '工期(天)'
 				},
 				{
 					field: 'txm',
@@ -106,6 +107,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 					field: 'account',
 					align: 'center',
 					title: '操作',
+					width: 250,
 					toolbar: '#operation'
 				}
 			]
@@ -123,8 +125,8 @@ layui.use(['form', 'table', 'laydate'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.data;
-				total = res.total;
+				arr = res.data.list;
+				total = res.data.total;
 				code = 0;
 			}
 			return {
@@ -141,7 +143,12 @@ layui.use(['form', 'table', 'laydate'], function() {
 	form.on('submit(search)', function(data) {
 		var param = data.field;
 		table.reload('idTest', {
-			where: {}
+			where: {
+				"orderNumber": param.orderNumber,
+				"name": param.name,
+				"passportEncoding": param.passportEncoding,
+				"telephoneNumber": param.telephoneNumber
+			}
 		})
 	})
 	var pid;
@@ -149,14 +156,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 	table.on('row(supplement)', function(obj) {
 		var param = obj.data;
 		id = param.expressReceiptId;
-		pid=param.id;
-		
+		pid = param.id;
 	})
 	$(document).on('click', '.list', function() {
-		getVisa(pid)
+		// getVisa(pid)
+		getToExamine(pid);
 	});
 	$(document).on('click', '.reamark', function() {
 		reamark(id)
+	});
+	$(document).on('click', '.tocheck', function() {
+		toCheck(pid)
 	});
 	//跳转备注页面
 	window.reamark = function(id) {
@@ -171,15 +181,14 @@ layui.use(['form', 'table', 'laydate'], function() {
 		});
 	}
 	//获取护照信息
-	function getVisa(id){
-		var url='/visaHandle/getPassportByPassId?id='+id
-		var data=getAjaxPostData(url);
-		console.log(data)
-		var param=data.data.information;
-		var arr=data.data.essential;
+	function getVisa(id) {
+		var url = '/visaHandle/getPassportByPassId?id=' + id
+		var data = getAjaxPostData(url);
+		var param = data.data.information;
+		var arr = data.data.essential;
 		var str;
-		if(param.status=='P'){
-			str="审核未通过"
+		if (param.status == 'P') {
+			str = "审核未通过"
 		}
 		form.val('visa', {
 			"orderNumber": arr.orderNumber,
@@ -188,10 +197,106 @@ layui.use(['form', 'table', 'laydate'], function() {
 			"expressAddress": arr.expressAddress,
 			"status": str,
 			"visaId": param.id,
-			"telephoneNumber":param.telephoneNumber,
-			"birthPlace":param.birthPlace,
-			"passportEncoding":param.passportEncoding,
-			"problem":param.problem
+			"telephoneNumber": param.telephoneNumber,
+			"birthPlace": param.birthPlace,
+			"passportEncoding": param.passportEncoding,
+			"problem": param.problem
 		});
+	}
+
+	function getToExamine(id) {
+		var url = "/visaHandle/getPassportByPassId?id=" + id;
+		var data = getAjaxPostData(url);
+		var essential = data.data.essential;
+		var information = data.data.information;
+		// if(essential.status=='P'){
+		// 	str="审核未通过"
+		// }
+		$("input[name='sex']").each(function() {
+			if ($(this).val() == information.sex) {
+				$(this).prop("checked", true);
+			}
+		});
+		form.val('visa', {
+			"orderNumber": essential.orderNumber,
+			"courierNumber": essential.courierNumber,
+			"name": essential.name,
+			"status": essential.status,
+
+			"birthDay": toDate(information.birthDay),
+			"birthPlace": information.birthPlace,
+			"habitation": information.habitation,
+			"expiryDate": toDate(information.expiryDate),
+			"telephoneNumber": information.telephoneNumber,
+			"problem": information.problem,
+			"passportEncoding": information.passportEncoding,
+			"returnAddress": information.returnAddress,
+
+			"id": information.id
+		});
+		form.render();
+	}
+
+	function toDate(data) {
+		var date = new Date(data); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+		var Y = date.getFullYear() + '-';
+		var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+		var D = date.getDate() + ' ';
+		return Y + M + D
+	}
+	form.on('submit(modify_info)', function(obj) {
+		var param = obj.field;
+		var url = "/visaHandle/updatePassport";
+		var essential = {
+			"orderNumber": param.orderNumber,
+			"courierNumber": param.courierNumber,
+			"expressAddress": param.expressAddress
+		};
+		var time1 = new Date(param.birthDay);
+		var time2 = new Date(param.expiryDate);
+		var information = {
+			"id": param.id,
+			"name": param.name,
+			"sex": param.sex,
+			"birthDay": time1.getTime(),
+			"birthPlace": param.birthPlace,
+			"habitation": param.habitation,
+			"expiryDate": time2.getTime(),
+			"passportEncoding": param.passportEncoding,
+			"telephoneNumber": param.telephoneNumber,
+			"returnAddress": param.returnAddress,
+			"luggage": param.luggage,
+		};
+		list = {
+			"essential": essential,
+			"information": information
+		}
+		var res = ajaxPOST(url, list);
+		if (res.code == "0010") {
+			layer.msg('修改成功!');
+		}
+		table.reload('idTest');
+		layer.close(index);
+	});
+	//发回重审
+	function list() {
+		index = layer.open({
+			type: 1,
+			area: ['70%', '100%'],
+			anim: 2,
+			title: '录入护照',
+			maxmin: true,
+			shadeClose: true,
+			content: $('#addInfo')
+		});
+	}
+
+	function toCheck(id) {
+		var url = '/visaHandle/aRetrialPassPort';
+		var param = {
+			"pid": id
+		}
+		ajaxPOST(url, param);
+		table.reload('idTest');
 	}
 })

@@ -82,8 +82,8 @@ layui.use(['form', 'table'], function() {
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.data;
-				total = res.total;
+				arr = res.data.list;
+				total = res.data.total;
 				code = 0;
 			}
 			return {

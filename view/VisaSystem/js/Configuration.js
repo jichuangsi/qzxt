@@ -3,7 +3,8 @@ var token;
 //修改路径
 function httpUrl() {
 	// url = "http://192.168.1.3:8080"
-	url = "http://192.168.31.84:8080"
+	// url = "http://192.168.31.84:8080"
+	url="http://192.168.101.51:8080";
 	return url;
 }
 //获取token
@@ -12,6 +13,12 @@ function getToken() {
 }
 
 function ajaxGET(url) {
+	var data
+	var DISABLED = 'layui-btn-disabled';
+	// 增加样式
+	$('.site-demo-active').addClass(DISABLED);
+	// 增加属性
+	$('.site-demo-active').attr('disabled', 'disabled');
 	$.ajax({
 		type: "GET",
 		url: httpUrl() + url,
@@ -30,9 +37,15 @@ function ajaxGET(url) {
 			}
 		}
 	});
+	$('.site-demo-active').removeClass(DISABLED)
 }
 
 function ajaxPOST(url, param) {
+	var DISABLED = 'layui-btn-disabled';
+	// 增加样式
+	$('.site-demo-active').addClass(DISABLED);
+	// 增加属性
+	$('.site-demo-active').attr('disabled', 'disabled');
 	$.ajax({
 		type: "post",
 		url: httpUrl() + url,
@@ -53,6 +66,7 @@ function ajaxPOST(url, param) {
 			}
 		}
 	});
+	$('.site-demo-active').removeClass(DISABLED)
 	return false;
 }
 
@@ -65,6 +79,11 @@ function setMsg(msg, icon) {
 
 function getAjaxData(url) {
 	var data;
+	var DISABLED = 'layui-btn-disabled';
+	// 增加样式
+	$('.site-demo-active').addClass(DISABLED);
+	// 增加属性
+	$('.site-demo-active').attr('disabled', 'disabled');
 	$.ajax({
 		type: "GET",
 		url: httpUrl() + url,
@@ -76,11 +95,17 @@ function getAjaxData(url) {
 			data = res;
 		}
 	});
+	$('.site-demo-active').removeClass(DISABLED)
 	return data;
 }
 
 function getAjaxPostData(url,param) {
 	var data;
+	var DISABLED = 'layui-btn-disabled';
+	// 增加样式
+	$('.site-demo-active').addClass(DISABLED);
+	// 增加属性
+	$('.site-demo-active').attr('disabled', 'disabled');
 	$.ajax({
 		type: "post",
 		url: httpUrl() + url,
@@ -94,6 +119,7 @@ function getAjaxPostData(url,param) {
 			data=res;
 		}
 	});
+	$('.site-demo-active').removeClass(DISABLED)
 	return data;
 }
 function UrlSearch() { //获取url里面的参数

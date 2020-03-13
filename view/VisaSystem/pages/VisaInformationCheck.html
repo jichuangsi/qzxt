@@ -68,14 +68,14 @@
 					<div class="layui-input-inline">
 						<input type="text" name="telephoneNumber" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 150px;">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="city" lay-verify="required">
 							<option value=""></option>
 							<option value="0">待处理</option>
 							<option value="1">已处理</option>
 							<option value="2">异常</option>
 						</select>
-					</div>
+					</div> -->
 					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
 				</form>
 			</div>
@@ -84,7 +84,7 @@
 		<script type="text/html" id="operation">
 			<!-- <div class="layui-btn layui-btn-sm" onclick="addInfo()">信息录入</div> -->
 			<!-- <div class="layui-btn layui-btn-sm" onclick="look()">查看信息</div> -->
-			<div class="layui-btn layui-btn-sm" onclick="list()">资料审核</div>
+			<div class="layui-btn layui-btn-sm list" onclick="list()">资料审核</div>
 			<div class="layui-btn layui-btn-sm reamark">备注</div>
 			<!-- <div class="layui-btn layui-btn-sm" onclick="supplement()">待补充</div> -->
 			<!-- <div class="layui-btn layui-btn-sm">已检查</div> -->
@@ -164,40 +164,35 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">订单号：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="newPwd" placeholder="订单号" readonly="true" value="2020Y2M12D-001" class="layui-input "
+									<input type="text" name="orderNumber" placeholder="订单号" readonly="true" value="2020Y2M12D-001" class="layui-input "
 									 lay-verify="required">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">快递单号：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="请输入快点单号" class="layui-input " lay-verify="required">
+									<input type="text" name="courierNumber" placeholder="请输入快点单号" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
-							<div class="layui-form-item">
-								<label class="layui-form-label">姓名：</label>
-								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="请输入姓名" class="layui-input " lay-verify="required|phone">
-								</div>
-							</div>
+
 						</div>
 						<div class="layui-col-md6">
-							<div class="layui-form-item">
+							<!-- <div class="layui-form-item">
 								<label class="layui-form-label">备注：</label>
 								<div class="layui-input-block widths">
 									<input type="text" name="yesPwd" placeholder="请输入备注" class="layui-input " lay-verify="required">
 								</div>
-							</div>
+							</div> -->
 							<div class="layui-form-item">
 								<label class="layui-form-label">状态：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="状态" readonly="true" value="已签收" class="layui-input " lay-verify="required">
+									<input type="text" name="status" placeholder="状态" readonly="true" value="已签收" class="layui-input ">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">快件地址：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="yesPwd" placeholder="快件地址" readonly="true" value="广东省广州市" class="layui-input "
+									<input type="text" name="expressAddress" placeholder="快件地址" readonly="true" value="广东省广州市" class="layui-input "
 									 lay-verify="required">
 								</div>
 							</div>
@@ -213,6 +208,12 @@
 						<legend>护照信息：</legend>
 						<div class="layui-field-box">
 							<div class="layui-form-item">
+								<label class="layui-form-label">姓名：</label>
+								<div class="layui-input-block widths">
+									<input type="text" name="name" placeholder="请输入姓名" readonly="true" class="layui-input " lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
 								<label class="layui-form-label">性别：</label>
 								<div class="layui-input-block widths">
 									<input type="radio" name="sex" value="男" title="男">
@@ -223,7 +224,7 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">出生日期:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入出生日期" class="layui-input time" lay-verify="required">
+										<input type="text" name="birthDay" placeholder="请输入出生日期" readonly="true" class="layui-input " lay-verify="required">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -234,7 +235,7 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">出生地:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入出生地" class="layui-input " lay-verify="required">
+										<input type="text" name="birthPlace" placeholder="请输入出生地" readonly="true" class="layui-input " lay-verify="required">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -245,7 +246,7 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">居住地:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入居住地" class="layui-input " lay-verify="required">
+										<input type="text" name="habitation" placeholder="请输入居住地" readonly="true" class="layui-input ">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -256,7 +257,8 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">护照编码:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入护照编码" class="layui-input " lay-verify="required">
+										<input type="text" name="passportEncoding" placeholder="请输入护照编码" readonly="true" class="layui-input "
+										 lay-verify="required">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -267,7 +269,8 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">有效日期:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入有效日期" class="layui-input time" lay-verify="required">
+										<input type="text" name="expiryDate" placeholder="请输入有效日期" readonly="true" class="layui-input "
+										 lay-verify="required">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -278,18 +281,19 @@
 								<div class="layui-inline">
 									<label class="layui-form-label">联系电话:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="请输入联系电话" class="layui-input " lay-verify="required|phone">
+										<input type="text" name="telephoneNumber" placeholder="请输入联系电话" readonly="true" class="layui-input "
+										 lay-verify="required|phone">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
 									</div>
 								</div>
 							</div>
-							<div class="layui-form-item">
+									<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">寄回地址:</label>
 									<div class="layui-input-inline widths">
-										<input type="text" name="yesPwd" placeholder="寄回地址" value="广东省广州市" class="layui-input " lay-verify="required">
+										<input type="text" name="returnAddress" placeholder="寄回地址"readonly="true"  class="layui-input " lay-verify="required">
 									</div>
 									<div class="layui-input-inline" style="width: 30px;">
 										<input type="checkbox" name="" lay-skin="primary">
@@ -321,26 +325,27 @@
 						</div>
 					</div> -->
 					<div class="layui-form-item" id="bc">
-						<label class="layui-form-label">补充：</label>
+						<label class="layui-form-label">原因：</label>
 						<div class="layui-input-block widths">
-							<input type="checkbox" name="" title="照片尺寸不合格" lay-skin="primary">
-							<input type="checkbox" name="" title="照片超过半年" lay-skin="primary">
-							<input type="checkbox" name="" title="护照有效期不够" lay-skin="primary">
-							<input type="checkbox" name="" title="离上次回国时间太短" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少上一次的签证纸" lay-skin="primary">
-							<input type="checkbox" name="" title="逾期逗留" lay-skin="primary">
-							<input type="checkbox" name="" title="曾经逾期" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少身份证" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少户口本" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少公证文件" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少出生证" lay-skin="primary">
-							<input type="checkbox" name="" title="缺少机票" lay-skin="primary">
+							<input type="hidden" name="id" />
+							<input type="checkbox" name="question" value="照片尺寸不合格" title="照片尺寸不合格" lay-skin="primary">
+							<input type="checkbox" name="question" value="照片超过半年" title="照片超过半年" lay-skin="primary">
+							<input type="checkbox" name="question" value="护照有效期不够" title="护照有效期不够" lay-skin="primary">
+							<input type="checkbox" name="question" value="离上次回国时间太短" title="离上次回国时间太短" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少上一次的签证纸" title="缺少上一次的签证纸" lay-skin="primary">
+							<input type="checkbox" name="question" value="逾期逗留" title="逾期逗留" lay-skin="primary">
+							<input type="checkbox" name="question" value="曾经逾期" title="曾经逾期" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少身份证" title="缺少身份证" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少户口本" title="缺少户口本" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少公证文件" title="缺少公证文件" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少出生证" title="缺少出生证" lay-skin="primary">
+							<input type="checkbox" name="question" value="缺少机票" title="缺少机票" lay-skin="primary">
 						</div>
 					</div>
 					<div class="layui-form-item" id="bc">
 						<label class="layui-form-label">补充说明：</label>
 						<div class="layui-input-block widths">
-							<input type="text" name="newPwd" placeholder="补充说明" class="layui-input " lay-verify="required">
+							<input type="text" name="problem" placeholder="补充说明" class="layui-input ">
 						</div>
 					</div>
 				</div>
@@ -348,10 +353,11 @@
 			</div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
+					
 					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
 					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
-					<div class=" layui-btn" lay-submit>审核未通过</div>
-					<div class=" layui-btn" lay-submit>审核通过</div>
+					<div class=" layui-btn site-demo-active" lay-submit lay-filter="noAdopt">审核未通过</div>
+					<div class=" layui-btn site-demo-active" lay-submit lay-filter="adopt">审核通过</div>
 				</div>
 			</div>
 		</form>

@@ -15,7 +15,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		method: "post",
 		async: false,
 		id: 'idTest',
-		url: httpUrl()+'/backRoleConsole/getVisaOperationRecordByCondition',
+		url: httpUrl() + '/backRoleConsole/getVisaOperationRecordByCondition',
 		contentType: 'application/json',
 		headers: {
 			'accessToken': getToken()
@@ -27,12 +27,12 @@ layui.use(['form', 'table', 'laydate'], function() {
 					type: 'numbers'
 				},
 				{
-					field: 'number',
+					field: 'orderNumber',
 					align: 'center',
 					title: '订单号'
 				},
 				{
-					field: 'TradeName',
+					field: 'goodsName',
 					align: 'center',
 					title: '商品名称	'
 				},
@@ -42,23 +42,35 @@ layui.use(['form', 'table', 'laydate'], function() {
 				// 	title: '订单类型'
 				// },
 				{
-					field: 'pName',
+					field: 'applicantName',
 					align: 'center',
-					title: '申请人姓名'
+					title: '订单申请人姓名'
 				},
 				{
-					field: 'phone2',
+					field: 'operaterName',
 					align: 'center',
-					title: '联系电话'
+					title: '操作人姓名'
 				},
+				// {
+				// 	field: 'phone',
+				// 	align: 'center',
+				// 	title: '联系电话'
+				// },
 				{
-					field: 'option',
+					field: 'operationName',
 					align: 'center',
 					title: '操作名称'
 				}, {
-					field: 'optionTime',
+					field: 'createTime',
 					align: 'center',
-					title: '操作时间'
+					title: '操作时间',
+					templet: function(d) {
+						if (d.createTime != 0) {
+							return new Date(+new Date(d.createTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+						} else {
+							return "-"
+						}
+					}
 				}
 			]
 		],
@@ -76,7 +88,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 			var total = 0;
 			if (res.code == "0010") {
 				arr = res.data.content;
-				total = res.total;
+				total = res.data.totalElements;
 				code = 0;
 			}
 			return {
@@ -94,15 +106,15 @@ layui.use(['form', 'table', 'laydate'], function() {
 		var param = data.field;
 		table.reload('idTest', {
 			where: {
-				"orderNumber":param.orderNumber,
-				"name":param.name,
-				"telephoneNumber":param.telephoneNumber,
-				"Operator":param.Operator,
-				"operationTime":param.operationTime,
-				}
+				"orderNumber": param.orderNumber,
+				"applicantName": param.applicantName,
+				"telephoneNumber": param.telephoneNumber,
+				"operaterName": param.operaterName,
+				"operationTime": param.operationTime,
+			}
 		})
 	})
-	
+
 	function mao() {
 		var arr = [];
 		for (var i = 0; i < arr.length; i++) {

@@ -33,7 +33,10 @@ layui.use("form", function() {
 	function getUserRole() {
 		var url = '/backRoleConsole/getUrlByUserRole';
 		var data = getAjaxData(url);
-		var arr = data.data;
+		var arr;
+		if(data.data!=undefined){
+			arr = data.data;
+		}
 		$('#nav').empty();
 		// setMenu(data);
 		var mainMenu = [];
@@ -126,7 +129,7 @@ layui.use("form", function() {
 
 				for (var i = 0; i < $('.x-iframe').length; i++) {
 					if ($('.x-iframe').eq(i).attr('tab-id') == index + 1) {
-						tab.tabChange(index + 1);
+						tab.tabChange(index + 1);	
 						event.stopPropagation();
 						return;
 					}

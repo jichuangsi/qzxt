@@ -21,11 +21,15 @@
 	<style>
 		.layui-field-title {
 		    margin: 0px;
-		    border-width: 0px 0 0;
+		    border-width: 0px 0 0;		
 		}
 		#addInfo{
 			display: none;
 			margin-top: 10px;
+		}
+		#info{
+			font-size: 12px;
+			color: #CCCCCC;
 		}
 	</style>
 	<body>
@@ -70,7 +74,7 @@
 		</div>
 	</body>
 	<script type="text/html" id="addex">
-		<div class="layui-btn layui-btn-sm">批量导入护照信息</div>
+		<!-- <div class="layui-btn layui-btn-sm">批量导入护照信息</div> -->
 	</script>
 	<script type="text/html" id="operation">
 		<div class="layui-btn layui-btn-sm passprtId">查看护照</div>
@@ -106,8 +110,8 @@
 		<form class="layui-form" autocomplete="off" lay-filter="passport">
 			<fieldset class="layui-elem-field layui-field-title">
 				<legend>基础信息：
-					<div class=" layui-btn">图像识别</div>
-					<div class=" layui-btn">信息检验</div>
+					<div class=" layui-btn" id="upload">图像识别</div>
+					<div class=" layui-btn" id="btn" >信息检验</div>
 				</legend>
 				<div class="layui-field-box">
 					<div class="layui-row">
@@ -125,11 +129,17 @@
 								</div>
 							</div>
 							<div class="layui-form-item">
-								<label class="layui-form-label">姓名：</label>
 								<div class="layui-input-block widths">
-									<input type="text" name="name" placeholder="请输入姓名" class="layui-input " lay-verify="required">
+									<div class="layui-btn layui-btn-normal" id="toUpload">批量导入护照信息</div>
 								</div>
 							</div>
+							<!-- <div class="layui-form-item">
+								<label class="layui-form-label">姓名：</label>
+								<div class="layui-input-block widths">
+									<input type="hidden" name="passportId" />
+									<input type="text" name="name" placeholder="请输入姓名" class="layui-input " lay-verify="required">
+								</div>
+							</div> -->
 						</div>
 						<div class="layui-col-md6">
 							<!-- <div class="layui-form-item">
@@ -152,11 +162,46 @@
 									<input type="text" name="address" placeholder="快件地址" readonly="true" class="layui-input " lay-verify="required">
 								</div>
 							</div>
+
 						</div>
 					</div>
 				</div>
 			</fieldset>
-			<fieldset class="layui-elem-field layui-field-title">
+			<div class="layui-row" id="VisaInfo" style="display: none;padding: 0px 10px;">
+				<table class="layui-table">
+			<!-- 		<colgroup>
+						<col width="150">
+						<col width="200">
+						<col>
+					</colgroup> -->
+					<thead>
+						<tr>
+							<th>平台</th>
+							<th>姓名</th>
+							<!-- <th>英文姓名</th> -->
+							<th>性别</th>
+							<th>护照号</th>
+							<th>出生日期</th>
+							<!-- <th>签证种类</th> -->
+							<th>签发地点拼音</th>
+							<th>签发日期</th>
+							<th>有效期至</th>
+							<th>备注</th>
+						</tr>
+					</thead>
+					<tbody id="info">
+						<tr>
+							<td>贤心</td>
+							<td>2016-11-29</td>
+							<td>人生就像是一场修行</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="layui-btn toAdd site-demo-active" style="float: right;">提交</div>
+			</div>
+
+
+			<!-- <fieldset class="layui-elem-field layui-field-title">
 				<legend>护照信息：</legend>
 				<div class="layui-field-box">
 					<div class="layui-form-item">
@@ -216,13 +261,13 @@
 						</div>
 					</div>
 				</div>
-			</fieldset>
+			</fieldset> -->
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
 					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
-					<div class=" layui-btn" lay-submit lay-filter="passport_entry">提交</div>
-					<div class=" layui-btn" id="upload">导入护照回执</div>
+					<!-- <div class=" layui-btn" lay-submit lay-filter="passport_entry">提交</div> -->
+					<!-- <div class=" layui-btn" id="upload">导入护照回执</div> -->
 				</div>
 			</div>
 		</form>
