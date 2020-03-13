@@ -1,16 +1,11 @@
 package cn.com.yaohao.visa.util;
 
 import cn.com.yaohao.visa.entity.BackUserInfo;
-import cn.com.yaohao.visa.entity.PassportInformation;
-import cn.com.yaohao.visa.model.PassportModel;
 import cn.com.yaohao.visa.model.UserInfoForToken;
 import cn.com.yaohao.visa.model.backuser.BackUserModel;
 
 public class MappingEntityModelCoverter {
 
-   /* public static PassportInformation CONVERTERFROMBACKPASSPORTINFORMATION(PassportModel model){
-
-    }*/
    public final static UserInfoForToken CONVERTERFROMBACKUSERINFO(BackUserInfo userInfo) {
        UserInfoForToken userInfoForToken = new UserInfoForToken();
        userInfoForToken.setUserId(userInfo.getId());

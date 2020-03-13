@@ -1,4 +1,4 @@
-package cn.com.yaohao.visa.controller.advice;
+package cn.com.yaohao.visa.controller;
 
 import cn.com.yaohao.visa.entity.BackUserInfo;
 import cn.com.yaohao.visa.entity.ParentNode;
@@ -87,7 +87,7 @@ public class BackUserRoleConsoleController {
     @ApiOperation("查询全部后台人员")
     @ApiImplicitParams({})
     @GetMapping("/getAllBackuserByCondition")
-    public ResponseModel<List<BackUserModel>> getAllBackuserByCondition(@ModelAttribute UserInfoForToken userInfo, @RequestParam(required = false) Integer role, @RequestParam int pageNum, @RequestParam int pageSize){
+    public ResponseModel getAllBackuserByCondition(@ModelAttribute UserInfoForToken userInfo, @RequestParam(required = false) Integer role, @RequestParam int pageNum, @RequestParam int pageSize){
         return ResponseModel.sucess("",backUserService.getAllBackUser(userInfo,role,pageNum,pageSize));
     }
 

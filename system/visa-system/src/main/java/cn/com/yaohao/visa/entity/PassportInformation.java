@@ -2,10 +2,7 @@ package cn.com.yaohao.visa.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "passport_information")
@@ -24,11 +21,20 @@ public class PassportInformation {
     private String telephoneNumber;//联系电话
     private String returnAddress;//寄回地址
     private String luggage;//运费
-    private byte[] passprot;//护照图片
-    private String status;//状态=》A通过。P=》没通过
-    private String orderId;
+    private String picPath;//图片地址
+    private String status;//状态=》P通过。F=》没通过。W=》待审核
+    private String sendStatus;//送签状态 已送=》S，出签=》O，拒签=》R，寄回=》SB
+    private long checkTime;//审核时间
+    private String expireTime;//工期到期时间
+    private String orderId;//订单编号
+    private String travel;//旅行社
+    private String visaType;//签证种类
+    private long signDate;//签发日期
+    private String signAddress;//签发地
+    private String remarks;
+    private String isSendBack;//是否寄回
+    private String isExport;//是否导出
     private long createTime=System.currentTimeMillis();//创建时间
-
 
     public String getId() {
         return id;
@@ -62,10 +68,6 @@ public class PassportInformation {
         this.birthDay = birthDay;
     }
 
-    public void setExpiryDate(long expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public String getBirthPlace() {
         return birthPlace;
     }
@@ -88,6 +90,14 @@ public class PassportInformation {
 
     public void setPassportEncoding(String passportEncoding) {
         this.passportEncoding = passportEncoding;
+    }
+
+    public long getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(long expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public String getTelephoneNumber() {
@@ -114,24 +124,36 @@ public class PassportInformation {
         this.luggage = luggage;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public String getPicPath() {
+        return picPath;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
     }
 
-    public byte[] getPassprot() {
-        return passprot;
+    public String getStatus() {
+        return status;
     }
 
-    public void setPassprot(byte[] passprot) {
-        this.passprot = passprot;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public long getExpiryDate() {
-        return expiryDate;
+    public long getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(long checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
     }
 
     public String getOrderId() {
@@ -142,11 +164,75 @@ public class PassportInformation {
         this.orderId = orderId;
     }
 
-    public String getStatus() {
-        return status;
+    public long getCreateTime() {
+        return createTime;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(String sendStatus) {
+        this.sendStatus = sendStatus;
+    }
+
+    public String getTravel() {
+        return travel;
+    }
+
+    public void setTravel(String travel) {
+        this.travel = travel;
+    }
+
+    public String getVisaType() {
+        return visaType;
+    }
+
+    public void setVisaType(String visaType) {
+        this.visaType = visaType;
+    }
+
+    public String getSignAddress() {
+        return signAddress;
+    }
+
+    public void setSignAddress(String signAddress) {
+        this.signAddress = signAddress;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public long getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(long signDate) {
+        this.signDate = signDate;
+    }
+
+    public String getIsSendBack() {
+        return isSendBack;
+    }
+
+    public void setIsSendBack(String isSendBack) {
+        this.isSendBack = isSendBack;
+    }
+
+    public String getIsExport() {
+        return isExport;
+    }
+
+    public void setIsExport(String isExport) {
+        this.isExport = isExport;
     }
 }

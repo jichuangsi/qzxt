@@ -28,6 +28,7 @@ public class ExpressReceipt {
     private String isError;//是否有异常
     private String returnAddress;//寄回地址
     private String address;//快件地址
+    private String schedule;//工期
     private long createTime =new Date().getTime();
 
     public String getId() {
@@ -140,5 +141,13 @@ public class ExpressReceipt {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 }

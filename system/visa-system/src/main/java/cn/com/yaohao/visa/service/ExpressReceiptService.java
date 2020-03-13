@@ -3,7 +3,6 @@ package cn.com.yaohao.visa.service;
 import cn.com.yaohao.visa.constant.ResultCode;
 import cn.com.yaohao.visa.entity.ExpressReceipt;
 import cn.com.yaohao.visa.entity.IntermediateTable.ExpressReceiptRemarkRelation;
-import cn.com.yaohao.visa.entity.IntermediateTable.VisaRemarkRelation;
 import cn.com.yaohao.visa.entity.RemarksInformation;
 import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.RequireVisaModel;
@@ -14,6 +13,7 @@ import cn.com.yaohao.visa.repository.RemarksInformationRepository;
 import cn.com.yaohao.visa.util.TimeUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,7 +25,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ExpressReceiptService {
@@ -69,15 +68,33 @@ public class ExpressReceiptService {
                 || StringUtils.isEmpty(expressReceipt.getCourierNumber()) || StringUtils.isEmpty(expressReceipt.getOrderNumber())
                 || StringUtils.isEmpty(expressReceipt.getProblem()) || StringUtils.isEmpty(expressReceipt.getTelephoneNumber())
                 || StringUtils.isEmpty(expressReceipt.getSignatory())|| StringUtils.isEmpty(expressReceipt.getOrderPath())
-                || StringUtils.isEmpty(expressReceipt.getAddress())|| StringUtils.isEmpty(expressReceipt.getReturnAddress())){
+                || StringUtils.isEmpty(expressReceipt.getAddress())|| StringUtils.isEmpty(expressReceipt.getReturnAddress())
+                || StringUtils.isEmpty(expressReceipt.getId())){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
-        ExpressReceipt expressReceipt1=expressReceiptRepository.findByid(expressReceipt.getId());
-        //待修改
-        expressReceipt.setStatus("未匹配");
-        expressReceipt.setIsError("0");
-        expressReceipt.setCreateTime(expressReceipt1.getCreateTime());
-        expressReceiptRepository.save(expressReceipt);
+        ExpressReceipt expressReceipt1=expressReceiptRepository.findByIdIs(expressReceipt.getId());
+        if (expressReceipt1==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
+        if (expressReceipt1.getIsError().equalsIgnoreCase("1")){//异常件
+            //待修改
+            expressReceipt1.setStatus("未匹配");
+            expressReceipt1.setIsError("0");
+        }else if (expressReceipt1.getIsError().equalsIgnoreCase("0")){//不是异常件
+            //待修改
+            expressReceipt1.setStatus("未匹配");
+        }else {
+            throw new PassportException("更正失败！");
+        }
+        expressReceipt1.setAddress(expressReceipt.getAddress());
+        expressReceipt1.setCount(expressReceipt.getCount());
+        expressReceipt1.setCourierName(expressReceipt.getCourierName());
+        expressReceipt1.setCourierNumber(expressReceipt.getCourierNumber());
+        expressReceipt1.setOrderPath(expressReceipt.getOrderPath());
+        expressReceipt1.setSignatory(expressReceipt.getSignatory());
+        expressReceipt1.setProblem(expressReceipt.getProblem());
+        expressReceipt1.setTelephoneNumber(expressReceipt.getTelephoneNumber());
+        expressReceiptRepository.save(expressReceipt1);
     }
 
     /**
@@ -106,8 +123,9 @@ public class ExpressReceiptService {
             }else if (!StringUtils.isEmpty(model.getStatus())||model.getStatus()!=0){
                 predicateList.add(criteriaBuilder.equal(root.get("status").as(Integer.class),model.getStatus()));
             }
+            predicateList.add(criteriaBuilder.equal(root.get("isError").as(String.class),"0"));
             return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-        },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize()));
+        },PageRequest.of(model.getPageNum()-1,model.getPageSize(),Sort.Direction.DESC,"createTime"));
         return expresses;
     }
 
@@ -139,7 +157,7 @@ public class ExpressReceiptService {
             }
             predicateList.add(criteriaBuilder.equal(root.get("isError").as(String.class),"1"));
             return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-        },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize()));
+        },PageRequest.of(model.getPageNum()-1,model.getPageSize(),Sort.Direction.DESC,"createTime"));
         return expresses;
     }
 
@@ -158,8 +176,12 @@ public class ExpressReceiptService {
         if(expressReceipt==null){
             throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
         }
-        expressReceipt.setIsError("1");
-        expressReceiptRepository.save(expressReceipt);
+        if (expressReceipt.getIsError().equalsIgnoreCase("0")){
+            expressReceipt.setIsError("1");
+            expressReceiptRepository.save(expressReceipt);
+        }else {
+            throw new PassportException("添加失败！");
+        }
     }
 
     /**

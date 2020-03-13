@@ -17,4 +17,6 @@ public interface ExpressReceiptRepository extends JpaRepository<ExpressReceipt,S
     ExpressReceipt findByid(String id);
 
     List<ExpressReceipt> findByidIn(List<String> ids);
+
+    ExpressReceipt findByOrderNumber(String orderNumber);
 }

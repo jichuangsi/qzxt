@@ -2,25 +2,22 @@ package cn.com.yaohao.visa.service;
 
 import cn.com.yaohao.visa.constant.ResultCode;
 import cn.com.yaohao.visa.dao.mapper.IVisaMapper;
-import cn.com.yaohao.visa.entity.ExpressReceipt;
-import cn.com.yaohao.visa.entity.IntermediateTable.PassportRelation;
-import cn.com.yaohao.visa.entity.IntermediateTable.PassportSupplementRelation;
-import cn.com.yaohao.visa.entity.IntermediateTable.VisaPassportRelation;
-import cn.com.yaohao.visa.entity.IntermediateTable.VisaRemarkRelation;
-import cn.com.yaohao.visa.entity.PassportEssential;
-import cn.com.yaohao.visa.entity.PassportInformation;
-import cn.com.yaohao.visa.entity.RemarksInformation;
+import cn.com.yaohao.visa.entity.*;
+import cn.com.yaohao.visa.entity.IntermediateTable.*;
 import cn.com.yaohao.visa.exception.PassportException;
-import cn.com.yaohao.visa.model.PassportModel;
-import cn.com.yaohao.visa.model.RequireVisaModel;
-import cn.com.yaohao.visa.model.UserInfoForToken;
-import cn.com.yaohao.visa.model.ValidationModel;
+import cn.com.yaohao.visa.model.*;
 import cn.com.yaohao.visa.repository.*;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.IPassPortSupplementRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaPassportRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaRemarkRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.PassportInformationRepository;
-import org.apache.catalina.User;
+import cn.com.yaohao.visa.util.TimeUtils;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.util.NumberToTextConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.*;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -52,30 +51,21 @@ public class VisaHandleService {
     @Resource
     private ExpressReceiptRepository expressReceiptRepository;
     @Resource
+    private IPassPortImgRepository passPortImgRepository;
+    @Resource
     private IPassPortSupplementRelationRepository passPortSupplementRelationRepository;
     @Resource
+    private IBackUserInfoRepository backUserInfoRepository;
+    @Resource
+    private IVisaOperationRecordRepository visaOperationRecordRepository;
+    @Resource
     private IVisaMapper visaMapper;
-        //查询全部
-   /* public PageInfo<TestExpress> getAllVisa(UserInfoForToken userInfo, int pageNum, int pageSize){
-         *//*Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "createTime"));
-        Pageable pageable = new PageRequest((pageNum - 1)*pageSize,pageSize, sort);*//*
-
-     *//*   Page<TestExpress> course = testExpressRepository.findAll((Root<TestExpress> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
-            List<Predicate> predicateList = new ArrayList<>();
-            return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-        }, pageable);
-        return course;*//*
-        List<TestExpress> expresses=testExpressRepository.getOrderByCreateTimeASEC((pageNum-1)*pageSize,pageSize);
-        List<TestExpress> count2=testExpressRepository.findAll();
-        PageInfo<TestExpress> page=new PageInfo<TestExpress>();
-        int count=count2.size();
-        page.setTotal(count);
-        page.setList(expresses);
-        page.setPageNum(pageNum);
-        page.setPageSize(pageSize);
-        page.setPages((count + pageSize - 1)/pageSize);
-        return page;
-    }*/
+    @Value("${file.uploadFolder}")
+    private String uploadPath;
+    @Value("${file.imagePath}")
+    private String imagePath;
+    @Value("${file.uri}")
+    private String uri;
 
     //查询全部
     public Page<ExpressReceipt> getAllVisa(UserInfoForToken userInfo, int pageNum, int pageSize){
@@ -107,16 +97,51 @@ public class VisaHandleService {
             }
             predicateList.add(criteriaBuilder.equal(root.get("problem").as(String.class),"否"));
             return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-        },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize()));
+        },PageRequest.of(model.getPageNum()-1,model.getPageSize()));
         return expresses;
     }
-    //录入护照
+
+    /**
+     * 修改护照
+     * @param userInfo
+     * @param model
+     * @throws PassportException
+     */
+    public void updatePassPort(UserInfoForToken userInfo,PassportInformation model)throws PassportException{
+        if(StringUtils.isEmpty(model.getId())||StringUtils.isEmpty(model.getName())
+                ||StringUtils.isEmpty(model.getSex())||StringUtils.isEmpty(model.getPassportEncoding())
+                ||StringUtils.isEmpty(model.getTelephoneNumber())||StringUtils.isEmpty(model.getExpiryDate())){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        PassportInformation information=passportInformationRepository.findByIdIs(model.getId());
+        if(information==null){
+            throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+        }
+        information.setHabitation(model.getHabitation());
+        information.setReturnAddress(model.getReturnAddress());
+        information.setBirthDay(model.getBirthDay());
+        information.setBirthPlace(model.getBirthPlace());
+        information.setTelephoneNumber(model.getTelephoneNumber());
+        information.setName(model.getName());
+        information.setSex(model.getSex());
+        information.setPassportEncoding(model.getPassportEncoding());
+        information.setLuggage(model.getLuggage());
+        passportInformationRepository.save(information);
+    }
+
+    /**
+     * 录入护照
+     * @param userInfo
+     * @param model
+     * @return
+     * @throws PassportException
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean passportEntry( UserInfoForToken userInfo,PassportModel model)throws PassportException {
-       /* if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(model)
+       if (StringUtils.isEmpty(model)||StringUtils.isEmpty(model.getVisaId())
                 ||StringUtils.isEmpty(model.getInformation())||StringUtils.isEmpty(model.getEssential())){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
-        }*/
+        }
         //基本信息
        model.getEssential().setId(UUID.randomUUID().toString().replaceAll("-",""));
        ExpressReceipt expressReceipt=expressReceiptRepository.findByid(model.getVisaId());
@@ -125,13 +150,15 @@ public class VisaHandleService {
        }
        PassportEssential essential= passportEssentialRepository.save(model.getEssential());
        //护照信息
-       /* PassportInformation information=passportInformationRepository.findByIdIs(model.getPassportId());
-       model.getInformation().setId(information.getId());
-       model.getInformation().setPassprot(information.getPassprot());
-       model.getInformation().setCreateTime(System.currentTimeMillis());*/
-       model.getInformation().setOrderId(expressReceipt.getOrderNumber());//订单号
-        model.getInformation().setStatus("P");
-       PassportInformation passportInformation=passportInformationRepository.save(model.getInformation());
+        if(StringUtils.isEmpty(model.getPassportId())){//有图
+            PassportInformation information=passportInformationRepository.findByIdIs(model.getPassportId());
+            model.getInformation().setId(information.getId());
+            //model.getInformation().setPassprot(information.getPassprot());
+            model.getInformation().setCreateTime(System.currentTimeMillis());
+        }
+        model.getInformation().setOrderId(expressReceipt.getOrderNumber());//订单号
+        model.getInformation().setStatus("W");//待审核
+        PassportInformation passportInformation=passportInformationRepository.save(model.getInformation());
        //护照信息和基本信息
         PassportRelation passportRelation=new PassportRelation();
         passportRelation.setId(UUID.randomUUID().toString().replaceAll("-",""));
@@ -147,21 +174,145 @@ public class VisaHandleService {
         return true;
     }
 
-    //录入护照
-    public String passportEntryPic(UserInfoForToken userInfo,MultipartFile file)throws PassportException,IOException {
-       /* if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(file)){
+    /**
+     * 批量录入护照
+     * @param userInfo
+     * @param model
+     * @throws PassportException
+     */
+    public void addPassPortByBatch(UserInfoForToken userInfo,BatchPassPortModel model)throws PassportException{
+        if (StringUtils.isEmpty(model)||StringUtils.isEmpty(model.getOrderId())
+                ||StringUtils.isEmpty(model.getInformations())){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
-        }*/
-        double fileSize = (double) file.getSize() / 1024 / 1024;//MB
-        if (fileSize > 3) {
-            throw new IOException("图片过大！");
         }
-        PassportInformation information=new PassportInformation();
-        information.setId(UUID.randomUUID().toString().replaceAll("-",""));
-        information.setPassprot(file.getBytes());
-        PassportInformation in= passportInformationRepository.save(information);
-        return in.getId();
+        ExpressReceipt expressReceipt=expressReceiptRepository.findByid(model.getOrderId());
+        int total=expressReceipt.getCount();//总本数
+        int ok=visaPassportRelationRepository.countByVid(expressReceipt.getId());//已经录入
+        int wait=model.getInformations().size();//等待录入
+        if(total==ok){
+            throw new PassportException("护照数量已满！");
+        }else if(wait>(total-ok)){
+            throw new PassportException("护照数量超额，还可以录入"+(total-ok)+"本！");
+        }else if(wait<=(total-ok)){//数量相当
+            List<String> passNum=new ArrayList<>();//录入的护照编号
+            model.getInformations().forEach(passportInformation -> {
+                passNum.add(passportInformation.getPassportEncoding());
+            });
+            int count=passportInformationRepository.countByPassportEncodingInAndOrderId(passNum,expressReceipt.getOrderNumber());
+            if (count>0){
+                throw new PassportException("护照已存在！");
+            }
+            List<PassportInformation> informationList=passportInformationRepository.saveAll(model.getInformations());
+            for (PassportInformation im:informationList) {
+                VisaPassportRelation visaPassportRelation=new VisaPassportRelation();
+                visaPassportRelation.setPassId(im.getId());
+                visaPassportRelation.setVid(expressReceipt.getId());
+                visaPassportRelationRepository.save(visaPassportRelation);
+            }
+        }
+
     }
+
+    /**
+     * 本地上传护照照片
+     * @param userInfoForToken
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public void localUploadPic(UserInfoForToken userInfoForToken, MultipartFile file) throws IOException,PassportException {
+        //获取文件名
+        String fileName = file.getOriginalFilename();
+        //获取文件后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        double fileSize = (double) file.getSize()/1024/1024;//MB
+        if(fileSize>2){
+            throw new PassportException("图片过大！");
+        }
+        PassportInformation information=passportInformationRepository.findByPassportEncoding(fileName);
+        PassPortImg imagePath=new PassPortImg();
+        imagePath.setPassPortCode(fileName);//护照编码
+        fileName =UUID.randomUUID()+suffixName;//重新生成文件名
+        information.setPicPath(uri+fileName);
+        File file1=new File(uploadPath+imagePath+fileName);
+        if (!file1.exists()){
+            //创建文件夹
+            file1.getParentFile().mkdir();
+        }
+        file.transferTo(file1);
+        imagePath.setPicPath(uri+fileName);
+        passPortImgRepository.save(imagePath);
+        passportInformationRepository.save(information);
+    }
+
+    /**
+     * 批量上传护照图片
+     * @param userInfoForToken
+     * @param files
+     * @param orderId
+     * @throws IOException
+     * @throws PassportException
+     */
+    public void localUploadPics(UserInfoForToken userInfoForToken, MultipartFile[] files,String orderId) throws IOException,PassportException {
+        if (StringUtils.isEmpty(orderId)||StringUtils.isEmpty(files)||files.length==0){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        ExpressReceipt expressReceipt=expressReceiptRepository.findByid(orderId);
+        if(expressReceipt==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
+        List<String> code=new ArrayList<>();
+        for (MultipartFile file:files) {
+            String fileName = file.getOriginalFilename();
+            String passportEncoding=fileName.substring(0,fileName.indexOf("_"));
+            code.add(passportEncoding);
+        }
+        if (code!=null && code.size()!=0){
+            List<PassPortImg> passPortImgs=passPortImgRepository.findByOrderNumberAndPassPortCodeIn(expressReceipt.getOrderNumber(),code);
+            if (passPortImgs!=null && passPortImgs.size()!=0) {
+                passPortImgs.forEach(passPortImg -> {
+                    File file=new File(uploadPath+passPortImg.getPicPath());
+                    if(file.exists()){
+                        //删除文件
+                        file.delete();
+                    }
+                });
+                passPortImgRepository.deleteInBatch(passPortImgs);
+            }
+        }
+        for (MultipartFile file:files) {
+            //获取文件名
+            String fileName = file.getOriginalFilename();
+            //获取文件后缀名
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            //重新生成文件名
+            String newFileName =UUID.randomUUID()+suffixName;
+            //护照编码
+            String passportEncoding=fileName.substring(0,fileName.indexOf("_"));
+            double fileSize = (double) file.getSize()/1024/1024;//MB
+            if(fileSize>2){
+                throw new PassportException("图片过大！");
+            }
+
+            //PassportInformation information=passportInformationRepository.findByPassportEncodingAndOrderId(passportEncoding,expressReceipt.getOrderNumber());//根据护照编码和订单号
+            PassPortImg passPortImg=new PassPortImg();
+            passPortImg.setPassPortCode(passportEncoding);//护照编码
+            passPortImg.setOrderNumber(expressReceipt.getOrderNumber());
+            //fileName =UUID.randomUUID()+suffixName;//重新生成文件名
+            //information.setPicPath(uri+fileName);
+            File file1=new File(uploadPath+imagePath+fileName);
+            if (!file1.exists()){
+                //创建文件夹
+                file1.getParentFile().mkdir();
+            }
+            file.transferTo(file1);
+            passPortImg.setPicPath(uri+fileName);
+            passPortImg.setFileName(fileName);
+            passPortImgRepository.save(passPortImg);
+            //passportInformationRepository.save(information);
+        }
+    }
+
     //查看备注
     public List<RemarksInformation> getVisaRemark(UserInfoForToken userInfo,String vId){
         List<VisaRemarkRelation> visaRemarkRelation=visaRemarkRelationRepository.findByVisaId(vId);
@@ -193,52 +344,45 @@ public class VisaHandleService {
         return true;
     }
 
-    //根据签证查看护照
-    public List<PassportInformation> getPassportById(UserInfoForToken userInfo,String vId)throws PassportException{
-       /* if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(vId)){
+    /**
+     * 根据签证查看护照
+     * @param userInfo
+     * @param vId
+     * @return
+     * @throws PassportException
+     */
+    public List<PassportModel> getPassportById(UserInfoForToken userInfo,String vId)throws PassportException{
+        if (StringUtils.isEmpty(vId)){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
-        }*/
+        }
+        ExpressReceipt expressReceipt=expressReceiptRepository.findByIdIs(vId);
+        if (expressReceipt==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
         List<VisaPassportRelation> visaPassportRelation=visaPassportRelationRepository.findByVid(vId);
+        if(visaPassportRelation==null && visaPassportRelation.size()==0){
+            throw new PassportException("该快件下暂无护照");
+        }
         List<String> passId=new ArrayList<String>();
         for (VisaPassportRelation v:visaPassportRelation){
             passId.add(v.getPassId());
         }
         List<PassportInformation> pass=passportInformationRepository.findByIdIn(passId);
-        return pass;
+        List<PassportModel> passportModels=new ArrayList<>();
+        for (PassportInformation pi:pass) {
+            PassportModel model=new PassportModel();
+            model.setInformation(pi);
+            model.setExpressReceipt(expressReceipt);
+            passportModels.add(model);
+        }
+        return passportModels;
     }
-    //消息验证
-  /* public Page<ValidationModel> getVerification(UserInfoForToken userInfo,ValidationModel model)throws PassportException{
 
-
-       Page<TestExpress> expresses=testExpressRepository.findAll((Root<TestExpress> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder)->{
-           List<Predicate> predicateList = new ArrayList<>();
-           if (!StringUtils.isEmpty(model.getOrderNumber())){
-               predicateList.add(criteriaBuilder.equal(root.get("orderNumber").as(String.class),model.getOrderNumber()));
-           }else if (!StringUtils.isEmpty(model.getExpressCompany())){
-               predicateList.add(criteriaBuilder.equal(root.get("courierName").as(String.class),model.getExpressCompany()));
-           }else if (!StringUtils.isEmpty(model.getCourierNumber())){
-               predicateList.add(criteriaBuilder.equal(root.get("courierNumber").as(String.class),model.getCourierNumber()));
-           }else if (!StringUtils.isEmpty(model.getSignatory())){
-               predicateList.add(criteriaBuilder.equal(root.get("signatory").as(String.class),model.getSignatory()));
-           }else if (!StringUtils.isEmpty(model.getTelephoneNumber())){
-               predicateList.add(criteriaBuilder.equal(root.get("telephoneNumber").as(String.class),model.getTelephoneNumber()));
-           }else if (!StringUtils.isEmpty(model.getSigningTime())&& model.getSigningTime()!=0){
-               predicateList.add(criteriaBuilder.equal(root.get("createTime").as(long.class),model.getSigningTime()));
-           }else if (!StringUtils.isEmpty(model.getStatus())||model.getStatus()!=0){
-               predicateList.add(criteriaBuilder.equal(root.get("status").as(Integer.class),model.getStatus()));
-           }
-           predicateList.add(criteriaBuilder.equal(root.get("problem").as(String.class),"否"));
-           return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-       },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize()));
-       return expresses;
-   }
-*/
     //查看审核护照
     public PassportModel getCheckPassportById(UserInfoForToken userInfo,String passprtId)throws PassportException{
-
-        /*if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(passprtId)){
+        if (StringUtils.isEmpty(passprtId)){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
-        }*/
+        }
         //基本信息
         PassportRelation passportRelation=passportRelationRepository.findByPassportId(passprtId);
         PassportEssential passportEssential=passportEssentialRepository.findByIdIs(passportRelation.getEssentialId());
@@ -257,19 +401,60 @@ public class VisaHandleService {
      * @param model
      * @return
      */
-   public List<ValidationModel> getProblemPassPort(UserInfoForToken userInfo,ValidationModel model){
+   public PageInfo<ValidationModel> getProblemPassPort(UserInfoForToken userInfo, ValidationModel model){
+       if (StringUtils.isEmpty(model.getName())){
+            model.setName(null);
+       }
+       if (StringUtils.isEmpty(model.getOrderNumber())){
+           model.setOrderNumber(null);
+       }
+       if (StringUtils.isEmpty(model.getPassportEncoding())){
+           model.setPassportEncoding(null);
+       }
+       if (StringUtils.isEmpty(model.getTelephoneNumber())){
+           model.setTelephoneNumber(null);
+       }
+
         //有问题护照
-       /* List<PassportSupplementRelation> psr=passPortSupplementRelationRepository.findAll();
-        List<String> ppIds=new ArrayList<>();
-        psr.forEach(passportSupplementRelation -> {
-            ppIds.add(passportSupplementRelation.getPassId());
-        });*/
        List<ValidationModel> models=visaMapper.findProblePassWord(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
-       return models;
+       PageInfo page=new PageInfo();
+       page.setPageSize(model.getPageSize());
+       page.setPageNum(model.getPageNum());
+       page.setTotal(visaMapper.countProblePassWord(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber()));
+       page.setList(models);
+       return page;
     }
 
     /**
-     * 获得护照信息（重审）
+     * 审核未通过护照
+     * @param userInfo
+     * @param model
+     * @return
+     */
+    public PageInfo<ValidationModel> getPassPortByStatus(UserInfoForToken userInfo,ValidationModel model){
+        if (StringUtils.isEmpty(model.getName())){
+            model.setName(null);
+        }
+        if (StringUtils.isEmpty(model.getOrderNumber())){
+            model.setOrderNumber(null);
+        }
+        if (StringUtils.isEmpty(model.getPassportEncoding())){
+            model.setPassportEncoding(null);
+        }
+        if (StringUtils.isEmpty(model.getTelephoneNumber())){
+            model.setTelephoneNumber(null);
+        }
+        List<ValidationModel> models=visaMapper.findPassPortByStatus(model.getOrderNumber(),model.getPassportEncoding(),model.getName(),model.getTelephoneNumber(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
+        PageInfo page=new PageInfo();
+        page.setPageSize(model.getPageSize());
+        page.setPageNum(model.getPageNum());
+        page.setTotal(visaMapper.countPassPortByStatus(model.getOrderNumber(),model.getPassportEncoding(),model.getName(),model.getTelephoneNumber()));
+        page.setList(models);
+        return page;
+    }
+
+    /**
+     * 根据护照id获得护照信息（重审）
      * @param userInfo
      * @param id
      * @return
@@ -284,6 +469,10 @@ public class VisaHandleService {
             throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
         }
         PassportInformation passportInformation=passportInformationRepository.findByIdIs(id);//护照
+        PassPortImg passPortImg=passPortImgRepository.findByOrderNumberAndPassPortCode(expressReceipt.getOrderNumber(),passportInformation.getPassportEncoding());
+        if(passPortImg!=null){
+            passportInformation.setPicPath(passPortImg.getPicPath());
+        }
         if (passportInformation==null){
             throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
         }
@@ -295,32 +484,519 @@ public class VisaHandleService {
         pe.setExpressAddress(expressReceipt.getAddress());
         pe.setOrderNumber(expressReceipt.getOrderNumber());
         pe.setName(passportInformation.getName());
+        pe.setStatus(expressReceipt.getStatus());
+        model.setExpressReceipt(expressReceipt);
         model.setEssential(pe);
         model.setInformation(passportInformation);
         return model;
     }
 
-    /*public List<PassportModel> getVisaHandleList(UserInfoForToken userInfo){
-        List<PassportInformation> passportInformations=passportInformationRepository.findByStatus("A");//审核通过的
-        List<String> passIds=new ArrayList<>();
-        passportInformations.forEach(passportInformation -> {
-            passIds.add(passportInformation.getId());
-        });
-        List<VisaPassportRelation> visaPassportRelations=visaPassportRelationRepository.findByPassIdIn(passIds);//查询订单信息
-        List<String> visaIds=new ArrayList<>();
-        visaPassportRelations.forEach(vv->{
-            visaIds.add(vv.getVid());
-        });
-        //去重
-        Set set=new HashSet();
-        List newIds=new ArrayList();
-        set.addAll(visaIds);
-        newIds.addAll(set);
-        //订单
-        List<ExpressReceipt> expressReceipts=expressReceiptRepository.findByidIn(newIds);
-        for (ExpressReceipt er:expressReceipts) {
-            
+    /**
+     * 审核护照（审核页）
+     * @param userInfo
+     * @param model
+     * @throws PassportException
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void examineAndVerifyPassPort(UserInfoForToken userInfo, VerifyPassPortModel model)throws PassportException{
+        if(StringUtils.isEmpty(userInfo.getUserId())|| StringUtils.isEmpty(model.getPid())||StringUtils.isEmpty(model.getStatus())){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            //护照
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(model.getPid());
+            if (passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            //快递
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+            visaOperationRecord.setOperaterId(userInfo1.getId());
+            visaOperationRecord.setOperaterName(userInfo1.getUserName());
+            visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+            visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+            visaOperationRecord.setApplicantName(passportInformation.getName());
+            if ("P".equalsIgnoreCase(model.getStatus()) && "W".equalsIgnoreCase(passportInformation.getStatus())){//未审核-审核通过
+                passportInformation.setStatus("P");
+                passPortSupplementRelationRepository.deleteByPassId(model.getPid());//删除问题
+                /*passportInformation.setCheckTime(new Date().getTime());
+                Calendar calendar=Calendar.getInstance();
+                calendar.set(Calendar.DAY_OF_YEAR,calendar.get(Calendar.DAY_OF_YEAR)+Integer.valueOf(expressReceipt.getSchedule()));
+                passportInformation.setExpireTime(calendar.getTimeInMillis());*/
+                //SimpleDateFormat form1 = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+                visaOperationRecord.setOperationName("审核：通过");
+                passportInformationRepository.checkPassPort(Integer.valueOf(expressReceipt.getSchedule()),passportInformation.getId());
+            }else if ("F".equalsIgnoreCase(model.getStatus())&&"W".equalsIgnoreCase(passportInformation.getStatus())){//未审核-审核不通过
+                if (StringUtils.isEmpty(model.getProblem())){
+                    throw new PassportException("缺少补充问题");
+                }
+                passportInformation.setStatus("F");
+                PassportSupplementRelation relation=new PassportSupplementRelation();
+                relation.setPassId(model.getPid());
+                relation.setContentId(model.getProblem());
+                relation.setIllustrated(model.getProblem());
+                passPortSupplementRelationRepository.save(relation);
+                visaOperationRecord.setOperationName("审核：不通过");
+                passportInformationRepository.save(passportInformation);//修改状态
+            }else {
+                throw new PassportException("审核出错！");
+            }
+            visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+        }
+    }
 
-    }*/
+    /**
+     * 发回重审
+     * @param userInfo
+     * @param model
+     * @throws PassportException
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void aRetrialPassPort(UserInfoForToken userInfo, VerifyPassPortModel model)throws PassportException{
+        if(StringUtils.isEmpty(userInfo.getUserId())|| StringUtils.isEmpty(model.getPid())){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            //护照
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(model.getPid());
+            if (passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            //快递
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            if(expressReceipt==null){
+                throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+
+            }
+            VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+            visaOperationRecord.setOperaterId(userInfo1.getId());
+            visaOperationRecord.setOperaterName(userInfo1.getUserName());
+            visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+            visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+            visaOperationRecord.setApplicantName(passportInformation.getName());
+            if(passportInformation.getStatus().equalsIgnoreCase("F")){//审核未通过
+                passportInformation.setStatus("W");
+                visaOperationRecord.setOperationName("审核：发回重审");
+                passPortSupplementRelationRepository.deleteByPassId(model.getPid());//删除问题
+            }else{
+                throw new PassportException("发回审核出错！");
+            }
+            passportInformationRepository.save(passportInformation);//修改状态
+            visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+        }
+    }
+
+    /**
+     * 签证进度表
+     * @param userInfo
+     * @param model
+     * @return
+     */
+    public PageInfo<ValidationModel> getPassPortByPass(UserInfoForToken userInfo,ValidationModel model)throws PassportException{
+        if (StringUtils.isEmpty(model.getName())){
+            model.setName(null);
+        }
+        if (StringUtils.isEmpty(model.getOrderNumber())){
+            model.setOrderNumber(null);
+        }
+        if (StringUtils.isEmpty(model.getPassportEncoding())){
+            model.setPassportEncoding(null);
+        }
+        if (StringUtils.isEmpty(model.getTelephoneNumber())){
+            model.setTelephoneNumber(null);
+        }
+        if (StringUtils.isEmpty(model.getSendStatus())){
+            model.setSendStatus(null);
+        }
+        List<ValidationModel> models=visaMapper.findPassPortByPass(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),model.getSendStatus(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
+        PageInfo page=new PageInfo();
+        page.setPageSize(model.getPageSize());
+        page.setPageNum(model.getPageNum());
+        page.setTotal(visaMapper.countPassPortByPass(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),model.getSendStatus()));
+        page.setList(models);
+        return page;
+    }
+
+    /**
+     * 送签操作
+     * @param userInfo
+     * @param pid
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void sendVisa(UserInfoForToken userInfo,String pid)throws PassportException{
+        if (StringUtils.isEmpty(pid)) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            if(passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            //快递
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            if(expressReceipt==null){
+                throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+            }
+            if(passportInformation.getStatus().equalsIgnoreCase("P")&&passportInformation.getSendStatus().equalsIgnoreCase("N")){//待送签
+                VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+                visaOperationRecord.setOperaterId(userInfo1.getId());
+                visaOperationRecord.setOperaterName(userInfo1.getUserName());
+                visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+                visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+                visaOperationRecord.setApplicantName(passportInformation.getName());
+                passportInformation.setSendStatus("S");//送签
+                passportInformationRepository.save(passportInformation);
+                visaOperationRecord.setOperationName("操作：送签");
+                visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+            }else {
+                throw new PassportException("送签失败");
+            }
+        }
+    }
+
+    /**
+     * 出签拒签
+     * @param userInfo
+     * @param pid
+     * @param status
+     * @throws PassportException
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void outAndRefuseVisa(UserInfoForToken userInfo,String pid,String status)throws PassportException{
+        if (StringUtils.isEmpty(pid)||StringUtils.isEmpty(status)) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            if(passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            //快递
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            if(expressReceipt==null){
+                throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+            }
+            if(passportInformation.getStatus().equalsIgnoreCase("P")&&passportInformation.getSendStatus().equalsIgnoreCase("S")){//已送签
+                VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+                visaOperationRecord.setOperaterId(userInfo1.getId());
+                visaOperationRecord.setOperaterName(userInfo1.getUserName());
+                visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+                visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+                visaOperationRecord.setApplicantName(passportInformation.getName());
+                if (status.equalsIgnoreCase("O")){
+                    passportInformation.setSendStatus("O");//出签
+                    visaOperationRecord.setOperationName("操作：出签");
+                }else if(status.equalsIgnoreCase("R")){//拒签
+                    passportInformation.setSendStatus("R");
+                    visaOperationRecord.setOperationName("操作：拒签");
+                }else {
+                    throw new PassportException("无效操作");
+                }
+                passportInformationRepository.save(passportInformation);
+                visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+            }else {
+                throw new PassportException("送签失败");
+            }
+        }
+    }
+
+    /**
+     * 寄回
+     * @param userInfo
+     * @param pid
+     */
+    public void sendBackVisa(UserInfoForToken userInfo,String pid,String sendBackAddress)throws PassportException{
+        if (StringUtils.isEmpty(pid)) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            if(passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            if(expressReceipt==null){
+                throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+            }
+            if(passportInformation.getStatus().equalsIgnoreCase("P")&&passportInformation.getSendStatus().equalsIgnoreCase("O")||passportInformation.getSendStatus().equalsIgnoreCase("R")){
+                passportInformation.setSendStatus("SB");
+                //寄回地址
+                if(!StringUtils.isEmpty(sendBackAddress)){
+                    passportInformation.setReturnAddress(sendBackAddress);
+                }
+                VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+                visaOperationRecord.setOperaterId(userInfo1.getId());
+                visaOperationRecord.setOperaterName(userInfo1.getUserName());
+                visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+                visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+                visaOperationRecord.setApplicantName(passportInformation.getName());
+                visaOperationRecord.setOperationName("操作：寄回");
+                passportInformationRepository.save(passportInformation);
+                visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+            }else {
+                throw new PassportException("寄回失败");
+            }
+        }
+    }
+
+    /**
+     * 一同寄回
+     * @param userInfo
+     * @param pid
+     */
+    public void sendBackTogether(UserInfoForToken userInfo,String pid,String sendBackAddress)throws PassportException{
+        if (StringUtils.isEmpty(pid)) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        String userId=userInfo.getUserId();
+        BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
+        synchronized (userId.intern()){
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            if(passportInformation==null){
+                throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+            }
+            ExpressReceipt expressReceipt=expressReceiptRepository.findByOrderNumber(passportInformation.getOrderId());
+            if(expressReceipt==null){
+                throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+            }
+            //查询快件下护照
+            List<VisaPassportRelation> relations=visaPassportRelationRepository.findByVid(pid);
+            List<String> passIds=new ArrayList<>();
+            relations.forEach(visaPassportRelation -> {
+                passIds.add(visaPassportRelation.getPassId());
+            });
+            //查询已出签和拒签的护照
+            List<PassportInformation> passportInformations=passportInformationRepository.findByIdInAndStatusOrStatus(passIds,"O","R");
+            if (passportInformations!=null){
+                for (PassportInformation p:passportInformations) {
+                    if(p.getStatus().equalsIgnoreCase("P")&&p.getSendStatus().equalsIgnoreCase("O")&&p.getSendStatus().equalsIgnoreCase("R")){
+                        p.setSendStatus("SB");
+                        //寄回地址
+                        if(!StringUtils.isEmpty(sendBackAddress)){
+                            p.setReturnAddress(sendBackAddress);
+                        }
+                    }else {
+                        throw new PassportException("一同寄回失败");
+                    }
+                }
+                passportInformationRepository.saveAll(passportInformations);
+                VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+                visaOperationRecord.setOperaterId(userInfo1.getId());
+                visaOperationRecord.setOperaterName(userInfo1.getUserName());
+                visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
+                visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+                visaOperationRecord.setApplicantName(passportInformation.getName());
+                visaOperationRecord.setOperationName("操作：一同寄回");
+                passportInformationRepository.save(passportInformation);
+                visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+            }else{
+                throw new PassportException("暂无可一同寄回护照！");
+            }
+
+        }
+    }
+
+    /**
+     * excel导入护照
+     * @param file
+     * @param userInfo
+     * @param expressReceiptId
+     * @return
+     * @throws PassportException
+     */
+    public ReadExcelModel addPassPortByExcel(MultipartFile file, UserInfoForToken userInfo, String expressReceiptId) throws PassportException {
+        if (StringUtils.isEmpty(expressReceiptId)) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        ExpressReceipt expressReceipt=expressReceiptRepository.findByIdIs(expressReceiptId);
+        if(expressReceipt==null){
+            throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
+        }
+        String fileName = file.getOriginalFilename();
+        if (!fileName.endsWith(".xls")) {
+            System.out.println("文件不是.xls类型");
+        }
+        try {
+            // 得到这个excel表格对象
+            HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(file.getInputStream()));
+            List<String> errorRowNum = new ArrayList<>();
+            List<PassportInformation> informations = new ArrayList<>();
+            // 得到这个excel表格的sheet数量
+            int numberOfSheets = workbook.getNumberOfSheets();
+            HSSFSheet sheet=workbook.getSheet("护照");//读取名为护照的sheet
+            //得到sheet里的总行数
+            int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+            for (int j = 1; j < physicalNumberOfRows; j++) {
+                HSSFRow row = sheet.getRow(j);
+                PassportInformation passportInformation;
+                try {
+                    passportInformation = saveRowPassPort(row, expressReceipt);
+                } catch (PassportException e) {
+                    errorRowNum.add((j + 1) + " ");
+                    continue;
+                }
+                informations.add(passportInformation);
+            }
+            /*for (int i = 0; i < numberOfSheets; i++) {
+                //得到sheet
+                HSSFSheet sheet = workbook.getSheetAt(i);
+                //得到sheet里的总行数
+                int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+                for (int j = 1; j < physicalNumberOfRows; j++) {
+                    HSSFRow row = sheet.getRow(j);
+                    PassportInformation passportInformation;
+                    try {
+                        passportInformation = saveRowPassPort(row, expressReceipt);
+                    } catch (PassportException e) {
+                        errorRowNum.add((j + 1) + " ");
+                        continue;
+                    }
+                    informations.add(passportInformation);
+                }
+            }*/
+            ReadExcelModel model=new ReadExcelModel();
+            model.setInformationList(informations);
+            model.setErrorRow(JSONObject.toJSONString(errorRowNum.toArray()));
+            return model;
+        } catch (IOException e) {
+            throw new PassportException(ResultCode.EXCEL_IMPORT_MSG);
+        }
+    }
+
+    private PassportInformation saveRowPassPort(HSSFRow row, ExpressReceipt expressReceipt) throws PassportException {
+        PassportInformation passportInformation=new PassportInformation();
+        String travel="";//旅行社
+        String visaType="";//签证种类
+        String remarks="";//备注
+        String name="";
+        String sex="";
+        long birthDay=0;//出生日期
+        String habitation="";//居住地
+        String birthPlace="";//出生地
+        String passportEncoding="";//护照编码
+        long signDate=0;//签发日期
+        long expiryDate=0;//有效期
+        String signAddress="";//签发地
+        int physicalNumberOfCells = row.getPhysicalNumberOfCells();
+        SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < physicalNumberOfCells; i++) {
+            switch (i) {
+                case 0:
+                    travel = getCellValue(row.getCell(i));
+                    break;
+                case 1:
+                    name = getCellValue(row.getCell(i));
+                    break;
+                case 3:
+                    /*sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date=getCellDate(row.getCell(i));
+                    birthDay = TimeUtils.startTime(sdf.format(date));*/
+                    sex=getCellValue(row.getCell(i));
+                    break;
+                case 4:
+                    passportEncoding = getCellString(row.getCell(i));
+                    break;
+                case 5:
+                    birthDay = TimeUtils.startTime(getCellValue(row.getCell(i)));
+                    //birthDay=Long.valueOf(getCellValue(row.getCell(i)));
+                    break;
+                case 6:
+                    visaType= getCellValue(row.getCell(i));
+                    break;
+                case 7:
+                    remarks= getCellValue(row.getCell(i));
+                    break;
+                case 8:
+                    birthPlace= getCellValue(row.getCell(i));
+                    break;
+                case 9:
+                    signAddress= getCellValue(row.getCell(i));
+                    break;
+                case 10:
+                    signDate = TimeUtils.startTime(getCellValue(row.getCell(i)));
+                    //signDate= Long.valueOf(getCellValue(row.getCell(i)));
+                    break;
+                case 11:
+                    expiryDate = TimeUtils.startTime(getCellValue(row.getCell(i)));
+                    //expiryDate= Long.valueOf(getCellValue(row.getCell(i)));
+                    break;
+                default:
+                    break;
+            }
+        }
+        passportInformation.setStatus("W");
+        passportInformation.setOrderId(expressReceipt.getOrderNumber());
+        passportInformation.setBirthDay(birthDay);
+        passportInformation.setCreateTime(new Date().getTime());
+        passportInformation.setBirthPlace(birthPlace);
+        passportInformation.setExpiryDate(expiryDate);
+        passportInformation.setHabitation(habitation);
+        passportInformation.setName(name);
+        passportInformation.setSex(sex);
+        passportInformation.setTelephoneNumber(expressReceipt.getTelephoneNumber());
+        passportInformation.setPassportEncoding(passportEncoding);
+        passportInformation.setReturnAddress(expressReceipt.getReturnAddress());
+        passportInformation.setSignAddress(signAddress);
+        passportInformation.setVisaType(visaType);
+        passportInformation.setTravel(travel);
+        passportInformation.setRemarks(remarks);
+        passportInformation.setSignDate(signDate);
+        return passportInformation;
+    }
+
+    private String getCellString(HSSFCell cell) throws PassportException {
+        if (null == cell) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        return cell.getStringCellValue();
+    }
+
+    private Date getCellDate(HSSFCell cell) throws PassportException {
+        if (null == cell) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        return cell.getDateCellValue();
+    }
+
+    private String getCellNumber(HSSFCell cell) throws PassportException {
+        if (null == cell) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        return NumberToTextConverter.toText(cell.getNumericCellValue());
+    }
+
+    /**
+     * 判断单元格类型（日期，字符串，数字）
+     * @param cell
+     * @return
+     * @throws PassportException
+     */
+    private String getCellValue(HSSFCell cell) throws PassportException {
+        if (null == cell) {
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        switch (cell.getCellType()){
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                if(HSSFDateUtil.isCellDateFormatted(cell)){
+                    SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+                    Date date= cell.getDateCellValue();
+                    return String.valueOf(TimeUtils.startTime(sdf.format(date)));
+                }else {
+                    return NumberToTextConverter.toText(cell.getNumericCellValue());
+                }
+        }
+        return "";
+    }
 }

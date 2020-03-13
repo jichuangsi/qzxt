@@ -95,4 +95,6 @@ public class VisaOperationRecord {//操作记录
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
+
+
 }

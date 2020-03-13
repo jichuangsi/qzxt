@@ -12,9 +12,13 @@ public interface IBackUserInfoRepository extends JpaRepository<BackUserInfo,Stri
     BackUserInfo findByAccountAndPwdAndStatus(String account, String pwd,String status);
     BackUserInfo findByid(String id);
 
-    @Query(value = "SELECT * FROM backuser_info WHERE role_id=?1 AND role_id !='123456' LIMIT ?2,?3",nativeQuery = true)
+    int countByRoleIdAndRoleIdNotContains(Integer role,Integer role2);
+
+    @Query(value = "SELECT * FROM backuser_info WHERE role_id=?1 AND role_id !='123456' ORDER BY created_time DESC LIMIT ?2,?3",nativeQuery = true)
     List<BackUserInfo> findAllByPage(Integer role, int pageNum, int pageSize);
 
-    @Query(value = "SELECT * FROM backuser_info WHERE role_id !='123456' LIMIT ?1,?2",nativeQuery = true)
+    @Query(value = "SELECT * FROM backuser_info WHERE role_id !='123456' ORDER BY created_time DESC LIMIT ?1,?2",nativeQuery = true)
     List<BackUserInfo> findAllByPage(int pageNum,int pageSize);
+
+    int countByRoleIdNotContains(Integer role);
 }

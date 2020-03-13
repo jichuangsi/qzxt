@@ -14,7 +14,11 @@ public class ValidationModel {
     private String schedule;//工期
     private long expiryDate;//有效期
     private String problem;
-    private  int status;//状态 待处理，已处理，异常
+    private String status;//状态 待处理，已处理，异常
+    private String sendStatus;//送签状态S-已送
+    private int DIFF_DATE;//剩余工期
+    private long checkTime;//审核时间
+    private String expireTime;//工期到期时间
     private int pageNum;
     private int pageSize;
 
@@ -115,11 +119,11 @@ public class ValidationModel {
         this.expressReceiptId = expressReceiptId;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -137,5 +141,37 @@ public class ValidationModel {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public long getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(long checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public String getSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(String sendStatus) {
+        this.sendStatus = sendStatus;
+    }
+
+    public int getDIFF_DATE() {
+        return DIFF_DATE;
+    }
+
+    public void setDIFF_DATE(int DIFF_DATE) {
+        this.DIFF_DATE = DIFF_DATE;
     }
 }

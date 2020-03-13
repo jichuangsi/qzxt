@@ -16,11 +16,11 @@ import cn.com.yaohao.visa.repository.IntermediateRepasitory.IUserRoleRelationRep
 import cn.com.yaohao.visa.util.MappingEntityModelCoverter;
 import cn.com.yaohao.visa.util.TimeUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,9 +31,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BackUserService {
@@ -193,10 +191,12 @@ public class BackUserService {
      * @param userInfo
      * @return
      */
-    public List<BackUserModel> getAllBackUser(UserInfoForToken userInfo, Integer role, int pageNum, int pageSize){
+    public PageInfo<BackUserModel> getAllBackUser(UserInfoForToken userInfo, Integer role, int pageNum, int pageSize){
         List<BackUserModel> models=new ArrayList<>();
+        int total=0;
         if(StringUtils.isEmpty(role)){
            List<BackUserInfo> backUserInfos=backUserRepository.findAllByPage((pageNum-1)*pageSize,pageSize);
+           total=backUserRepository.countByRoleIdNotContains(123456);
             for (BackUserInfo user:backUserInfos
                  ) {
                 BackUserModel model=MappingEntityModelCoverter.CONVERTERFROMBACKUSERINFOTOMODEL(user);
@@ -208,16 +208,27 @@ public class BackUserService {
                 }
                 models.add(model);
             }
-           return models;
+            PageInfo page=new PageInfo();
+            page.setPageSize(pageSize);
+            page.setPageNum(pageNum);
+            page.setTotal(total);
+            page.setList(models);
+            return page;
         }
         List<BackUserInfo> backUserInfos=backUserRepository.findAllByPage(role,(pageNum-1)*pageSize,pageSize);
+        total=backUserRepository.countByRoleIdAndRoleIdNotContains(role,123456);
         for (BackUserInfo user:backUserInfos
                 ) {
             BackUserModel model=MappingEntityModelCoverter.CONVERTERFROMBACKUSERINFOTOMODEL(user);
             model.setRoles(visaMapper.findRoleByUid(user.getId()));
             models.add(model);
         }
-        return models;
+        PageInfo page=new PageInfo();
+        page.setPageSize(pageSize);
+        page.setPageNum(pageNum);
+        page.setTotal(total);
+        page.setList(models);
+        return page;
     }
 
     /**
@@ -291,6 +302,47 @@ public class BackUserService {
     }
 
     /**
+     * 获取角色可访问页面方法
+     * @param userInfo
+     * @return
+     * @throws PassportException
+     */
+    public boolean getUrlMethodByRole(UserInfoForToken userInfo,String url)throws PassportException{
+        if (userInfo.getRoleId().equalsIgnoreCase("123456")){
+            return true;
+        }
+        List<UserRoleRelation> relations=userRoleRelationRepository.findByUid(userInfo.getUserId());
+        List<Integer> roleIds=new ArrayList<>();
+        relations.forEach(userRoleRelation -> {
+            roleIds.add(userRoleRelation.getRid());
+        });
+        if (roleIds.size()==0){
+            throw new PassportException(ResultCode.USER_NOROLE_MSG);
+        }
+        List<UrlMapping> urlMappings= visaMapper.findMethodByRoleIn(roleIds);
+        Map<String,String> urlList=null;
+        if (null!=urlMappings){
+            urlList=new HashMap<String,String>();
+            for (UrlMapping item:urlMappings) {
+                urlList.put(item.getId(),item.getRoleUrl());
+            }
+            //通用方法
+            urlList.put("获取用户信息","/backRoleConsole/getBackuserById");
+            urlList.put("查询角色","/backRoleConsole/getAllRole");
+            urlList.put("查询父节点","/backRoleConsole/getAllParentNode");
+            urlList.put("查询角色对应url列表","/backRoleConsole/getUrlByUserRole");
+        }
+        if(null!=urlList && urlList.size()!=0){
+            for (Map.Entry<String,String> entry: urlList.entrySet()) {
+                if (url.equals(entry.getValue())|| url.startsWith(entry.getValue())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 查看操作记录
      * @param userInfo
      * @param model
@@ -307,6 +359,8 @@ public class BackUserService {
                 predicateList.add(criteriaBuilder.like(root.get("applicantName").as(String.class),"%"+model.getApplicantName()+"%"));
             }else if (!StringUtils.isEmpty(model.getOperaterId())){
                 predicateList.add(criteriaBuilder.equal(root.get("operaterId").as(String.class),model.getOperaterId()));
+            }else if (!StringUtils.isEmpty(model.getOperaterName())){
+                predicateList.add(criteriaBuilder.like(root.get("operaterName").as(String.class),"%"+model.getOperaterName()+"%"));
             }else if (!StringUtils.isEmpty(model.getPhone())){
                 predicateList.add(criteriaBuilder.like(root.get("phone").as(String.class),"%"+model.getPhone()+"%"));
             }else if (!StringUtils.isEmpty(model.getCreateTime())){//&& model.getSigningTime()!=0
@@ -315,7 +369,7 @@ public class BackUserService {
                 predicateList.add(criteriaBuilder.between(root.get("createTime"),startTime,endTime));
             }
             return criteriaBuilder.and(predicateList.toArray(new Predicate[predicateList.size()]));
-        },PageRequest.of((model.getPageNum()-1)*model.getPageSize(),model.getPageSize(),Sort.by(order)));
+        },PageRequest.of(model.getPageNum()-1,model.getPageSize(),Sort.by(order)));
         return records;
     }
 }

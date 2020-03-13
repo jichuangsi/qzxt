@@ -1,4 +1,4 @@
-package cn.com.yaohao.visa.controller.advice;
+package cn.com.yaohao.visa.controller;
 
 import cn.com.yaohao.visa.entity.ExpressReceipt;
 import cn.com.yaohao.visa.entity.RemarksInformation;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Api("后台快件相关")
 @CrossOrigin

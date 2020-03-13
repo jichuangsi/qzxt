@@ -1,7 +1,7 @@
 /**
  * 拦截token将用户信息放入model，及总异常拦截
  */
-package cn.com.yaohao.visa.controller.advice;
+package cn.com.yaohao.visa.advice;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;

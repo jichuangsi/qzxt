@@ -16,6 +16,11 @@ public class ResponseModel<T> {
 		this.msg = msg;
 		this.data = data;
 	}
+	public ResponseModel(String code, String msg) {
+		super();
+		this.code = code;
+		this.msg = msg;
+	}
 	
 	public ResponseModel() {
 	}
