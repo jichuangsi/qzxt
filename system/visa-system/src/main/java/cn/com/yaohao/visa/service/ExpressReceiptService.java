@@ -34,6 +34,8 @@ public class ExpressReceiptService {
     private RemarksInformationRepository remarksInformationRepository;
     @Resource
     private ExpressReceiptRemarkRelationRepository expressReceiptRemarkRelationRepository;
+    @Resource
+    private TBOrderService tbOrderService;
 
     /**
      * 快件签收
@@ -51,7 +53,11 @@ public class ExpressReceiptService {
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
         //待修改
-        expressReceipt.setStatus("未匹配");
+        if (tbOrderService.checkTbOrder(expressReceipt.getOrderNumber())){
+            expressReceipt.setStatus("已匹配");
+        }else{
+            expressReceipt.setStatus("未匹配");
+        }
         expressReceipt.setIsError("0");
         expressReceiptRepository.save(expressReceipt);
     }

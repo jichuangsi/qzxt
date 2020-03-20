@@ -1,5 +1,6 @@
 package cn.com.yaohao.visa.dao.mapper;
 
+import cn.com.yaohao.visa.entity.ExpressReceipt;
 import cn.com.yaohao.visa.entity.Role;
 import cn.com.yaohao.visa.model.ValidationModel;
 import cn.com.yaohao.visa.model.backuser.UrlMapping;
@@ -73,11 +74,11 @@ public interface IVisaMapper {
             "ORDER BY pi.order_id</script>")
     int countPassPortByStatus(@Param("orderNum")String orderNum,@Param("passportId")String passportId,@Param("name")String name,@Param("phone")String phone);
 
-    //签证进度(状态码P:审核通过)
+    //签证进度(状态码P:审核通过)(工期内包含周末)
     @Select(value = "<script>SELECT er.order_number as orderNumber,er.schedule as schedule,pi.`name` as name,er.telephone_number as telephoneNumber,pi.send_status as sendStatus,pi.`status` as status,\n" +
-            "pi.check_time as checkTime,pi.expire_time as expireTime,pi.id as id,er.id as expressReceiptId,pi.passport_encoding as passportEncoding,\n" +
-            "IF(pi.send_status='SB',99,IF(TIMESTAMPDIFF(DAY ,date_format(now(), '%Y-%m-%d'),DATE_FORMAT(expire_time,'%Y-%m-%d'))>=0,TIMESTAMPDIFF(DAY ,date_format(now(), '%Y-%m-%d'),DATE_FORMAT(expire_time,'%Y-%m-%d')),0) ) AS DIFF_DATE," +
-            "pi.sex as sex,pi.birth_day as birthDay,pi.birth_place as birthPlace,pi.habitation as habitation,pi.expiry_date as expiryDate\n" +
+            "pi.check_time as checkTime,pi.expire_time as expireTime,pi.id as id,er.id as expressReceiptId,pi.passport_encoding as passportEncoding,pi.is_send_back as isSendBack,\n" +
+            "IF(pi.is_send_back='SB',99,IF(TIMESTAMPDIFF(DAY ,date_format(now(), '%Y-%m-%d'),DATE_FORMAT(expire_time,'%Y-%m-%d'))>=0,TIMESTAMPDIFF(DAY ,date_format(now(), '%Y-%m-%d'),DATE_FORMAT(expire_time,'%Y-%m-%d')),0) ) AS DIFF_DATE," +
+            "pi.sex as sex,pi.birth_day as birthDay,pi.birth_place as birthPlace,pi.habitation as habitation,pi.expiry_date as expiryDate,pi.return_address AS returnAddress\n" +
             "FROM passport_information pi INNER JOIN visa_passport_relation vpr ON pi.id=vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id \n" +
             "WHERE pi.`status`='P'"
             +"<if test='orderNum != null '>AND er.order_number=#{orderNum}</if>"
@@ -87,6 +88,21 @@ public interface IVisaMapper {
             +"<if test='status != null'>AND pi.send_status=#{status}</if>"+
             "  ORDER BY DIFF_DATE,pi.order_id LIMIT #{pageNum},#{pageSize}</script>")
     List<ValidationModel> findPassPortByPass(@Param("orderNum")String orderNum,@Param("name")String name,@Param("passportId")String passportId,@Param("phone")String phone,@Param("status")String status,@Param("pageNum")int pageNum,@Param("pageSize")int pageSize);
+
+    //签证进度(状态码P:审核通过)(工期内不包含周末)
+    @Select(value = "<script>SELECT er.order_number as orderNumber,er.schedule as schedule,pi.`name` as name,er.telephone_number as telephoneNumber,pi.send_status as sendStatus,pi.`status` as status,\n" +
+            "pi.check_time as checkTime,pi.expire_time as expireTime,pi.id as id,er.id as expressReceiptId,pi.passport_encoding as passportEncoding,pi.is_send_back as isSendBack,\n" +
+            "IF(pi.is_send_back='SB',99,IF((er.`schedule`- workdaynum(FROM_UNIXTIME(pi.check_time, '%Y-%m-%d'),date_format(now(), '%Y-%m-%d')))>=0,er.`schedule`- workdaynum(FROM_UNIXTIME(pi.check_time, '%Y-%m-%d'),date_format(now(), '%Y-%m-%d')),0)) AS DIFF_DATE," +
+            "pi.sex as sex,pi.birth_day as birthDay,pi.birth_place as birthPlace,pi.habitation as habitation,pi.expiry_date as expiryDate,pi.return_address AS returnAddress\n" +
+            "FROM passport_information pi INNER JOIN visa_passport_relation vpr ON pi.id=vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id \n" +
+            "WHERE pi.`status`='P'"
+            +"<if test='orderNum != null '>AND er.order_number=#{orderNum}</if>"
+            +"<if test='name != null'>AND pi.`name` LIKE CONCAT('%', #{name},'%')</if>"
+            +"<if test='passportId != null'>AND pi.passport_encoding=#{passportId}</if>"
+            +"<if test='phone != null'>AND er.telephone_number LIKE CONCAT('%', #{phone},'%')</if>"
+            +"<if test='status != null'>AND pi.send_status=#{status}</if>"+
+            "  ORDER BY DIFF_DATE,pi.order_id LIMIT #{pageNum},#{pageSize}</script>")
+    List<ValidationModel> findPassPortByPass2(@Param("orderNum")String orderNum,@Param("name")String name,@Param("passportId")String passportId,@Param("phone")String phone,@Param("status")String status,@Param("pageNum")int pageNum,@Param("pageSize")int pageSize);
 
     //签证进度统计
     @Select(value = "<script> SELECT count(1) FROM passport_information pi INNER JOIN visa_passport_relation vpr ON pi.id=vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id \n" +
@@ -98,4 +114,30 @@ public interface IVisaMapper {
             +"<if test='status != null'> AND pi.send_status=#{status}</if>"+
             "  ORDER BY pi.order_id</script>")
     int countPassPortByPass(@Param("orderNum")String orderNum,@Param("name")String name,@Param("passportId")String passportId,@Param("phone")String phone,@Param("status")String status);
+
+    @Select(value = "<script>SELECT id as id,count as count,courier_name as courierName,courier_number as courierNumber,telephone_number as telephoneNumber,signatory as signatory,order_number as orderNumber,\n" +
+            "order_path as orderPath, problem as problem,`status` as status,is_error as isError,return_address as returnAddress,address as address,`schedule` as schedule,create_time as createTime FROM express_receipt WHERE is_error='0' "
+            +"<if test='orderNum != null '>AND order_number=#{orderNum}</if>"
+            +"<if test='name != null'>AND signatory LIKE CONCAT('%', #{name},'%')</if>"
+            +"<if test='phone != null'>AND er.telephone_number LIKE CONCAT('%', #{phone},'%')</if>"
+            +"<if test='schedule != null'> AND `schedule`=#{schedule}</if>"+
+            " and create_time BETWEEN #{timeStart} and #{timeEnd} LIMIT #{pageNum},#{pageSize}</script>")
+    List<ExpressReceipt> findByIsErrorAndCondition(@Param("orderNum")String orderNum,@Param("name")String name,@Param("phone")String phone,@Param("schedule")String schedule,
+                                                   @Param("timeStart")long timeStart,@Param("timeEnd")long timeEnd,@Param("pageNum")int pageNum,@Param("pageSize")int pageSize);
+
+
+    @Select(value = "<script>SELECT count(1) FROM express_receipt WHERE is_error='0' "
+            +"<if test='orderNum != null '>AND order_number=#{orderNum}</if>"
+            +"<if test='name != null'>AND signatory LIKE CONCAT('%', #{name},'%')</if>"
+            +"<if test='phone != null'>AND er.telephone_number LIKE CONCAT('%', #{phone},'%')</if>"
+            +"<if test='schedule != null'> AND `schedule`=#{schedule}</if>"+
+            " and create_time BETWEEN #{timeStart} and #{timeEnd} </script>")
+    int countByIsErrorAndCondition(@Param("orderNum")String orderNum,@Param("name")String name,@Param("phone")String phone,@Param("schedule")String schedule,
+                                                   @Param("timeStart")long timeStart,@Param("timeEnd")long timeEnd);
+
+    @Select(value = "<script>select MAX(`code`)\n" +
+            "from logistics\n" +
+            "where \n" +
+            "FROM_UNIXTIME(create_time/1000,'%Y-%m-%d') >= date_format(#{date},'%Y-%m-%d')</script>")
+    String getMaxCodeByDate(@Param("date")String date);
 }

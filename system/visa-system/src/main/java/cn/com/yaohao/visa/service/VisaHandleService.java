@@ -11,6 +11,7 @@ import cn.com.yaohao.visa.repository.IntermediateRepasitory.IPassPortSupplementR
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaPassportRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.VisaRemarkRelationRepository;
 import cn.com.yaohao.visa.repository.IntermediateRepasitory.PassportInformationRepository;
+import cn.com.yaohao.visa.util.MappingEntityModelCoverter;
 import cn.com.yaohao.visa.util.TimeUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
@@ -58,6 +59,10 @@ public class VisaHandleService {
     private IBackUserInfoRepository backUserInfoRepository;
     @Resource
     private IVisaOperationRecordRepository visaOperationRecordRepository;
+    @Resource
+    private ILogisticsRepository logisticsRepository;
+    @Resource
+    private ShunFengService shunFengService;
     @Resource
     private IVisaMapper visaMapper;
     @Value("${file.uploadFolder}")
@@ -351,7 +356,7 @@ public class VisaHandleService {
      * @return
      * @throws PassportException
      */
-    public List<PassportModel> getPassportById(UserInfoForToken userInfo,String vId)throws PassportException{
+    public PageInfo<PassportModel> getPassportById(UserInfoForToken userInfo,String vId,int pageNum,int pageSize)throws PassportException{
         if (StringUtils.isEmpty(vId)){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
@@ -367,7 +372,7 @@ public class VisaHandleService {
         for (VisaPassportRelation v:visaPassportRelation){
             passId.add(v.getPassId());
         }
-        List<PassportInformation> pass=passportInformationRepository.findByIdIn(passId);
+        List<PassportInformation> pass=passportInformationRepository.findByIdIn(passId,(pageNum-1)*pageSize,pageSize);
         List<PassportModel> passportModels=new ArrayList<>();
         for (PassportInformation pi:pass) {
             PassportModel model=new PassportModel();
@@ -375,7 +380,12 @@ public class VisaHandleService {
             model.setExpressReceipt(expressReceipt);
             passportModels.add(model);
         }
-        return passportModels;
+        PageInfo page=new PageInfo();
+        page.setPageSize(pageSize);
+        page.setPageNum(pageNum);
+        page.setList(passportModels);
+        page.setTotal(passportInformationRepository.countByIdIn(passId));
+        return page;
     }
 
     //查看审核护照
@@ -520,6 +530,7 @@ public class VisaHandleService {
             visaOperationRecord.setApplicantName(passportInformation.getName());
             if ("P".equalsIgnoreCase(model.getStatus()) && "W".equalsIgnoreCase(passportInformation.getStatus())){//未审核-审核通过
                 passportInformation.setStatus("P");
+                passportInformation.setIsExport("N");//是否导出
                 passPortSupplementRelationRepository.deleteByPassId(model.getPid());//删除问题
                 /*passportInformation.setCheckTime(new Date().getTime());
                 Calendar calendar=Calendar.getInstance();
@@ -612,7 +623,8 @@ public class VisaHandleService {
         if (StringUtils.isEmpty(model.getSendStatus())){
             model.setSendStatus(null);
         }
-        List<ValidationModel> models=visaMapper.findPassPortByPass(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),model.getSendStatus(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
+        //List<ValidationModel> models=visaMapper.findPassPortByPass(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),model.getSendStatus(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
+        List<ValidationModel> models=visaMapper.findPassPortByPass2(model.getOrderNumber(),model.getName(),model.getPassportEncoding(),model.getTelephoneNumber(),model.getSendStatus(),(model.getPageNum()-1)*model.getPageSize(),model.getPageSize());
         PageInfo page=new PageInfo();
         page.setPageSize(model.getPageSize());
         page.setPageNum(model.getPageNum());
@@ -693,6 +705,7 @@ public class VisaHandleService {
                 visaOperationRecord.setApplicantName(passportInformation.getName());
                 if (status.equalsIgnoreCase("O")){
                     passportInformation.setSendStatus("O");//出签
+                    passportInformation.setOutSignTime(new Date().getTime());
                     visaOperationRecord.setOperationName("操作：出签");
                 }else if(status.equalsIgnoreCase("R")){//拒签
                     passportInformation.setSendStatus("R");
@@ -700,6 +713,7 @@ public class VisaHandleService {
                 }else {
                     throw new PassportException("无效操作");
                 }
+                passportInformation.setIsSendBack("N");//未寄回
                 passportInformationRepository.save(passportInformation);
                 visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
             }else {
@@ -711,16 +725,21 @@ public class VisaHandleService {
     /**
      * 寄回
      * @param userInfo
-     * @param pid
+     * @param model
+     * @throws PassportException
      */
-    public void sendBackVisa(UserInfoForToken userInfo,String pid,String sendBackAddress)throws PassportException{
-        if (StringUtils.isEmpty(pid)) {
+    @Transactional(rollbackFor = Exception.class)
+    public LogisticsModel sendBackVisa(UserInfoForToken userInfo,LogisticsModel model)throws PassportException{
+        if (StringUtils.isEmpty(model.getPassportId()) || StringUtils.isEmpty(model.getGet())
+                ||StringUtils.isEmpty(model.getGetAddress()) || StringUtils.isEmpty(model.getGetPhone())
+                ||StringUtils.isEmpty(model.getSendAddress()) || StringUtils.isEmpty(model.getSender())
+                ||StringUtils.isEmpty(model.getSenderPhone())) {
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
         String userId=userInfo.getUserId();
         BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
         synchronized (userId.intern()){
-            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(model.getPassportId());
             if(passportInformation==null){
                 throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
             }
@@ -729,10 +748,10 @@ public class VisaHandleService {
                 throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
             }
             if(passportInformation.getStatus().equalsIgnoreCase("P")&&passportInformation.getSendStatus().equalsIgnoreCase("O")||passportInformation.getSendStatus().equalsIgnoreCase("R")){
-                passportInformation.setSendStatus("SB");
+                passportInformation.setIsSendBack("SB");
                 //寄回地址
-                if(!StringUtils.isEmpty(sendBackAddress)){
-                    passportInformation.setReturnAddress(sendBackAddress);
+                if(!StringUtils.isEmpty(model.getGetAddress())){
+                    passportInformation.setReturnAddress(model.getGetAddress());
                 }
                 VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
                 visaOperationRecord.setOperaterId(userInfo1.getId());
@@ -741,27 +760,47 @@ public class VisaHandleService {
                 visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
                 visaOperationRecord.setApplicantName(passportInformation.getName());
                 visaOperationRecord.setOperationName("操作：寄回");
-                passportInformationRepository.save(passportInformation);
+                passportInformationRepository.saveAndFlush(passportInformation);
                 visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+                /*if(1==1){
+                    throw new PassportException("测试事物！");
+                }*/
+                Logistics logistics=MappingEntityModelCoverter.CONVERTERFROMLOGISTICSMODELTOLOGISTIC(model);
+                logistics=shunFengService.addOrder(logistics);
+                if(!StringUtils.isEmpty(logistics.getSfExpressId())){
+                    model.setSfExpress(logistics.getSfExpressId());
+                    model.setOrderId(logistics.getOrderId());
+                    passportInformation.setSfExpressId(logistics.getSfExpressId());
+                    passportInformationRepository.save(passportInformation);
+                }else {
+                    throw new PassportException("顺丰寄件失败！");
+                }
             }else {
                 throw new PassportException("寄回失败");
             }
+            model.setSendBackNum(1);
+            return model;
         }
     }
 
     /**
      * 一同寄回
      * @param userInfo
-     * @param pid
+     * @param model
+     * @throws PassportException
      */
-    public void sendBackTogether(UserInfoForToken userInfo,String pid,String sendBackAddress)throws PassportException{
-        if (StringUtils.isEmpty(pid)) {
+    @Transactional(rollbackFor = Exception.class)
+    public LogisticsModel sendBackTogether(UserInfoForToken userInfo,LogisticsModel model)throws PassportException{
+        if (StringUtils.isEmpty(model.getPassportId()) || StringUtils.isEmpty(model.getGet())
+                ||StringUtils.isEmpty(model.getGetAddress()) || StringUtils.isEmpty(model.getGetPhone())
+                ||StringUtils.isEmpty(model.getSendAddress()) || StringUtils.isEmpty(model.getSender())
+                ||StringUtils.isEmpty(model.getSenderPhone())) {
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
         String userId=userInfo.getUserId();
         BackUserInfo userInfo1=backUserInfoRepository.findByid(userId);
         synchronized (userId.intern()){
-            PassportInformation passportInformation=passportInformationRepository.findByIdIs(pid);
+            PassportInformation passportInformation=passportInformationRepository.findByIdIs(model.getPassportId());
             if(passportInformation==null){
                 throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
             }
@@ -770,39 +809,57 @@ public class VisaHandleService {
                 throw new PassportException(ResultCode.EXPREES_NOEXIST_MSG);
             }
             //查询快件下护照
-            List<VisaPassportRelation> relations=visaPassportRelationRepository.findByVid(pid);
+            List<VisaPassportRelation> relations=visaPassportRelationRepository.findByVid(expressReceipt.getId());
             List<String> passIds=new ArrayList<>();
             relations.forEach(visaPassportRelation -> {
                 passIds.add(visaPassportRelation.getPassId());
             });
             //查询已出签和拒签的护照
-            List<PassportInformation> passportInformations=passportInformationRepository.findByIdInAndStatusOrStatus(passIds,"O","R");
-            if (passportInformations!=null){
+            List<PassportInformation> passportInformations=passportInformationRepository.findByIdInAndSendStatusOrSendStatus(passIds,"O","R");
+            List<PassportInformation> passPIs=new ArrayList<>();
+            if (passportInformations!=null && passportInformations.size()!=0){
                 for (PassportInformation p:passportInformations) {
-                    if(p.getStatus().equalsIgnoreCase("P")&&p.getSendStatus().equalsIgnoreCase("O")&&p.getSendStatus().equalsIgnoreCase("R")){
-                        p.setSendStatus("SB");
-                        //寄回地址
-                        if(!StringUtils.isEmpty(sendBackAddress)){
-                            p.setReturnAddress(sendBackAddress);
+                    if(!p.getIsSendBack().equalsIgnoreCase("SB")){
+                        if(p.getStatus().equalsIgnoreCase("P")){
+                            if(p.getSendStatus().equalsIgnoreCase("O")||p.getSendStatus().equalsIgnoreCase("R")){
+                                //p.setSendStatus("SB");
+                                p.setIsSendBack("SB");
+                                //寄回地址
+                                if(!StringUtils.isEmpty(model.getGetAddress())){
+                                    p.setReturnAddress(model.getGetAddress());
+                                }
+                                passPIs.add(p);
+                            }else {
+                                throw new PassportException("一同寄回失败");
+                            }
                         }
-                    }else {
-                        throw new PassportException("一同寄回失败");
                     }
                 }
-                passportInformationRepository.saveAll(passportInformations);
-                VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
-                visaOperationRecord.setOperaterId(userInfo1.getId());
-                visaOperationRecord.setOperaterName(userInfo1.getUserName());
-                visaOperationRecord.setOrderNumber(passportInformation.getOrderId());
-                visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
-                visaOperationRecord.setApplicantName(passportInformation.getName());
-                visaOperationRecord.setOperationName("操作：一同寄回");
-                passportInformationRepository.save(passportInformation);
-                visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+
             }else{
                 throw new PassportException("暂无可一同寄回护照！");
             }
-
+            passportInformationRepository.saveAll(passPIs);
+            Logistics logistics=MappingEntityModelCoverter.CONVERTERFROMLOGISTICSMODELTOLOGISTIC(model);
+            logistics=shunFengService.addOrder(logistics);
+            if(!StringUtils.isEmpty(logistics.getSfExpressId())){
+                for (PassportInformation p:passPIs) {
+                    p.setSfExpressId(logistics.getSfExpressId());
+                }
+            }
+            VisaOperationRecord visaOperationRecord=new VisaOperationRecord();//操作记录
+            visaOperationRecord.setOperaterId(userInfo1.getId());
+            visaOperationRecord.setOperaterName(userInfo1.getUserName());
+            visaOperationRecord.setOrderNumber(expressReceipt.getOrderNumber());
+            visaOperationRecord.setPhone(expressReceipt.getTelephoneNumber());
+            visaOperationRecord.setApplicantName(expressReceipt.getSignatory());
+            visaOperationRecord.setOperationName("操作：一同寄回");
+            passportInformationRepository.saveAll(passPIs);
+            visaOperationRecordRepository.save(visaOperationRecord);//保存操作记录
+            model.setSfExpress(logistics.getSfExpressId());
+            model.setSendBackNum(passPIs.size());
+            model.setOrderId(logistics.getOrderId());
+            return model;
         }
     }
 
@@ -879,6 +936,7 @@ public class VisaHandleService {
         String visaType="";//签证种类
         String remarks="";//备注
         String name="";
+        String engishName="";
         String sex="";
         long birthDay=0;//出生日期
         String habitation="";//居住地
@@ -896,6 +954,9 @@ public class VisaHandleService {
                     break;
                 case 1:
                     name = getCellValue(row.getCell(i));
+                    break;
+                case 2:
+                    engishName = getCellValue(row.getCell(i));
                     break;
                 case 3:
                     /*sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -942,6 +1003,7 @@ public class VisaHandleService {
         passportInformation.setExpiryDate(expiryDate);
         passportInformation.setHabitation(habitation);
         passportInformation.setName(name);
+        passportInformation.setEnglishName(engishName);
         passportInformation.setSex(sex);
         passportInformation.setTelephoneNumber(expressReceipt.getTelephoneNumber());
         passportInformation.setPassportEncoding(passportEncoding);
@@ -999,4 +1061,164 @@ public class VisaHandleService {
         }
         return "";
     }
+
+    /**
+     * 导出护照列表
+     * @param userInfo
+     * @return
+     */
+    public PageInfo<StatisticsModel> getExpressReceiptStatistic(UserInfoForToken userInfo,RequireVisaModel requireVisaModel)throws PassportException{
+        if(StringUtils.isEmpty(requireVisaModel.getTimeStart()) || StringUtils.isEmpty(requireVisaModel.getTimeEnd()) ){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        if (StringUtils.isEmpty(requireVisaModel.getOrderNumber())){
+            requireVisaModel.setOrderNumber(null);
+        }
+        if (StringUtils.isEmpty(requireVisaModel.getSignatory())){
+            requireVisaModel.setSignatory(null);
+        }
+        if (StringUtils.isEmpty(requireVisaModel.getTelephoneNumber())){
+            requireVisaModel.setTelephoneNumber(null);
+        }
+        if (StringUtils.isEmpty(requireVisaModel.getSchedule())){
+            requireVisaModel.setSchedule(null);
+        }
+        //List<ExpressReceipt> expressReceipts=expressReceiptRepository.findByIsError("0");//查询无异常快件
+        List<ExpressReceipt> expressReceipts=visaMapper.findByIsErrorAndCondition(requireVisaModel.getOrderNumber(),requireVisaModel.getSignatory(),requireVisaModel.getTelephoneNumber(),requireVisaModel.getSchedule(),TimeUtils.startTime(requireVisaModel.getTimeStart()),TimeUtils.endTime(requireVisaModel.getTimeEnd()),(requireVisaModel.getPageNum()-1)*requireVisaModel.getPageSize(),requireVisaModel.getPageSize());
+        List<StatisticsModel> models=new ArrayList<>();
+        if(expressReceipts!=null && expressReceipts.size()!=0){
+            for (ExpressReceipt ex:expressReceipts) {
+                Integer passportNum=0;//护照本数
+                Integer egisNum=0;//审核通过数
+                Integer waitNum=0;//待审核数
+                Integer failNum=0;//审核不通过
+                Integer sendNum=0;//已送签数
+                Integer refuseNum=0;//拒签数
+                Integer outNum=0;//出签数
+                Integer sendBackNum=0;//寄回数
+                Integer exprotNum=0;//导出数
+                List<PassportInformation> passportInformations=passportInformationRepository.findByOrderId(ex.getOrderNumber());
+                if(passportInformations!=null && passportInformations.size()!=0){
+                    passportNum=passportInformations.size();
+                    for (PassportInformation pi:passportInformations){
+                        if((!StringUtils.isEmpty(pi.getStatus())) && pi.getStatus().equalsIgnoreCase("P")){
+                            egisNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getStatus())) && pi.getStatus().equalsIgnoreCase("W")){
+                            waitNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getStatus())) && pi.getStatus().equalsIgnoreCase("F")){
+                            failNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getSendStatus())) && pi.getSendStatus().equalsIgnoreCase("S")){
+                            sendNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getSendStatus())) && pi.getSendStatus().equalsIgnoreCase("R")){
+                            refuseNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getSendStatus())) && pi.getSendStatus().equalsIgnoreCase("O")){
+                            outNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getIsSendBack())) && pi.getIsSendBack().equalsIgnoreCase("SB")){
+                            sendBackNum+=1;
+                        }
+                        if((!StringUtils.isEmpty(pi.getIsExport())) && pi.getIsExport().equalsIgnoreCase("Y")){
+                            exprotNum+=1;
+                        }
+                    }
+                }
+                StatisticsModel model=new StatisticsModel();
+                model.setEgisNum(egisNum);
+                model.setExprotNum(exprotNum);
+                model.setFailNum(failNum);
+                model.setId(ex.getId());
+                model.setName(ex.getSignatory());
+                model.setOrderNumber(ex.getOrderNumber());
+                model.setOutNum(outNum);
+                model.setPassportNum(passportNum);
+                model.setRefuseNum(refuseNum);
+                model.setSchedule(ex.getSchedule());
+                model.setSendBackNum(sendBackNum);
+                model.setSendNum(sendNum);
+                model.setSignTime(ex.getCreateTime());
+                models.add(model);
+            }
+        }
+        PageInfo page=new PageInfo();
+        page.setPageSize(requireVisaModel.getPageSize());
+        page.setPageNum(requireVisaModel.getPageNum());
+        page.setTotal(visaMapper.countByIsErrorAndCondition(requireVisaModel.getOrderNumber(),requireVisaModel.getSignatory(),requireVisaModel.getTelephoneNumber(),requireVisaModel.getSchedule(),TimeUtils.startTime(requireVisaModel.getTimeStart()),TimeUtils.endTime(requireVisaModel.getTimeEnd())));
+        page.setList(models);
+        return page;
+    }
+
+    /**
+     * 根据状态查询订单号（未导出过）
+     * @param userInfo
+     * @param orderIds
+     * @return
+     * @throws PassportException
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public List<PassportInformation> getAllPassPortInformationByOrderId(UserInfoForToken userInfo,List<String> orderIds)throws PassportException{
+        if(orderIds==null && orderIds.size()==0){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        List<PassportInformation> passportInformations=passportInformationRepository.findByStatusAndOrderIdInAndIsExportOrderByOrderId("P",orderIds,"N");//查询审核通过并且未导出的护照
+        for (PassportInformation pi:passportInformations){
+            pi.setIsExport("Y");
+        }
+        passportInformationRepository.saveAll(passportInformations);
+        return passportInformations;
+    }
+
+    /**
+     * 根据状态查询订单号（全部）
+     * @param userInfo
+     * @param orderIds
+     * @return
+     * @throws PassportException
+     */
+    public List<PassportInformation> getAllPassPortInformationByOrderId2(UserInfoForToken userInfo,List<String> orderIds)throws PassportException{
+        if(orderIds==null && orderIds.size()==0){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        List<PassportInformation> passportInformations=passportInformationRepository.findByStatusAndOrderIdIn("P",orderIds);//查询审核通过的护照
+        return passportInformations;
+    }
+
+    /**
+     * 根据护照查询寄回信息
+     * @param userInfo
+     * @param passportId
+     * @return
+     * @throws PassportException
+     */
+    public LogisticsPassPortModel getsendBackMessageByPassPortId(UserInfoForToken userInfo,String passportId)throws PassportException{
+        if(StringUtils.isEmpty(passportId)){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        PassportInformation passportInformations=passportInformationRepository.findByIdIs(passportId);//查询审核通过的护照
+        if (passportInformations!=null){
+            if(passportInformations.getSendStatus().equalsIgnoreCase("O")&&passportInformations.getIsSendBack().equalsIgnoreCase("SB")){
+                Logistics logistics=logisticsRepository.findBySfExpressId(passportInformations.getSfExpressId());
+                VisaPassportRelation visaPassportRelation=visaPassportRelationRepository.findByPassId(passportInformations.getId());
+                ExpressReceipt expressReceipt=expressReceiptRepository.findByIdIs(visaPassportRelation.getVid());
+                LogisticsPassPortModel model=new LogisticsPassPortModel();
+                model.setExpressReceipt(expressReceipt);
+                model.setLogistics(logistics);
+                model.setPassportInformation(passportInformations);
+                if(logistics==null&&expressReceipt==null){
+                    model=null;
+                    return model;
+                }
+                return model;
+            }else {
+                throw new PassportException("该护照尚未出签或寄回！");
+            }
+        }else {
+            throw new PassportException(ResultCode.PASSPORT_NOEXIST_MSG);
+        }
+    }
+
 }

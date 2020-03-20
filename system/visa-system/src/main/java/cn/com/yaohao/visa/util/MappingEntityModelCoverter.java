@@ -1,6 +1,8 @@
 package cn.com.yaohao.visa.util;
 
 import cn.com.yaohao.visa.entity.BackUserInfo;
+import cn.com.yaohao.visa.entity.Logistics;
+import cn.com.yaohao.visa.model.LogisticsModel;
 import cn.com.yaohao.visa.model.UserInfoForToken;
 import cn.com.yaohao.visa.model.backuser.BackUserModel;
 
@@ -23,5 +25,18 @@ public class MappingEntityModelCoverter {
         model.setStatus(userInfo.getStatus());
         model.setPwd(userInfo.getPwd());
         return model;
+    }
+
+    public final static Logistics CONVERTERFROMLOGISTICSMODELTOLOGISTIC(LogisticsModel model) {
+        Logistics logistics=new Logistics();
+        logistics.setGetAddress(model.getGetAddress());
+        logistics.setGetP(model.getGet());
+        logistics.setGetPhone(model.getGetPhone());
+        logistics.setLogisticsNumber(model.getLogisticsNumber());
+        logistics.setOrderId(model.getOrderId());
+        logistics.setSendAddress(model.getSendAddress());
+        logistics.setSender(model.getSender());
+        logistics.setSenderPhone(model.getSenderPhone());
+        return logistics;
     }
 }

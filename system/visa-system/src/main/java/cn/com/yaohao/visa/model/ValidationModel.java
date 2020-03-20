@@ -16,6 +16,7 @@ public class ValidationModel {
     private String problem;
     private String status;//状态 待处理，已处理，异常
     private String sendStatus;//送签状态S-已送
+    private String isSendBack;//是否寄回
     private int DIFF_DATE;//剩余工期
     private long checkTime;//审核时间
     private String expireTime;//工期到期时间
@@ -173,5 +174,13 @@ public class ValidationModel {
 
     public void setDIFF_DATE(int DIFF_DATE) {
         this.DIFF_DATE = DIFF_DATE;
+    }
+
+    public String getIsSendBack() {
+        return isSendBack;
+    }
+
+    public void setIsSendBack(String isSendBack) {
+        this.isSendBack = isSendBack;
     }
 }

@@ -12,9 +12,13 @@ import java.util.List;
 public interface PassportInformationRepository extends JpaRepository<PassportInformation,String>,JpaSpecificationExecutor<PassportInformation> {
 
     PassportInformation findByIdIs(String id);
-    List<PassportInformation> findByIdIn(List<String> id);
+    @Query(value = "SELECT * FROM passport_information WHERE id IN ?1 LIMIT ?2,?3",nativeQuery = true)
+    List<PassportInformation> findByIdIn(List<String> id,int pageNum,int pageSize);
+    int countByIdIn(List<String> id);
     List<PassportInformation> findByStatus(String status);
     List<PassportInformation> findByStatusAndOrderId(String status,String orderId);
+    List<PassportInformation> findByStatusAndOrderIdIn(String status,List<String> orderIds);
+    List<PassportInformation> findByStatusAndOrderIdInAndIsExportOrderByOrderId(String status,List<String> orderIds,String status2);
     PassportInformation findByPassportEncoding(String passPortId);
     @Transactional
     @Modifying
@@ -23,5 +27,6 @@ public interface PassportInformationRepository extends JpaRepository<PassportInf
     List<PassportInformation> findByPassportEncodingInAndOrderId(List<String> encoding,String orderId);
     int countByPassportEncodingInAndOrderId(List<String> encoding,String orderId);
     PassportInformation findByPassportEncodingAndOrderId(String passPortId,String orderNum);
-    List<PassportInformation> findByIdInAndStatusOrStatus(List<String> pids,String status,String status2);
+    List<PassportInformation> findByIdInAndSendStatusOrSendStatus(List<String> pids,String status,String status2);
+    List<PassportInformation> findByOrderId(String orderId);
 }

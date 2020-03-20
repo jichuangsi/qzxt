@@ -12,6 +12,7 @@ public class PassportInformation {
     @GeneratedValue(generator = "jpa-uuid")
     private String id;//护照信息
     private String name;//姓名
+    private String englishName;
     private String sex;//性别
     private long birthDay;//出生日期
     private String birthPlace;//出生地
@@ -23,7 +24,7 @@ public class PassportInformation {
     private String luggage;//运费
     private String picPath;//图片地址
     private String status;//状态=》P通过。F=》没通过。W=》待审核
-    private String sendStatus;//送签状态 已送=》S，出签=》O，拒签=》R，寄回=》SB
+    private String sendStatus;//送签状态 已送=》S，出签=》O，拒签=》R，未送签=》N
     private long checkTime;//审核时间
     private String expireTime;//工期到期时间
     private String orderId;//订单编号
@@ -32,8 +33,10 @@ public class PassportInformation {
     private long signDate;//签发日期
     private String signAddress;//签发地
     private String remarks;
-    private String isSendBack;//是否寄回
-    private String isExport;//是否导出
+    private String isSendBack;//是否寄回SB寄回，N未寄回
+    private String sfExpressId;//顺丰寄件id
+    private String isExport;//是否导出Y
+    private long outSignTime;
     private long createTime=System.currentTimeMillis();//创建时间
 
     public String getId() {
@@ -50,6 +53,14 @@ public class PassportInformation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEnglishName() {
+        return englishName;
+    }
+
+    public void setEnglishName(String englishName) {
+        this.englishName = englishName;
     }
 
     public String getSex() {
@@ -234,5 +245,21 @@ public class PassportInformation {
 
     public void setIsExport(String isExport) {
         this.isExport = isExport;
+    }
+
+    public String getSfExpressId() {
+        return sfExpressId;
+    }
+
+    public long getOutSignTime() {
+        return outSignTime;
+    }
+
+    public void setOutSignTime(long outSignTime) {
+        this.outSignTime = outSignTime;
+    }
+
+    public void setSfExpressId(String sfExpressId) {
+        this.sfExpressId = sfExpressId;
     }
 }

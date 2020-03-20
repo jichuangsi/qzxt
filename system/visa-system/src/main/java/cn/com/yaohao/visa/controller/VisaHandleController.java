@@ -4,6 +4,7 @@ import cn.com.yaohao.visa.entity.ExpressReceipt;
 import cn.com.yaohao.visa.entity.RemarksInformation;
 import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.*;
+import cn.com.yaohao.visa.model.backuser.RoleAddModel;
 import cn.com.yaohao.visa.service.VisaHandleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -115,9 +116,9 @@ public class VisaHandleController {
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })
     @PostMapping("/getPassportByExpressReceiptId")
-    public ResponseModel<List<PassportModel>> getPassportByExpressReceiptId(@ModelAttribute UserInfoForToken userInfo, @RequestParam String passprtId)throws PassportException{
+    public ResponseModel getPassportByExpressReceiptId(@ModelAttribute UserInfoForToken userInfo, @RequestBody RequireVisaModel model)throws PassportException{
         try {
-            return ResponseModel.sucess("",visaHandleService.getPassportById(userInfo, passprtId));
+            return ResponseModel.sucess("",visaHandleService.getPassportById(userInfo, model.getExpressReceiptId(),model.getPageNum(),model.getPageSize()));
         }catch (PassportException e){
             return ResponseModel.fail("",e.getMessage());
         }
@@ -235,10 +236,9 @@ public class VisaHandleController {
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })
     @PostMapping("/sendBackVisa")
-    public ResponseModel sendBackVisa(@ModelAttribute UserInfoForToken userInfo, @RequestBody ValidationModel model){
+    public ResponseModel sendBackVisa(@ModelAttribute UserInfoForToken userInfo, @RequestBody LogisticsModel model){
         try {
-            visaHandleService.sendBackVisa(userInfo,model.getId(),model.getReturnAddress());
-            return ResponseModel.sucessWithEmptyData("");
+            return ResponseModel.sucess("",visaHandleService.sendBackVisa(userInfo,model));
         }catch (Exception e){
             return ResponseModel.fail("",e.getMessage());
         }
@@ -249,10 +249,9 @@ public class VisaHandleController {
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })
     @PostMapping("/sendBackVisaTogether")
-    public ResponseModel sendBackVisaTogether(@ModelAttribute UserInfoForToken userInfo, @RequestBody ValidationModel model){
+    public ResponseModel sendBackVisaTogether(@ModelAttribute UserInfoForToken userInfo, @RequestBody LogisticsModel model){
         try {
-            visaHandleService.sendBackTogether(userInfo,model.getId(),model.getReturnAddress());
-            return ResponseModel.sucessWithEmptyData("");
+            return ResponseModel.sucess("",visaHandleService.sendBackTogether(userInfo,model));
         }catch (Exception e){
             return ResponseModel.fail("",e.getMessage());
         }
@@ -294,6 +293,58 @@ public class VisaHandleController {
         try {
             visaHandleService.localUploadPics(userInfo,file,orderId);
             return ResponseModel.sucessWithEmptyData("");
+        }catch (Exception e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "导出护照列表", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getStatisticsModel")
+    public ResponseModel getStatisticsModel(@ModelAttribute UserInfoForToken userInfo, @RequestBody RequireVisaModel model){
+        try {
+            return ResponseModel.sucess("",visaHandleService.getExpressReceiptStatistic(userInfo,model));
+        }catch (Exception e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "根据订单查询护照（导出）", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getPassportByOrderIds")
+    public ResponseModel getPassportByOrderIds(@ModelAttribute UserInfoForToken userInfo, @RequestBody RoleAddModel model){
+        try {
+            return ResponseModel.sucess("",visaHandleService.getAllPassPortInformationByOrderId(userInfo,model.getOrderIds()));
+        }catch (Exception e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "根据订单查询护照（全部导出）", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getAllPassportByOrderIds")
+    public ResponseModel getAllPassportByOrderIds(@ModelAttribute UserInfoForToken userInfo, @RequestBody RoleAddModel model){
+        try {
+            return ResponseModel.sucess("",visaHandleService.getAllPassPortInformationByOrderId2(userInfo,model.getOrderIds()));
+        }catch (Exception e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "根据护照查询基本信息（打印）", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/getsendBackMessageByPassPortId")
+    public ResponseModel getsendBackMessageByPassPortId(@ModelAttribute UserInfoForToken userInfo, @RequestParam String passportId){
+        try {
+            return ResponseModel.sucess("",visaHandleService.getsendBackMessageByPassPortId(userInfo,passportId));
         }catch (Exception e){
             return ResponseModel.fail("",e.getMessage());
         }

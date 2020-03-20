@@ -5,8 +5,10 @@ import cn.com.yaohao.visa.entity.RemarksInformation;
 import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.RequireVisaModel;
 import cn.com.yaohao.visa.model.ResponseModel;
+import cn.com.yaohao.visa.model.TBOrderModel;
 import cn.com.yaohao.visa.model.UserInfoForToken;
 import cn.com.yaohao.visa.service.ExpressReceiptService;
+import cn.com.yaohao.visa.service.TBOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +24,8 @@ import javax.annotation.Resource;
 public class ExpressReceiptController {
     @Resource
     private ExpressReceiptService expressReceiptService;
+    @Resource
+    private TBOrderService tbOrderService;
 
     @ApiOperation("快件签收")
     @ApiImplicitParams({})
@@ -91,6 +95,18 @@ public class ExpressReceiptController {
     public ResponseModel getExpressReceiptRemark(@ModelAttribute UserInfoForToken userInfo,@RequestParam String expressId,@RequestParam int pageNum,@RequestParam int pageSize){
         try {
             return ResponseModel.sucess("",expressReceiptService.getExpressRemark(userInfo,expressId,pageNum,pageSize));
+        }catch (PassportException e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+
+    }
+
+    @ApiOperation("根据手机匹配订单")
+    @ApiImplicitParams({})
+    @GetMapping("/getOrderByPhone")
+    public ResponseModel getOrderByPhone(@ModelAttribute UserInfoForToken userInfo,@RequestParam String phone){
+        try {
+            return ResponseModel.sucess("",tbOrderService.getTbOrder(phone));
         }catch (PassportException e){
             return ResponseModel.fail("",e.getMessage());
         }

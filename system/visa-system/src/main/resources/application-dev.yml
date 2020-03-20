@@ -11,7 +11,7 @@ custom:
       userClaim: userInfo
       survivalTime: 7200000
       secret: BD12@6$133a
-      ingoreTokenUrls: /backRoleConsole/loginBackUser,/backRoleConsole/registBackUser,/swagger-ui.html#/*  #忽略检查token的URL
+      ingoreTokenUrls: /backRoleConsole/loginBackUser,/backRoleConsole/registBackUser,/swagger-ui.html#/*,/swagger-ui.html  #忽略检查token的URL
     
 spring:
   application:
@@ -25,8 +25,16 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+    initialization-mode: always
+    data : classpath:data.sql
+    sql-script-encoding : utf-8
   main:
       allow-bean-definition-overriding: true
+
+fengqiao:
+  reqURL : http://bsp-oisp.sf-express.com/bsp-oisp/sfexpressService
+  clientCode: HYTXGJLX
+  checkWord: x5ZF2i6EZ7JG8vASyjyuTCt7MA6mmcH8
 
 file:
   uploadFolder: D:/ #文件上传目录(window是d/e/f盘， linux是/)（注意Linux和Windows上的目录结构不同）
