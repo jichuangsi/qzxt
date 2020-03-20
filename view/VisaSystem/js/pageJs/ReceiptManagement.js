@@ -113,7 +113,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 				}
 				if (item.status == "未匹配") {
 					var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
-						"#3C94FF");
+						"#c9c9c9");
 					tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
 				}
 				if (item.problem == "是" && item.status == "未匹配") {

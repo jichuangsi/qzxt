@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 	<head>
 		<meta charset="UTF-8">
 		<title>签证后台</title>
@@ -9,13 +8,19 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="./css/font.css">
 		<link rel="stylesheet" href="./css/xadmin.css">
+		<link rel="stylesheet" href="js/modules/k/fontawesome-webfont.woff2"></link>
 		<link rel="stylesheet" href="lib/layui/css/layui.css" media="all" />
+		
 		<script src="./lib/js/jquery.min.js"></script>
 		<script src="./lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="./js/xadmin.js"></script>
 		<script src="js/Configuration.js"></script>
 		<script src="js/index.js"></script>
-
+<!-- 		<script src="./js/modules/k/autoload.js"></script>
+		<script src="./js/modules/k/live2d.min.js"></script>
+		<link rel="stylesheet" href="js/modules/k/font-awesome.min.css"></link>
+		<link rel="stylesheet" href="js/modules/k/waifu.css"></link> -->
+		
 	</head>
 	<style>
 		.widths {
@@ -33,6 +38,12 @@
 		#addm{
 			display: none;
 			margin-top: 10px;
+		}
+		#live2dcanvas {
+		    border: 0 !important;
+		}
+		.fa-info-circle{
+			display: none !important;
 		}
 	</style>
 
@@ -138,6 +149,12 @@
 								</a>
 							</li>
 							<li>
+								<a _href="pages/OrderStatusDetails.html">
+									<i class="iconfont">&#xe6a7;</i>
+									<cite>订单状态详情</cite>
+								</a>
+							</li>
+							<li>
 								<a _href="pages/VisaProcessingRecord.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>签证处理记录</cite>
@@ -190,7 +207,7 @@
 				<div class="layui-tab-content">
 
 					<div class="layui-tab-item layui-show">
-					<!-- 	<div class="x-nav">
+						<!-- 	<div class="x-nav">
 							<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 							 title="刷新">
 								<i class="layui-icon" style="line-height:30px">&#xe669;</i></a>
@@ -210,6 +227,7 @@
 		</div>
 		<!-- 底部结束 -->
 	</body>
+	
 	<script>
 		function updatePwd() {
 			index = layer.open({
@@ -222,6 +240,7 @@
 				content: $('#upPwd')
 			});
 		}
+
 		function add() {
 			index = layer.open({
 				type: 1,

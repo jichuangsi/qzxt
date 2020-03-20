@@ -24,12 +24,24 @@
 		</div>
 		<div class="x-body">
 			<div class="layui-row">
-				<form class="layui-form layui-col-md12">
+				<form class="layui-form layui-col-md12" >
 					<div class="layui-input-inline">
 						<input type="text" name="orderNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
+				<!-- 	<div class="layui-input-inline">
+						<input type="text" name="telephoneNumber" placeholder="联系电话" autocomplete="off" class="layui-input" style="width: 200px;">
+					</div> -->
 					<div class="layui-input-inline">
-						<input type="text" name="name" placeholder="申请人" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="signatory" placeholder="申请人" autocomplete="off" class="layui-input" style="width: 100px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="schedule" placeholder="工期" autocomplete="off" class="layui-input" style="width: 100px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="passportNum" placeholder="护照数" autocomplete="off" class="layui-input"  style="width: 100px;">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="time" placeholder="时间范围" autocomplete="off" class="layui-input time" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
 						<!-- <input type="text" name="username" placeholder="出签结果" autocomplete="off" class="layui-input" style="width: 150px;"> -->
@@ -38,7 +50,6 @@
 							<option value="S">已送签</option>
 							<option value="O">已出签</option>
 							<option value="R">已拒签</option>
-							<option value="SB">已寄回</option>
 						</select>
 					</div>
 					<div class="layui-btn" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i></div>
@@ -47,8 +58,9 @@
 			<table id="order" lay-filter="order"></table>
 		</div>
 		<script type="text/html" id="operation">
-			<div class="layui-btn layui-btn-small">导出全部</div>
-			<div class="layui-btn layui-btn-small">导出新增</div>
+			<div class="layui-btn layui-btn-small"lay-submit=""lay-filter="toOrder" id="exportBtn" >导出新增</div>
+			<div class="layui-btn layui-btn-small"lay-submit=""lay-filter="toAllOrder">导出全部</div>
 		</script>
 	</body>
+	
 </html>

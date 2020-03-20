@@ -15,12 +15,15 @@
 		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
 		<script src="../js/util.js"></script>
 		<script src="../js/Configuration.js"></script>
+		<script src="../js/pageJs/Print.js"></script>
+		<script src="../js/pageJs/jquery-barcode.js"></script>
 		<script src="../js/pageJs/VisapProcessing.js"></script>
 
 	</head>
 	<style>
 		.widths {
-				width: 300px;
+				/* width: 300px; */
+				width: 380px;
 			}
 			
 			#info {
@@ -33,6 +36,28 @@
 			}
 			.brs{
 				border: 1px solid;
+			}
+			.layui-input-block-sf {
+			    margin-left: 77px;
+			    min-height: 36px;
+			}
+			.yc{
+				display: none;
+			}
+			#toOneInfo{
+				display: none;
+				margin-top: 10px;
+			}
+			#toSendBackInfo{
+				display: none;
+				margin-top: 10px;
+			}
+			.bt{
+				    margin-bottom: 5px;
+			}
+			#toSendBackInfoAll{
+				display: none;
+				margin-top: 10px;
 			}
 		</style>
 	<body>
@@ -83,17 +108,41 @@
 			{{# }else if(d.sendStatus=="S"){ }}
 				<div class="layui-btn layui-btn-sm noVisa">拒签</div>
 				<div class="layui-btn layui-btn-sm toVisa" >出签</div>
-			{{# }else if(d.sendStatus=="O"){ }}
+			{{# }else if(d.sendStatus=="O" && d.isSendBack=="N"){ }}
 				<div class="layui-btn layui-btn-sm" onclick="toinfo()">寄回</div>
-				<div class="layui-btn layui-btn-sm" onclick="toinfo()">一同寄回</div>
-			{{# }else if(d.sendStatus=="R"){ }}
+				<div class="layui-btn layui-btn-sm" onclick="oneInfo()">一同寄回</div>
+			{{# }else if(d.sendStatus=="R" && d.isSendBack=="N"){ }}
 				<div class="layui-btn layui-btn-sm" onclick="toinfo()">寄回</div>
-				<div class="layui-btn layui-btn-sm" onclick="toinfo()">一同寄回</div>
-			{{# }else if(d.sendStatus=="SB"){ }}
-				<div class="">已寄回</div>
+				<div class="layui-btn layui-btn-sm" onclick="oneInfo()">一同寄回</div>
+			{{# }else if(d.isSendBack=="SB"){ }}
+			<div class=" layui-btn layui-btn-sm layui-btn-normal print">打印</div>
+			<div class=" layui-btn layui-btn-sm layui-btn-normal printAll" >打印快递</div>
+				<!-- <div class="">已寄回</div> -->
 			{{# } }}
 		</script>
 		<script>
+			function print() {
+					index = layer.open({
+						type: 1,
+						area: ['35%', '350px'],
+						anim: 2,
+						title: '打印信息',
+						maxmin: true,
+						shadeClose: true,
+						content: $('#toSendBackInfo')
+					});
+				}
+				function printAll() {
+						index = layer.open({
+							type: 1,
+							area: ['35%', '65%'],
+							anim: 2,
+							title: '快递单信息',
+							maxmin: true,
+							shadeClose: true,
+							content: $('#toSendBackInfoAll')
+						});
+					}
 			function supplement() {
 					index = layer.open({
 						type: 1,
@@ -105,6 +154,7 @@
 						content: $('#info')
 					});
 				}
+				
 			function reamark() {
 				index = layer.open({
 					type: 2,
@@ -142,7 +192,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">出生地：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="newPwd" placeholder="出生地" readonly="true" value="广州海珠区" class="layui-input " >
+					<input type="text" name="newPwd" placeholder="出生地" readonly="true" value="广州海珠区" class="layui-input ">
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -175,28 +225,41 @@
 		</form>
 	</div>
 	<div id="toinfo" class="layui-fluid">
-		<form class="layui-form" autocomplete="off" lay-filter="test">
+		<form class="layui-form" autocomplete="off" lay-filter="test" id="wrap">
 			<div class="layui-form-item">
-				<label class="layui-form-label">姓名：</label>
+				<div class="layui-input-block-sf">
+					<div class=" widths" id="barcode" style="display: none;">
+						<input type="text" name="sfExpress" class="layui-input " value="SF1019420878233" id="bjid">
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item" id="orderId" style="display: none;">
+				<label class="layui-form-label">流水单号：</label>
 				<div class="layui-input-block widths">
-					<input type="hidden" name="id" />
-					<input type="text" name="name" placeholder="姓名" readonly="true" value="王小二" class="layui-input " lay-verify="required">
+					<input type="text" name="orderId" placeholder="流水单号" readonly="true" value="王小二" class="layui-input " lay-verify="required">
 				</div>
 			</div>
 			<div class="layui-form-item">
+				<label class="layui-form-label">姓名：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="passportId" />
+					<input type="text" name="get" placeholder="姓名" readonly="true" value="王小二" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<!-- 			<div class="layui-form-item">
 				<label class="layui-form-label">性别：</label>
 				<div class="layui-input-block widths">
 					<input type="radio" name="sex" value="M" title="男" checked>
 					<input type="radio" name="sex" value="F" title="女">
 				</div>
-			</div>
-			<div class="layui-form-item">
+			</div> -->
+			<!-- 		<div class="layui-form-item">
 				<label class="layui-form-label">出生日期：</label>
 				<div class="layui-input-block widths">
 					<input type="text" name="birthDay" placeholder="出生日期" readonly="true" class="layui-input " lay-verify="required">
 				</div>
-			</div>
-			<div class="layui-form-item">
+			</div> -->
+			<!-- 	<div class="layui-form-item">
 				<label class="layui-form-label">出生地：</label>
 				<div class="layui-input-block widths">
 					<input type="text" name="birthPlace" placeholder="出生地" readonly="true" class="layui-input " >
@@ -213,7 +276,7 @@
 				<div class="layui-input-block widths">
 					<input type="text" name="passportEncoding" placeholder="护照编码" readonly="true" class="layui-input " lay-verify="required">
 				</div>
-			</div>
+			</div> -->
 			<div class="layui-form-item">
 				<label class="layui-form-label">有效日期：</label>
 				<div class="layui-input-block widths">
@@ -221,15 +284,34 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">联系电话：</label>
+				<label class="layui-form-label">收件人号码：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="telephoneNumber" placeholder="寄回地址" class="layui-input " lay-verify="required|phone">
+					<input type="text" name="getPhone" placeholder="寄回地址" class="layui-input " lay-verify="required|phone">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">寄回地址：</label>
 				<div class="layui-input-block widths">
-					<input type="text" name="returnAddress" placeholder="寄回地址" class="layui-input brs" lay-verify="required">
+					<input type="text" name="getAddress" placeholder="寄回地址" class="layui-input brs" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="sendAddress" placeholder="寄件地址" class="layui-input brs" value="广东省广州市越秀区华乐街道环市东路339号广东国际大厦A附楼26A"
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件号码：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="senderPhone" placeholder="寄件号码" class="layui-input brs" value="18928943609" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件人：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="sender" placeholder="寄件人" class="layui-input brs" value="耀豪环游天下" lay-verify="required">
 				</div>
 			</div>
 			<!-- <div class="layui-form-item">
@@ -242,7 +324,166 @@
 				<div class="layui-input-block">
 					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
 					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
-					<div class=" layui-btn" lay-submit lay-filter="sendBack">确认提交</div>
+					<div class=" layui-btn" lay-submit lay-filter="sendBack" id="sendBack">确认提交</div>
+					<button type="button" class="layui-btn" id="btn" style="display: none;">
+						打印
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div id="toOneInfo" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="infoTo" id="wrap2">
+			<div class="layui-form-item">
+				<div class="layui-input-block-sf">
+					<div class=" widths" id="barcode2" style="display: none;">
+						<input type="text" name="sfExpress" class="layui-input " id="bjid2">
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item" id="orderId" style="display: none;">
+				<label class="layui-form-label">流水单号：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="orderId" placeholder="流水单号" readonly="true" class="layui-input ">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">姓名：</label>
+				<div class="layui-input-block widths">
+					<input type="hidden" name="passportId" />
+					<input type="text" name="get" placeholder="姓名" readonly="true" class="layui-input " lay-verify="required">
+				</div>
+			</div>
+			<!-- 				<div class="layui-form-item">
+					<label class="layui-form-label">有效日期：</label>
+					<div class="layui-input-block widths">
+						<input type="text" name="expiryDate" placeholder="有效日期" readonly="true" class="layui-input " lay-verify="required">
+					</div>
+				</div> -->
+			<div class="layui-form-item">
+				<label class="layui-form-label">收件人号码：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="getPhone" placeholder="寄回地址" class="layui-input " lay-verify="required|phone">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄回地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="getAddress" placeholder="寄回地址" class="layui-input brs" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件地址：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="sendAddress" placeholder="寄件地址" class="layui-input brs" value="广东省广州市越秀区华乐街道环市东路339号广东国际大厦A附楼26A"
+					 lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件号码：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="senderPhone" placeholder="寄件号码" class="layui-input brs" value="18928943609" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">寄件人：</label>
+				<div class="layui-input-block widths">
+					<input type="text" name="sender" placeholder="寄件人" class="layui-input brs" value="耀豪环游天下" lay-verify="required">
+				</div>
+			</div>
+			<!-- <div class="layui-form-item">
+					<label class="layui-form-label">快递单号：</label>
+					<div class="layui-input-block widths">
+						<input type="text" name="courierNumber" placeholder="快递单号" class="layui-input brs" >
+					</div>
+				</div> -->
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<!-- <button class="layui-btn" lay-submit lay-filter="update_Pwd">修改</button> -->
+					<!-- <div class="layui-btn" onclick="supplement()">待补充</div> -->
+					<div class=" layui-btn" lay-submit lay-filter="sendOneBack" id="sendBack2">确认提交</div>
+					<button type="button" class="layui-btn" id="btn2" style="display: none;">
+						打印
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="toSendBackInfo" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="sendInfo" id="toinfos">
+			<div class="layui-form-item">
+				<label class="layui-form-label">订单号：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="orderNumber" placeholder="订单号" class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">工期：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="schedule" placeholder="工期" class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">审核时间：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="checkTime" placeholder="审核时间" class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">寄出时间：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="createTime" placeholder="寄出时间" class="layui-input" readonly="true" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button type="button" class="layui-btn" id="pri">
+						打印
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 打印快递信息 -->
+	<div id="toSendBackInfoAll" class="layui-fluid">
+		<form class="layui-form" autocomplete="off" lay-filter="sendInfoAll" id="toinfosAll">
+			<div class="layui-form-item">
+				<div class="layui-input-block-sf">
+					<div class=" widths" id="print" >
+						<input type="text" name="sfExpress" class="layui-input "readonly="true" id="sf">
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">订单号：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="orderNumber"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">收件人：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="getP"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">收件人号码：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="getPhone"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">收件人地址：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="getAddress"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">寄件人：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="sender"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">寄件人号码：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="senderPhone" class="layui-input" readonly="true" lay-verify="required">
+				</div>
+				<label class="layui-form-label">寄件人地址：</label>
+				<div class="layui-input-block widths bt">
+					<input type="text" name="sendAddress"  class="layui-input" readonly="true" lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button type="button" class="layui-btn" id="priAll">
+						打印
+					</button>
 				</div>
 			</div>
 		</form>

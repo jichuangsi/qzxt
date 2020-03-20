@@ -133,13 +133,48 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 		where: {},
 		done: function(res, curr, count) {
 			var that = this.elem.next();
+			var orderId = [];
 			res.data.forEach(function(item, index) {
-				if (item.ben == "3") {
-					var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
-						"rgba(60, 187, 255, 0.5)");
-					tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
-				}
+				orderId.push(item.orderNumber)
 			})
+			//去掉重复的订单
+			function unique(arr) {
+				return arr.filter(function(item, index, arr) {
+					return arr.indexOf(item, 0) === index;
+				});
+			}
+			var count = 1;
+			var arr = unique(orderId);
+			var list = [];
+			$.each(arr, function(index, item) {
+				list.push({
+					order: item,
+					num: count
+				})
+				count++;
+			});
+			var modity = [];
+			for (var i = 0; i < list.length; i++) {
+				if (list[i].num % 2 == 0) {
+					modity.push(list[i].order)
+				}
+			}
+			
+			$.each(modity, function(index, arr) {
+				res.data.forEach(function(item, index) {
+					// if (item.diff_DATE < 3 && item.isSendBack != "SB") {
+					// 	var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
+					// 		"red");
+					// 	tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
+					// }
+					if (arr == item.orderNumber) {
+						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
+							"#eee");
+						tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
+					}
+				})
+			
+			});
 		},
 		parseData: function(res) {
 			var arr;
@@ -207,6 +242,8 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				$(this).prop("checked", true);
 			}
 		});
+		var url=httpUrl()+information.picPath;
+		$(".img").attr("src",url);
 		form.val('testTeacher', {
 			"orderNumber": essential.orderNumber,
 			"courierNumber": essential.courierNumber,
