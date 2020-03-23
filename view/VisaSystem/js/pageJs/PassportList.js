@@ -16,7 +16,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		method: "post",
 		async: false,
 		id: 'idTest',
-		url: httpUrl() + '/visaHandle/getPassportByExpressReceiptId?passprtId=' + id,
+		url: httpUrl() + '/visaHandle/getPassportByExpressReceiptId',
 		contentType: 'application/json',
 		headers: {
 			'accessToken': getToken()
@@ -117,14 +117,16 @@ layui.use(['form', 'table', 'laydate'], function() {
 			pageName: 'pageNum',
 			limitName: "pageSize"
 		},
-		where: {},
+		where: {
+			"expressReceiptId":id
+		},
 		parseData: function(res) {
 			var arr;
 			var code;
 			var total = 0;
 			if (res.code == "0010") {
-				arr = res.data;
-				total =arr.length;
+				arr = res.data.list;
+				total =res.data.total;
 				code = 0;
 			}
 			return {

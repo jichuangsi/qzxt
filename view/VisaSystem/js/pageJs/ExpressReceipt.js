@@ -33,18 +33,24 @@ layui.use(['form', 'table', 'laydate'], function() {
 	$(document).on('click', '#matching', function() {
 		var data = form.val("order"); //取出电话号码还有姓名
 		var phone = data.telephoneNumber;
-		var name = data.signatory;
 		//然后根据这两个去查询其订单
-		var url = "";
-		var arr = getAjaxPostData();
-
+		var url = "/backExpressReceipt/getOrderByPhone?phone="+phone;
+		var data = getAjaxData(url);
+		var arr=data.data;
+		if(data.code!='0010'||arr.orderId==null){
+			layer.msg('暂无相关订单！');
+			return 
+		}
 		//查询完后把查询到的数据返回，然后赋值上去
 		form.val("order", {
 			"courierNumber": arr.courierNumber,
-			"telephoneNumber": arr.telephoneNumber,
+			"telephoneNumber": arr.phone,
 			"signatory": arr.signatory,
-			"orderNumber": arr.orderNumber,
-			"count": arr.count
+			"orderNumber": arr.orderId,
+			"count": arr.count,
+			"schedule":arr.schedule,
+			"returnAddress":arr.returnAddress,
+			"address":arr.address
 		})
 	})
 	//没有问题就隐藏输入框
@@ -76,6 +82,11 @@ layui.use(['form', 'table', 'laydate'], function() {
 			reamark(data.orderNumber);
 		}
 	});
+	//自动匹配订单
+	// $(document).on('click','#matching',function(obj){
+	// 	var phone=$(obj).parent().parent().parent().find('input[name=telephoneNumber]').val();
+	// 	console.log(phone)
+	// });
 	//跳转备注页面
 	function reamark(id) {
 		index = layer.open({

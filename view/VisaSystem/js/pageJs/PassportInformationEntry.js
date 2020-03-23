@@ -138,7 +138,6 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 			"status": param.status,
 			"visaId": param.id
 		});
-		console.log(111)
 		upload.render({ //允许上传的文件后缀
 			elem: '#toUpload',
 			url: httpUrl() + '/visaHandle/savePassPortByExcel/' + id,
