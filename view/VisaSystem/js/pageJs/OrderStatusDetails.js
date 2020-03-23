@@ -222,6 +222,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		// var count=(data.data).length;
 		// layer.msg('已打印'+count+'本护照信息！');
 		setExcel(data);
+		table.reload('idTest');
 	});
 	//打印全部
 	form.on('submit(toAllOrder)', function(obj) {
@@ -237,6 +238,7 @@ layui.use(['form', 'table', 'laydate'], function() {
 		// var count=(data.data).length;
 		// layer.msg('已打印'+count+'本护照信息！');
 		setExcel(data);
+		table.reload('idTest');
 	});
 	
 	function setExcel(data) {

@@ -33,12 +33,12 @@ layui.use(['form', 'table', 'laydate'], function() {
 					align: 'center',
 					title: '订单号'
 				},
-				{
-					field: 'TradeName',
-					align: 'center',
-					title: '商品名称	'
-				},
 				// {
+				// 	field: 'TradeName',
+				// 	align: 'center',
+				// 	title: '商品名称	'
+				// },
+				// // {
 				// 	field: 'OrderType',
 				// 	align: 'center',
 				// 	title: '订单类型'
@@ -120,8 +120,8 @@ layui.use(['form', 'table', 'laydate'], function() {
 				},
 				{
 					field: 'account',
-					// align: 'center',
-					width: 250,
+					align: 'center',
+					width: 300,
 					title: '操作',
 					toolbar: '#operation'
 				}
@@ -165,16 +165,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 			}
 			$.each(modity, function(index, arr) {
 				res.data.forEach(function(item, index) {
-					if (item.diff_DATE < 3 && item.isSendBack != "SB") {
-						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
-							"red");
-						tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
-					}
 					if (arr == item.orderNumber) {
 						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
 							"#eee");
 						tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
 					}
+					if (item.diff_DATE < 3 && item.isSendBack != "SB") {
+						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("background-color",
+							"red");
+						tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']").css("color", "white");
+					}
+					
 				})
 
 			});
@@ -238,6 +239,9 @@ layui.use(['form', 'table', 'laydate'], function() {
 		});
 		$(document).on('click', '.toVisa', function() {
 			toVisa(param.id, 'O', "是否已出签?");
+		});
+		$(document).on('click', '.qx', function() {
+			qxOeder(param.id);
 		});
 		// $(document).on('click', '.toVisa', function() {
 		// 	location.href=""
@@ -479,5 +483,17 @@ layui.use(['form', 'table', 'laydate'], function() {
 	function geTel(tel){
 	    var reg = /^(\d{3})\d{4}(\d{4})$/;  
 	    return tel.replace(reg, "$1****$2");
+	}
+	//取消
+	function qxOeder(id){
+		var  url='/visaHandle/cancelSFOrder?passportId='+id;
+		layer.confirm('是否要取消快递？', function(index) {
+			var arr=getAjaxPostData(url);
+			if(arr.code=="0010"){
+				layer.msg('取消成功！');
+			}
+			table.reload('idTest');
+			layer.close(index);
+		})
 	}
 })

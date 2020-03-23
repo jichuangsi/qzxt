@@ -2,9 +2,8 @@ var url;
 var token;
 //修改路径
 function httpUrl() {
-	// url = "http://192.168.1.3:8080"
-	// url = "http://192.168.31.84:8080"
 	url="http://192.168.101.51:8080";
+	// url = "http://192.168.101.55:8080";
 	return url;
 }
 //获取token
@@ -99,7 +98,7 @@ function getAjaxData(url) {
 	return data;
 }
 
-function getAjaxPostData(url,param) {
+function getAjaxPostData(url, param) {
 	var data;
 	var DISABLED = 'layui-btn-disabled';
 	// 增加样式
@@ -116,12 +115,13 @@ function getAjaxPostData(url,param) {
 		contentType: 'application/json',
 		data: JSON.stringify(param),
 		success: function(res) {
-			data=res;
+			data = res;
 		}
 	});
 	$('.site-demo-active').removeClass(DISABLED)
 	return data;
 }
+
 function UrlSearch() { //获取url里面的参数
 	var name, value;
 	var str = location.href; //取得整个地址栏
@@ -130,10 +130,11 @@ function UrlSearch() { //获取url里面的参数
 	var arr = str.split("="); //各个参数放到数组里
 	return arr[1];
 }
-	function toDate(data) {
-		var date = new Date(data); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-		var Y = date.getFullYear() + '-';
-		var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-		var D = date.getDate() + ' ';
-		return Y + M + D
-	}
+
+function toDate(data) {
+	var date = new Date(data); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	var Y = date.getFullYear() + '-';
+	var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+	var D = date.getDate() + ' ';
+	return Y + M + D
+}

@@ -79,7 +79,7 @@ layui.config({
 		{
 			"left": "596px",
 			"top": "335px",
-			"url": "pages/ReceiptManagement.html",
+			"url": "",
 			"indexno": "",
 			"text": "输入收快件信息",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -88,7 +88,7 @@ layui.config({
 		{
 			"left": "596px",
 			"top": "510px",
-			"url": "pages/ElectricitySupplierOrder.html",
+			"url": "",
 			"indexno": "",
 			"text": "查询订单",
 			"img": "./js/modules/FlowChart/image/nav_icon_9.png",
@@ -97,7 +97,7 @@ layui.config({
 		{
 			"left": "596px",
 			"top": "685px",
-			"url": "pages/ElectricitySupplierOrder.html",
+			"url": "",
 			"indexno": "",
 			"text": "系统订单数据导入</br>，并打印标签；",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -106,7 +106,7 @@ layui.config({
 		{
 			"left": "596px",
 			"top": "865px",
-			"url": "pages/ReceiptManagement.html",
+			"url": "",
 			"indexno": "",
 			"text": "更新快件状态为“已处理”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -149,7 +149,7 @@ layui.config({
 		{
 			"left": "759px",
 			"top": "640px",
-			"url": "pages/AbnormalExpress.html",
+			"url": "",
 			"indexno": "",
 			"text": "查看异常快件信息，更正订单信息",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -203,7 +203,7 @@ layui.config({
 		{
 			"left": "759px",
 			"top": "865px",
-			"url": "pages/VisaToBeSupplemented.html",
+			"url": "",
 			"indexno": "",
 			"text": "查看待补充签证信息，并联系客户更正",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -212,7 +212,7 @@ layui.config({
 		{
 			"left": "1005px",
 			"top": "889px",
-			"url": "pages/VisaInformationCheck.html",
+			"url": "",
 			"indexno": "",
 			"text": "检查资料是否正确完整",
 			"img": "./js/modules/FlowChart/image/nav_icon_9.png",
@@ -221,7 +221,7 @@ layui.config({
 		{
 			"left": "1002px",
 			"top": "679px",
-			"url": "pages/VisaInformationCheck.html",
+			"url": "",
 			"indexno": "",
 			"text": "将不完善的签证信息设置为 待补充",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -284,7 +284,7 @@ layui.config({
 		{
 			"left": "1010px",
 			"top": "1057px",
-			"url": "pages/VisaToBeSupplemented.html",
+			"url": "",
 			"indexno": "",
 			"text": "将护照图片导入对应签证资料</br>将信息设置为“已检查”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -302,7 +302,7 @@ layui.config({
 		{
 			"left": "1221px",
 			"top": "894px",
-			"url": "pages/VisapProcessing.html",
+			"url": "",
 			"indexno": "",
 			"text": "查看签证资料，处理签证",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -311,7 +311,7 @@ layui.config({
 		{
 			"left": "1227px",
 			"top": "1074px",
-			"url": "pages/VisapProcessing.html",
+			"url": "",
 			"indexno": "",
 			"text": "系统签证信息状态改为“完成”，</br>电商平台对应的信息设置快递状态“已寄出”",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -340,7 +340,7 @@ layui.config({
 		{
 			"left": "30px",
 			"top": "200px",
-			"url": "pages/ExpressReceipt.html",
+			"url": "",
 			"indexno": "",
 			"text": "收件",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -358,7 +358,7 @@ layui.config({
 		{
 			"left": "230px",
 			"top": "200px",
-			"url": "pages/PassportInformationEntry.html",
+			"url": "",
 			"indexno": "",
 			"text": "拆件",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -376,7 +376,7 @@ layui.config({
 		{
 			"left": "973px",
 			"top": "200px",
-			"url": "pages/VisapProcessing.html",
+			"url": "",
 			"indexno": "",
 			"text": "寄回",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -394,7 +394,7 @@ layui.config({
 		{
 			"left": "771px",
 			"top": "200px",
-			"url": "pages/VisapProcessing.html",
+			"url": "",
 			"indexno": "",
 			"text": "出签/拒签",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -412,7 +412,7 @@ layui.config({
 		{
 			"left": "595px",
 			"top": "200px",
-			"url": "pages/VisapProcessing.html",
+			"url": "",
 			"indexno": "",
 			"text": "送签",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",
@@ -430,7 +430,7 @@ layui.config({
 		{
 			"left": "407px",
 			"top": "200px",
-			"url": "pages/VisaInformationCheck.html",
+			"url": "",
 			"indexno": "",
 			"text": " 审件",
 			"img": "./js/modules/FlowChart/image/nav_icon_9.png",
@@ -448,7 +448,7 @@ layui.config({
 		{
 			"left": "407px",
 			"top": "20px",
-			"url": "pages/VisaInformationCheck.html",
+			"url": "",
 			"indexno": "",
 			"text": " 重审",
 			"img": "./js/modules/FlowChart/image/nav_icon_10.png",

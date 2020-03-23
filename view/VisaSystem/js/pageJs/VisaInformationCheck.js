@@ -68,7 +68,7 @@ layui.use(['form', 'table', 'laydate', 'xmSelect'], function() {
 				// 	title: '订单类型'
 				// },
 				{
-					field: 'addres',
+					field: 'signAddress',
 					align: 'center',
 					title: '护照签发地'
 				},

@@ -42,7 +42,7 @@
 			<div class="layui-row">
 				<form class="layui-form layui-col-md12">
 					<div class="layui-input-inline">
-						<input type="text" name="courierNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
+						<input type="text" name="orderNumber" placeholder="订单号" autocomplete="off" class="layui-input" style="width: 200px;">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="courierName" placeholder="快递公司" autocomplete="off" class="layui-input" style="width: 150px;">
@@ -110,8 +110,8 @@
 		<form class="layui-form" autocomplete="off" lay-filter="passport">
 			<fieldset class="layui-elem-field layui-field-title">
 				<legend>基础信息：
-					<div class=" layui-btn" id="upload">图像识别</div>
-					<div class=" layui-btn" id="btn" >信息检验</div>
+					<div class=" layui-btn" id="upload">上传图片</div>
+					<!-- <div class=" layui-btn" id="btn" >信息检验</div> -->
 				</legend>
 				<div class="layui-field-box">
 					<div class="layui-row">
@@ -130,7 +130,7 @@
 							</div>
 							<div class="layui-form-item">
 								<div class="layui-input-block widths">
-									<div class="layui-btn layui-btn-normal" id="toUpload">批量导入护照信息</div>
+									<div class="layui-btn layui-btn-normal toUpload" id="toUpload">批量导入护照信息</div>
 								</div>
 							</div>
 							<!-- <div class="layui-form-item">
@@ -168,6 +168,7 @@
 				</div>
 			</fieldset>
 			<div class="layui-row" id="VisaInfo" style="display: none;padding: 0px 10px;">
+				<div class="layui-btn toAdd site-demo-active" style="float: right;margin-bottom: 0.625rem;">提交</div>
 				<table class="layui-table">
 			<!-- 		<colgroup>
 						<col width="150">
@@ -176,6 +177,7 @@
 					</colgroup> -->
 					<thead>
 						<tr>
+								<th>序号</th>
 							<th>平台</th>
 							<th>姓名</th>
 							<!-- <th>英文姓名</th> -->

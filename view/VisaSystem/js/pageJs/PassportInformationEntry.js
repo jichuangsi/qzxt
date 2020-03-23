@@ -1,8 +1,8 @@
-layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
+layui.use(['form', 'table', 'laydate', 'upload', 'element'], function() {
 	var form = layui.form,
 		upload = layui.upload,
 		laydate = layui.laydate,
-		element =layui.element,
+		element = layui.element,
 		table = layui.table;
 
 	$('.time').each(function() {
@@ -138,7 +138,21 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 			"status": param.status,
 			"visaId": param.id
 		});
-		upload.render({ //允许上传的文件后缀
+		loadTable(id);
+	})
+	// $(document).on('click', '.toUpload', function() {
+	// 	uploadInst.render();
+
+	// });
+	$(document).on('click', '.reamark', function() {
+		reamark(id)
+	});
+	$(document).on('click', '.passprtId', function() {
+		look(id)
+	});
+
+	function loadTable(id) {
+		var uploadInst = upload.render({ //允许上传的文件后缀
 			elem: '#toUpload',
 			url: httpUrl() + '/visaHandle/savePassPortByExcel/' + id,
 			accept: 'file',
@@ -147,24 +161,20 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 				'accessToken': getToken()
 			},
 			done: function(res) {
+				console.log(res)
 				if (res.code == "0010") {
 					var arr = res.data.informationList;
 					getEntry(arr);
-					layer.msg('上传成功');
-					console.log(res)
+					layer.msg('获取护照信息成功！');
 				} else {
-					layer.msg('上传失败');
+					layer.msg('获取失败！');
 				}
-
+			},
+			error: function(data) {
+				console.log(data)
 			}
 		});
-	})
-	$(document).on('click', '.reamark', function() {
-		reamark(id)
-	});
-	$(document).on('click', '.passprtId', function() {
-		look(id)
-	});
+	}
 	var informationList;
 	$(document).on('click', '.toAdd', function() {
 		var url = "/visaHandle/addPassPortByBatch";
@@ -172,17 +182,27 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 			"informations": informationList,
 			"orderId": id
 		}
-		var arr= getAjaxPostData(url, param);
-		if(arr.code=="0010"){
+		var arr = getAjaxPostData(url, param);
+		if (arr.code == "0010") {
 			layer.msg('提交成功!');
-		}else{
+		} else {
 			layer.msg(arr.msg);
 		}
 		table.reload('idTest');
-		layer.close(index);
+		// layer.close(index);
 		$("#info").empty();
 		$("#VisaInfo").hide()
 	});
+	
+	//关闭页面的时候强行刷新
+	$(document).on('click', '.layui-layer-close', function() {
+		location.reload();
+	});
+	$(document).on('click', '.layui-layer-shade', function() {
+		location.reload();
+	});
+	
+	
 	//添加护照
 	form.on('submit(passport_entry)', function(data) {
 		var param = data.field;
@@ -220,7 +240,7 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 		ajaxPOST(url, list);
 		table.reload('idTest');
 		layer.close(index);
-		
+
 	});
 
 
@@ -296,6 +316,7 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 		$("#info").empty();
 		$.each(data, function(index, item) {
 			str += '<tr>';
+			str += '<td>' + (index + 1) + '</td>';
 			str += '<td>' + item.travel + '</td>';
 			str += '<td>' + item.name + '</td>';
 			str += '<td>' + item.sex + '</td>';
@@ -321,23 +342,63 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 		return Y + M + D
 	}
 	//多图片上传
-	var files;
-	var uploadInst = layui.upload.render({
+	/* 	var files;
+		var uploadInst = layui.upload.render({
+			elem: "#upload",
+			auto: false,
+			multiple: true,
+			choose: function(obj) {
+				files = obj.pushFile();
+				var count = 0;
+				for (let i in files) {
+					count++
+				}
+				layer.msg('一共选择' + count + '张图片!');
+				console.log(count);
+
+			}
+		}); */
+
+	//直接上传获取的图片
+	layui.upload.render({
 		elem: "#upload",
 		auto: false,
 		multiple: true,
 		choose: function(obj) {
 			files = obj.pushFile();
-			var count=0;
+			var count = 0;
 			for (let i in files) {
 				count++
 			}
-			layer.msg('一共选择'+count+'张图片!');
-			console.log(count);
-			
+			// layer.msg('一共选择' + count + '张图片!');
+			var form = new FormData();
+			for (let i in files) {
+				form.append("file", files[i]);
+			}
+			console.log(form);
+			// form.append("test", $("#test").val())
+			$.ajax({
+				type: "post",
+				url: httpUrl() + "/visaHandle/localUploadPics/" + id,
+				contentType: false,
+				processData: false,
+				async: true,
+				data: form,
+				headers: {
+					'accessToken': getToken()
+				},
+				success: function(data) {
+					if (data.code == '0010') {
+						layer.msg('上传成功！一共选择' + count + '张图片');
+					}
+				},
+				error: function() {
+
+				}
+			});
 		}
 	});
-	$("#btn").click(function() {
+	/* $("#btn").click(function() {
 		var form = new FormData();
 		for (let i in files) {
 			form.append("file", files[i]);
@@ -345,8 +406,8 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 		console.log(form);
 		// form.append("test", $("#test").val())
 		$.ajax({
-			type:"post",
-			url: httpUrl() + "/visaHandle/localUploadPics/"+id,
+			type: "post",
+			url: httpUrl() + "/visaHandle/localUploadPics/" + id,
 			contentType: false,
 			processData: false,
 			async: true,
@@ -355,7 +416,7 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 				'accessToken': getToken()
 			},
 			success: function(data) {
-				if(data.code=='0010'){
+				if (data.code == '0010') {
 					layer.msg('上传成功!');
 				}
 			},
@@ -363,7 +424,7 @@ layui.use(['form', 'table', 'laydate', 'upload','element'], function() {
 
 			}
 		});
-	});
+	}); */
 	//https://httpbin.org/post 上传测试地址
 
 })

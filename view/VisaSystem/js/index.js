@@ -36,6 +36,9 @@ layui.use("form", function() {
 		var arr;
 		if(data.data!=undefined){
 			arr = data.data;
+		}else{
+			layer.msg('请重新登陆！');
+			return
 		}
 		$('#nav').empty();
 		// setMenu(data);
