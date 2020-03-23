@@ -105,8 +105,12 @@ INSERT INTO `method_path` VALUES ('41', '分配角色', '10', '/backRoleConsole/
 INSERT INTO `method_path` VALUES ('42', '查询全部角色', '10', '/backRoleConsole/getAllRole');
 INSERT INTO `method_path` VALUES ('43', '查询全部后台人员', '10', '/backRoleConsole/getAllBackuserByCondition');
 INSERT INTO `method_path` VALUES ('44', '移除角色', '10', '/backRoleConsole/removeUserRole');
-
-
+INSERT INTO `method_path` VALUES ('45', '订单匹配', '1', '/backExpressReceipt/getOrderByPhone');
+INSERT INTO `method_path` VALUES ('46', '导出护照', '11', '/visaHandle/getStatisticsModel');
+INSERT INTO `method_path` VALUES ('47', '打印快递单', '7', '/visaHandle/getsendBackMessageByPassPortId');
+INSERT INTO `method_path` VALUES ('48', '导出新增', '11', '/visaHandle/getPassportByOrderIds');
+INSERT INTO `method_path` VALUES ('49', '导出全部', '11', '/visaHandle/getAllPassportByOrderIds');
+INSERT INTO `method_path` VALUES ('50', '取消快递', '7', '/visaHandle/cancelSFOrder');
 
 -- ----------------------------
 -- Table structure for urlrelation
@@ -133,3 +137,24 @@ INSERT INTO `urlrelation` VALUES ('8', '3', '4');
 INSERT INTO `urlrelation` VALUES ('9', '4', '7');
 INSERT INTO `urlrelation` VALUES ('10', '3', '11');
 INSERT INTO `urlrelation` VALUES ('11', '4', '11');
+
+-- ----------------------------
+-- Table structure for parent_node
+-- ----------------------------
+DROP TABLE IF EXISTS `parent_node`;
+CREATE TABLE `parent_node` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `node_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of parent_node
+-- ----------------------------
+INSERT INTO `parent_node` VALUES ('1', '收件');
+INSERT INTO `parent_node` VALUES ('2', '签证处理');
+INSERT INTO `parent_node` VALUES ('3', '电商订单');
+INSERT INTO `parent_node` VALUES ('4', '系统设置');
+
+
+

@@ -11,7 +11,7 @@ custom:
       userClaim: userInfo
       survivalTime: 7200000
       secret: BD12@6$133a
-      ingoreTokenUrls: /backRoleConsole/loginBackUser,/backRoleConsole/registBackUser,/swagger-ui.html#/*,/swagger-ui.html  #忽略检查token的URL
+      ingoreTokenUrls: /backRoleConsole/loginBackUser,/backRoleConsole/registBackUser,/swagger-ui.html#/*,/swagger-ui.html,/upload/  #忽略检查token的URL
     
 spring:
   application:
@@ -20,14 +20,15 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/visa?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
     username: root
     password: root
+    initialization-mode: always
+    data : classpath:data.sql
+    sql-script-encoding : utf-8
   jpa:
     show-sql: true
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    initialization-mode: always
-    data : classpath:data.sql
-    sql-script-encoding : utf-8
+
   main:
       allow-bean-definition-overriding: true
 

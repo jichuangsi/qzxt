@@ -84,11 +84,11 @@ public class ExpressReceiptService {
         }
         if (expressReceipt1.getIsError().equalsIgnoreCase("1")){//异常件
             //待修改
-            expressReceipt1.setStatus("未匹配");
+            //expressReceipt1.setStatus("未匹配");
             expressReceipt1.setIsError("0");
         }else if (expressReceipt1.getIsError().equalsIgnoreCase("0")){//不是异常件
             //待修改
-            expressReceipt1.setStatus("未匹配");
+            //expressReceipt1.setStatus("未匹配");
         }else {
             throw new PassportException("更正失败！");
         }

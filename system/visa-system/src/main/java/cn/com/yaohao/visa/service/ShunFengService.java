@@ -3,6 +3,7 @@ package cn.com.yaohao.visa.service;
 import cn.com.yaohao.visa.constant.ResultCode;
 import cn.com.yaohao.visa.dao.mapper.IVisaMapper;
 import cn.com.yaohao.visa.entity.Logistics;
+import cn.com.yaohao.visa.entity.PassportInformation;
 import cn.com.yaohao.visa.exception.PassportException;
 import cn.com.yaohao.visa.model.LogisticsModel;
 import cn.com.yaohao.visa.repository.ILogisticsRepository;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
@@ -120,10 +122,14 @@ public class ShunFengService {
 
     /**
      * 取消订单
-     * @param logisticsModel
+     * @param orderId
      * @return
+     * @throws PassportException
      */
-    public int exitOrder(Logistics logisticsModel) {
+    public int exitOrder(String orderId) throws PassportException{
+        if(StringUtils.isEmpty(orderId)){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
         StringBuffer buffer = new StringBuffer();
         buffer.append("<Request service='OrderConfirmService' lang='zh-CN' >");
         buffer.append("<Head>");
@@ -131,7 +137,7 @@ public class ShunFengService {
         buffer.append("</Head>");
         buffer.append("<Body>");
         buffer.append("<OrderConfirm ");
-        buffer.append("orderid='").append(logisticsModel.getOrderId()).append("' ");
+        buffer.append("orderid='").append(orderId).append("' ");
         buffer.append("dealtype='2' >");
         buffer.append("</OrderConfirm>");
         buffer.append("</Body>");
@@ -147,6 +153,8 @@ public class ShunFengService {
             String res_status = orderConfirmResponse.getString("@res_status");
             if (res_status.equals("2")) {
                 return 1;
+            }else {
+                throw new PassportException("顺丰取消快件失败！");
             }
         }
         return 0;

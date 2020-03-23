@@ -37,8 +37,8 @@ public class CallExpressController {
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })
     @PostMapping("/sfExitOrder")
-    public ResponseModel sfExitOrder(@ModelAttribute UserInfoForToken userInfo, @RequestBody Logistics model) {
-        return ResponseModel.sucess("",shunFengService.exitOrder(model));
+    public ResponseModel sfExitOrder(@ModelAttribute UserInfoForToken userInfo, @RequestBody LogisticsModel model) throws PassportException{
+        return ResponseModel.sucess("",shunFengService.exitOrder(model.getOrderId()));
     }
 
     @ApiOperation(value = "订单查询", notes = "")

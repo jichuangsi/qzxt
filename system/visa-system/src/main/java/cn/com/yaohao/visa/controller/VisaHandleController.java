@@ -349,4 +349,17 @@ public class VisaHandleController {
             return ResponseModel.fail("",e.getMessage());
         }
     }
+
+    @ApiOperation(value = "根据客户订单号取消快递", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
+    })
+    @PostMapping("/cancelSFOrder")
+    public ResponseModel cancelSFOrder(@ModelAttribute UserInfoForToken userInfo, @RequestParam String passportId){
+        try {
+            return ResponseModel.sucess("",visaHandleService.cancelSFOrder(userInfo,passportId));
+        }catch (Exception e){
+            return ResponseModel.fail("",e.getMessage());
+        }
+    }
 }

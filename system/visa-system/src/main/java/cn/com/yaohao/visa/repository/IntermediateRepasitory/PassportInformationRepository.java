@@ -29,4 +29,8 @@ public interface PassportInformationRepository extends JpaRepository<PassportInf
     PassportInformation findByPassportEncodingAndOrderId(String passPortId,String orderNum);
     List<PassportInformation> findByIdInAndSendStatusOrSendStatus(List<String> pids,String status,String status2);
     List<PassportInformation> findByOrderId(String orderId);
+    List<PassportInformation> findByIdIn(List<String> ids);
+    List<PassportInformation> findBySfExpressId(String sFExpressId);
+    List<PassportInformation> findByPassportEncodingInAndStatusNot(List<String> codes,String status);
+    List<PassportInformation> findByPassportEncodingInAndStatus(List<String> codes,String status);
 }

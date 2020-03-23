@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ILogisticsRepository extends JpaRepository<Logistics,String> {
     Logistics findBySfExpressId(String sfId);
+    Logistics findByOrderId(String orderId);
 }
