@@ -14,7 +14,7 @@ public class TBOrderService {
     private List<TBOrderModel> addTbOeder(){
         List<TBOrderModel> models=new ArrayList<>();
         models.add(new TBOrderModel("TB2020031900001","13758964235","3","佛山市南海区沙溪工业园a号","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",35,"5479862156"));
-        models.add(new TBOrderModel("TB2020031900002","18796325489","4","广州市花都区梯面镇404县道","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",7,"5479862157"));
+        models.add(new TBOrderModel("TB2020031900002","13758964235","4","广州市花都区梯面镇404县道","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",7,"5479862157"));
         models.add(new TBOrderModel("TB2020031900003","15478963256","5","广东省江门市开平市","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",12,"5479862158"));
         models.add(new TBOrderModel("TB2020031900004","16887875688","6","江门市恩平市美华东路52号","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",13,"5479862159"));
         models.add(new TBOrderModel("TB2020031900005","15868765767","7","上海市浦东新区陆家嘴环路717号","广东省深圳市南山区西丽镇塘朗同富裕工业城7栋",23,"5479862151"));
@@ -41,7 +41,7 @@ public class TBOrderService {
         return models;
     }
 
-    public TBOrderModel getTbOrder(String phone)throws PassportException {
+    /*public TBOrderModel getTbOrder(String phone)throws PassportException {
         if (StringUtils.isEmpty(phone)){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
@@ -52,11 +52,29 @@ public class TBOrderService {
                 model=mo;
             }
         }
-        if (model==null){
-            model=null;
-            return model;
-        }
         return model;
+    }*/
+
+    public List<TBOrderModel> getTbOrder(String phone,String orderId)throws PassportException {
+        if (StringUtils.isEmpty(phone) && StringUtils.isEmpty(orderId)){
+            throw new PassportException(ResultCode.PARAM_MISS_MSG);
+        }
+        List<TBOrderModel> models=addTbOeder();
+        List<TBOrderModel> modelss=new ArrayList<>();
+        for (TBOrderModel mo:models) {
+            if(!StringUtils.isEmpty(orderId)){//先根据订单查找
+                if(mo.getOrderId().equalsIgnoreCase(orderId)){
+                    modelss.add(mo);
+                    continue;
+                }
+            }else if(!StringUtils.isEmpty(phone)){//再根据手机查询
+                if(mo.getPhone().equalsIgnoreCase(phone)){
+                    modelss.add(mo);
+                }
+
+            }
+        }
+        return modelss;
     }
 
     public boolean checkTbOrder(String orders)throws PassportException {

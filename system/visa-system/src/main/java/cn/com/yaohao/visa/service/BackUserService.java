@@ -246,13 +246,17 @@ public class BackUserService {
      * @param relations
      */
     public void saveUserRole(UserInfoForToken userInfo, List<UserRoleRelation> relations)throws PassportException{
+        List<UserRoleRelation> userRoleRelations=null;
         for (UserRoleRelation u:relations
              ) {
             if (StringUtils.isEmpty(u.getRid())){
                 throw  new PassportException(ResultCode.PARAM_ERR_MSG);
             }
             //u.setUid(userInfo.getUserId());
+            //删除之前的角色
+            userRoleRelations=userRoleRelationRepository.findByUid(u.getUid());
         }
+        userRoleRelationRepository.deleteInBatch(userRoleRelations);
         userRoleRelationRepository.saveAll(relations);
     }
 

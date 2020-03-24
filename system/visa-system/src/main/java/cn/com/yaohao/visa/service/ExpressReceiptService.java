@@ -52,6 +52,9 @@ public class ExpressReceiptService {
                 || StringUtils.isEmpty(expressReceipt.getAddress())|| StringUtils.isEmpty(expressReceipt.getReturnAddress())){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
         }
+        if(expressReceiptRepository.countByOrderNumber(expressReceipt.getOrderNumber())>0){
+            throw new PassportException(ResultCode.EXPREES_ISEXIST_MSG);
+        }
         //待修改
         if (tbOrderService.checkTbOrder(expressReceipt.getOrderNumber())){
             expressReceipt.setStatus("已匹配");

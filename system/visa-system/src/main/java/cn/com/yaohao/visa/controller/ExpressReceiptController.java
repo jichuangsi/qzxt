@@ -77,7 +77,7 @@ public class ExpressReceiptController {
         return ResponseModel.sucess("",expressReceiptService.getUnusualRequirementsVisa(userInfo,model));
     }
 
-    @ApiOperation("备注信息")
+    @ApiOperation("订单备注信息")
     @ApiImplicitParams({})
     @PostMapping("/expressReceiptRemark")
     public ResponseModel expressReceiptRemark(@ModelAttribute UserInfoForToken userInfo,@RequestBody RemarksInformation model,@RequestParam String expressId){
@@ -89,7 +89,7 @@ public class ExpressReceiptController {
         return ResponseModel.sucessWithEmptyData("");
     }
 
-    @ApiOperation("查看备注")
+    @ApiOperation("查看订单备注")
     @ApiImplicitParams({})
     @GetMapping("/getExpressReceiptRemark")
     public ResponseModel getExpressReceiptRemark(@ModelAttribute UserInfoForToken userInfo,@RequestParam String expressId,@RequestParam int pageNum,@RequestParam int pageSize){
@@ -104,9 +104,9 @@ public class ExpressReceiptController {
     @ApiOperation("根据手机匹配订单")
     @ApiImplicitParams({})
     @GetMapping("/getOrderByPhone")
-    public ResponseModel getOrderByPhone(@ModelAttribute UserInfoForToken userInfo,@RequestParam String phone){
+    public ResponseModel getOrderByPhone(@ModelAttribute UserInfoForToken userInfo,@RequestParam(required = false) String phone,@RequestParam(required = false) String orderId){
         try {
-            return ResponseModel.sucess("",tbOrderService.getTbOrder(phone));
+            return ResponseModel.sucess("",tbOrderService.getTbOrder(phone,orderId));
         }catch (PassportException e){
             return ResponseModel.fail("",e.getMessage());
         }

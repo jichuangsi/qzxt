@@ -25,4 +25,5 @@ public class ResultCode {
 	public final static String EXPREES_NOEXIST_MSG="该快件不存在";
 	public final static String PASSPORT_NOEXIST_MSG="该护照不存在";
 	public static final String EXCEL_IMPORT_MSG = "excel导入失败";
+	public final static String EXPREES_ISEXIST_MSG="该快件已存在";
 }

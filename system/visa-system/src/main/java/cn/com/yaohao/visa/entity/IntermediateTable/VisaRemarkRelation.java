@@ -15,7 +15,7 @@ public class VisaRemarkRelation {
     @GeneratedValue(generator = "jpa-uuid")
     private String id;//备注信息与护照信息
     private String remarkId;//备注信息id
-    private String visaId;//签证信息id
+    private String visaId;//护照信息id
 
     public String getId() {
         return id;

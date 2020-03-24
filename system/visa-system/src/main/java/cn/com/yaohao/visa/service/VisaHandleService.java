@@ -376,16 +376,17 @@ public class VisaHandleService {
         return list;
     }
     //添加备注
+    @Transactional(rollbackFor = Exception.class)
     public boolean addVisaRemark(UserInfoForToken userInfo,RemarksInformation model,String passprtId)throws PassportException{
-        /*if (StringUtils.isEmpty(userInfo)||StringUtils.isEmpty(model)
-                ||StringUtils.isEmpty(passprtId)){
+        if (StringUtils.isEmpty(model)||StringUtils.isEmpty(passprtId)||StringUtils.isEmpty(model.getRemarks())){
             throw new PassportException(ResultCode.PARAM_MISS_MSG);
-        }*/
-        //PassportInformation passportInformation=passportInformationRepository.findByIdIs(passprtId);
-        ExpressReceipt testExpress=expressReceiptRepository.findByIdIs(passprtId);
-        if (StringUtils.isEmpty(testExpress)){
+        }
+        PassportInformation passportInformation=passportInformationRepository.findByIdIs(passprtId);
+        if (StringUtils.isEmpty(passportInformation)){
             throw new PassportException(ResultCode.PARAM_ERR_MSG);
         }
+        model.setOperator(userInfo.getUserName());
+        model.setOperatorId(userInfo.getUserId());
         RemarksInformation information=remarksInformationRepository.save(model);
         //签证和备注
         VisaRemarkRelation visaRemarkRelation=new VisaRemarkRelation();

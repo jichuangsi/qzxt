@@ -89,7 +89,7 @@ public class VisaHandleController {
     }
 
 
-    @ApiOperation(value = "查看备注", notes = "")
+    @ApiOperation(value = "查看护照备注", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })
@@ -100,7 +100,7 @@ public class VisaHandleController {
         return ResponseModel.sucess("",visaHandleService.getVisaRemark(userInfo,passprtId));
     }
 
-    @ApiOperation(value = "添加备注", notes = "")
+    @ApiOperation(value = "添加护照备注", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "header", name = "accessToken", value = "用户token", required = true, dataType = "String")
     })

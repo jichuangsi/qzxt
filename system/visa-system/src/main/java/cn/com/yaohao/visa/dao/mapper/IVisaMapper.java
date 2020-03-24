@@ -35,7 +35,7 @@ public interface IVisaMapper {
 
     //待补充签证(状态码F:未通过)
     @Select(value = "<script>SELECT pi.id as id,pi.`name` as name,er.order_number as orderNumber, pi.passport_encoding as passportEncoding,er.telephone_number AS telephoneNumber,\n" +
-            "pi.expiry_date as expiryDate,psr.illustrated as problem,vpr.vid as expressReceiptId,er.`schedule` as schedule\n" +
+            "pi.expiry_date as expiryDate,psr.illustrated as problem,vpr.vid as expressReceiptId,er.`schedule` as schedule,pi.visa_type as visaType,pi.sign_address as signAddress,pi.remarks as remarks\n" +
             "FROM passport_information pi LEFT JOIN passport_supplement_relation psr ON pi.id=psr.pass_id INNER JOIN visa_passport_relation vpr ON pi.id =vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id\n" +
             "WHERE pi.`status`='F'\n"
             +"<if test='orderNum != null '>AND order_number=#{orderNum}</if>"
@@ -56,7 +56,7 @@ public interface IVisaMapper {
     int countProblePassWord(@Param("orderNum")String orderNum,@Param("name")String name,@Param("passportId")String passportId,@Param("phone")String phone);
 
     //签证审核(状态码W:待审核)
-    @Select(value = "<script>SELECT pi.`name` as name,er.order_number as orderNumber,pi.passport_encoding as passportEncoding,er.telephone_number as telephoneNumber,er.`schedule` as schedule,pi.expiry_date as expiryDate,pi.id as id,er.id as expressReceiptId\n" +
+    @Select(value = "<script>SELECT pi.`name` as name,er.order_number as orderNumber,pi.passport_encoding as passportEncoding,er.telephone_number as telephoneNumber,er.`schedule` as schedule,pi.expiry_date as expiryDate,pi.id as id,er.id as expressReceiptId,pi.visa_type as visaType,pi.sign_address as signAddress,pi.remarks as remarks\n" +
             "FROM passport_information pi INNER JOIN visa_passport_relation vpr ON pi.id=vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id WHERE pi.`status`= 'W' "
             +"<if test='orderNum != null '>AND er.order_number=#{orderNum}</if>"
             +"<if test='name != null'>AND pi.`name` LIKE CONCAT('%', #{name},'%')</if>"
@@ -90,8 +90,8 @@ public interface IVisaMapper {
     List<ValidationModel> findPassPortByPass(@Param("orderNum")String orderNum,@Param("name")String name,@Param("passportId")String passportId,@Param("phone")String phone,@Param("status")String status,@Param("pageNum")int pageNum,@Param("pageSize")int pageSize);
 
     //签证进度(状态码P:审核通过)(工期内不包含周末)
-    @Select(value = "<script>SELECT er.order_number as orderNumber,er.schedule as schedule,pi.`name` as name,er.telephone_number as telephoneNumber,pi.send_status as sendStatus,pi.`status` as status,\n" +
-            "pi.check_time as checkTime,pi.expire_time as expireTime,pi.id as id,er.id as expressReceiptId,pi.passport_encoding as passportEncoding,pi.is_send_back as isSendBack,\n" +
+    @Select(value = "<script>SELECT er.order_number as orderNumber,er.schedule as schedule,pi.`name` as name,er.telephone_number as telephoneNumber,pi.send_status as sendStatus,pi.`status` as status,pi.visa_type as visaType,pi.remarks as remarks\n" +
+            ",pi.check_time as checkTime,pi.expire_time as expireTime,pi.id as id,er.id as expressReceiptId,pi.passport_encoding as passportEncoding,pi.is_send_back as isSendBack,\n" +
             "IF(pi.is_send_back='SB',99,IF((er.`schedule`- workdaynum(FROM_UNIXTIME(pi.check_time, '%Y-%m-%d'),date_format(now(), '%Y-%m-%d')))>=0,er.`schedule`- workdaynum(FROM_UNIXTIME(pi.check_time, '%Y-%m-%d'),date_format(now(), '%Y-%m-%d')),0)) AS DIFF_DATE," +
             "pi.sex as sex,pi.birth_day as birthDay,pi.birth_place as birthPlace,pi.habitation as habitation,pi.expiry_date as expiryDate,pi.return_address AS returnAddress\n" +
             "FROM passport_information pi INNER JOIN visa_passport_relation vpr ON pi.id=vpr.pass_id INNER JOIN express_receipt er ON vpr.vid=er.id \n" +

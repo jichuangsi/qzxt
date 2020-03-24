@@ -20,6 +20,9 @@ public class ValidationModel {
     private int DIFF_DATE;//剩余工期
     private long checkTime;//审核时间
     private String expireTime;//工期到期时间
+    private String visaType;//签证种类
+    private String signAddress;//签发地
+    private String remarks;
     private int pageNum;
     private int pageSize;
 
@@ -182,5 +185,29 @@ public class ValidationModel {
 
     public void setIsSendBack(String isSendBack) {
         this.isSendBack = isSendBack;
+    }
+
+    public String getVisaType() {
+        return visaType;
+    }
+
+    public void setVisaType(String visaType) {
+        this.visaType = visaType;
+    }
+
+    public String getSignAddress() {
+        return signAddress;
+    }
+
+    public void setSignAddress(String signAddress) {
+        this.signAddress = signAddress;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }
